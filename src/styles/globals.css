@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light theme variables*/
+  --header-bg-color: #eee8d5;
+  --footer-bg-color: #eee8d5;
+  --body-text-color: #1a1a1a;
+  --background-image: url("/background-theme-light.webp");
+  --sidebar-bg-hover: #dcd0c0;
+
+  --signin-container-bg-color: #eee8d5; /* Placeholder color */
+  --signin-btn-bg-color: #1a73e8;
+  --signin-btn-hover-bg-color: #1669c1;
+  --signin-input-bg-color: #f7f7f7;
+  --signin-input-border-color: #cccccc;
+  --signin-text-color: #f0f0f0;
+
+  --user-section-bg-color: #f2efe3;
+  --error-message-text-color: #d32f2f;
+  --spinnner-border-left-color: #09f;
+}
+
+[data-theme="dark"] {
+  /* Dark Theme Variables */
+  --header-bg-color: #1e293b;
+  --footer-bg-color: #1e293b;
+  --body-text-color: #ffffff;
+  --background-image: url("/background-theme-dark.webp");
+  --sidebar-bg-hover: #243b53;
+
+  --signin-container-bg-color: #243b53;
+  --signin-btn-bg-color: #2196f3;
+  --signin-btn-hover-bg-color: #1976d2;
+  --signin-input-bg-color: #455a64;
+  --signin-input-border-color: #4f5b62;
+  --signin-text-color: #eceff1;
+
+  --user-section-bg-color: #2a3e50;
+  --error-message-text-color: #d74444;
+}
+
+body {
+  color: var(--body-text-color);
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
