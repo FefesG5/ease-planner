@@ -10,25 +10,24 @@ const SignIn = () => {
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log("Signed in with Google successfully.");
-        setMessage("Signed in with Google successfully.");
+      .then(() => {
+        setMessage("");
       })
       .catch((error) => {
         console.error("Error during Google sign-in:", error);
-        setMessage("An error occurred during Google sign-in.");
+        setMessage(
+          "An error occurred during Google sign-in. Please try again.",
+        );
       });
   };
 
   return (
     <div className="text-center p-8 bg-[var(--signin-container-bg-color)] border border-[var(--signin-input-border-color)] rounded-md shadow-md max-w-full my-8 mx-auto sm:max-w-xs md:max-w-md lg:max-w-lg">
-      {/* Added Instructions */}
       <h2 className="text-2xl font-bold mb-4">Welcome to Ease Planner</h2>
       <p className="mb-6 text-lg text-[var(--body-text-color)]">
         Please sign in to continue. Use your Google account to get started.
       </p>
 
-      {/* Google Sign-In Button */}
       <button
         onClick={signInWithGoogle}
         className="w-full flex items-center justify-center p-3 my-2 bg-[var(--signin-btn-bg-color)] text-[var(--signin-text-color)] rounded-lg cursor-pointer font-bold text-base hover:bg-[var(--signin-btn-hover-bg-color)] transition-colors duration-200 ease-in-out"
