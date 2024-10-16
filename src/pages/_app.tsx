@@ -8,6 +8,7 @@ import "@/styles/globals.css";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { Router } from "next/router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Configure NProgress settings
 NProgress.configure({ showSpinner: false });
@@ -17,14 +18,18 @@ Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
 Router.events.on("routeChangeError", () => NProgress.done());
 
+const queryClient = new QueryClient();
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <RootLayout>
-          <Component {...pageProps} />
-        </RootLayout>
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <RootLayout>
+            <Component {...pageProps} />
+          </RootLayout>
+        </AuthProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }
