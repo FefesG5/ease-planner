@@ -7,7 +7,7 @@ import { dashboardNav } from "@/config/dashBoardNav";
 type DashboardLayoutProps = {
   signOutUser: () => Promise<void>;
   user: User;
-  children: React.ReactNode; // Allows embedding content inside the layout
+  children: React.ReactNode;
 };
 
 const DashboardLayout = ({
@@ -17,7 +17,6 @@ const DashboardLayout = ({
 }: DashboardLayoutProps) => {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* UserSection bar under the header */}
       <div className="w-full bg-white shadow-md">
         <UserSection user={user} signOutUser={signOutUser} />
       </div>
@@ -47,7 +46,6 @@ const DashboardLayout = ({
           </ul>
         </nav>
 
-        {/* Main Content Area */}
         <main className="flex-1 p-4 bg-[var(--main-content-bg-color)]">
           {children}
         </main>
