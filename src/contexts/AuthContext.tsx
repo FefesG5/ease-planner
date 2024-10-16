@@ -8,6 +8,7 @@ import {
   where,
 } from "firebase/firestore";
 import { app } from "../../firebase.config";
+import { useQuery } from "@tanstack/react-query";
 
 interface AuthContextType {
   user: User | null;
@@ -23,43 +24,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
-
   const auth = getAuth(app);
   const db = getFirestore(app);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setLoading(true);
       setUser(currentUser);
-
-      if (currentUser) {
-        try {
-          const usersRef = collection(db, "registered-users");
-          const q = query(usersRef, where("email", "==", currentUser.email));
-          const querySnapshot = await getDocs(q);
-          setIsAuthorized(!querySnapshot.empty);
-        } catch (error) {
-          console.error("Error checking authorization:", error);
-          setIsAuthorized(false);
-        }
-      } else {
-        setIsAuthorized(false);
-      }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [auth, db]);
+  }, [auth]);
+
+  // Use React Query for checking if the user is authorized
+  const { data: isAuthorized, isLoading: authLoading } = useQuery({
+    queryKey: ["isAuthorized", user?.email],
+    queryFn: async () => {
+      if (user) {
+        const usersRef = collection(db, "registered-users");
+        const q = query(usersRef, where("email", "==", user.email));
+        const querySnapshot = await getDocs(q);
+        return !querySnapshot.empty;
+      }
+      return false;
+    },
+    enabled: !!user, // Only run the query if a user is logged in
+    staleTime: 5 * 60 * 1000, // Cache authorization check for 5 minutes
+  });
 
   const signOutUser = async (): Promise<void> => {
     await auth.signOut();
     setUser(null);
-    setIsAuthorized(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAuthorized, signOutUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading: loading || authLoading,
+        isAuthorized: isAuthorized || false,
+        signOutUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
