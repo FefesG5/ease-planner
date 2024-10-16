@@ -9,20 +9,11 @@ test.describe("Access Page Tests - (Fullscreen Mode)", () => {
 
   // Sign In Section
   test.describe("Sign In Section", () => {
-    test("Email input should be visible and allow text entry", async ({
-      page,
-    }) => {
-      const emailInput = page.locator("input[type='email']");
-      await expect(emailInput).toBeVisible();
-      await emailInput.fill("test@example.com");
-      await expect(emailInput).toHaveValue("test@example.com"); // Ensure input value is correctly entered
-    });
-
-    test("Sign in with Email button should be visible", async ({ page }) => {
-      const emailSignInButton = page.locator(
-        "button:has-text('Sign in with Email link')",
+    test("Instruction message should be visible", async ({ page }) => {
+      const instructionMessage = page.locator(
+        "p:has-text('Please sign in to continue. Use your Google account to get started.')",
       );
-      await expect(emailSignInButton).toBeVisible();
+      await expect(instructionMessage).toBeVisible();
     });
 
     test("Sign in with Google button should be visible and functional", async ({
