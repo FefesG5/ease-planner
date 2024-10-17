@@ -9,6 +9,7 @@
   --body-text-color: #1a1a1a;
   --background-image: url("/background-theme-light.webp");
   --sidebar-bg-hover: #dcd0c0;
+  --sidebar-border-color: #d1d5db;
 
   --signin-container-bg-color: #eee8d5; /* Placeholder color */
   --signin-btn-bg-color: #1a73e8;
@@ -29,6 +30,7 @@
   --body-text-color: #ffffff;
   --background-image: url("/background-theme-dark.webp");
   --sidebar-bg-hover: #243b53;
+  --sidebar-border-color: #374151;
 
   --signin-container-bg-color: #243b53;
   --signin-btn-bg-color: #2196f3;
