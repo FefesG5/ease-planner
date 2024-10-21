@@ -5,8 +5,10 @@ let privateKey: string | undefined = process.env.FIREBASE_PRIVATE_KEY;
 
 try {
   if (privateKey) {
+    console.log("Private key found, processing...");
     // Replace all '\\n' with actual '\n' characters to properly format the key
     privateKey = privateKey.replace(/\\n/g, "\n");
+    console.log("Private key processed (after replace)");
   } else {
     console.error("Firebase private key is not defined");
   }
@@ -14,15 +16,23 @@ try {
   console.error("Error processing private key:", e);
 }
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID || "",
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
-      privateKey: privateKey || "",
-    }),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  });
+try {
+  if (!admin.apps.length) {
+    console.log("Initializing Firebase Admin...");
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID || "",
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
+        privateKey: privateKey || "",
+      }),
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    });
+    console.log("Firebase Admin initialized successfully");
+  } else {
+    console.log("Firebase Admin already initialized");
+  }
+} catch (initializationError) {
+  console.error("Firebase Admin initialization error:", initializationError);
 }
 
 const storage = admin.storage();
