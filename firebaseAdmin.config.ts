@@ -6,25 +6,8 @@ let privateKey: string | undefined = process.env.FIREBASE_PRIVATE_KEY;
 try {
   if (privateKey) {
     console.log("Private key found, processing...");
-
-    // Log what the private key looks like before formatting
-    console.log(
-      `Private key before formatting (first 50 characters): ${privateKey.substring(0, 50)}`,
-    );
-    console.log(
-      `Private key before formatting (last 50 characters): ${privateKey.substring(privateKey.length - 50)}`,
-    );
-
     // Replace all '\\n' with actual '\n' characters to properly format the key
     privateKey = privateKey.replace(/\\n/g, "\n");
-
-    // Log what the private key looks like after formatting
-    console.log(
-      `Private key after formatting (first 50 characters): ${privateKey.substring(0, 50)}`,
-    );
-    console.log(
-      `Private key after formatting (last 50 characters): ${privateKey.substring(privateKey.length - 50)}`,
-    );
   } else {
     console.error("Firebase private key is not defined");
   }
