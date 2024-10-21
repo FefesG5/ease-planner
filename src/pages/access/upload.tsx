@@ -109,6 +109,13 @@ export default function Upload() {
     }
   };
 
+  // Trigger file input click when the div is clicked
+  const triggerFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <DashboardLayout user={user} signOutUser={signOutUser}>
       <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md rounded-lg mt-6 bg-[var(--user-section-bg-color)]">
@@ -120,18 +127,25 @@ export default function Upload() {
         </p>
 
         <div className="flex flex-col items-center mb-4 w-full">
+          <div
+            className="w-full text-sm py-2 px-4 rounded-full font-semibold text-center bg-blue-600 text-white cursor-pointer hover:bg-blue-700"
+            onClick={triggerFileInput}
+          >
+            {selectedFile ? selectedFile.name : "Choose File (No file chosen)"}
+          </div>
+
           <input
             type="file"
             ref={fileInputRef}
             onChange={handleFileChange}
-            className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)]"
+            className="hidden"
             disabled={uploading}
           />
 
           <select
             value={fileType}
             onChange={(e) => setFileType(e.target.value)}
-            className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)]"
+            className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
             disabled={uploading}
           >
             <option value="" disabled>
@@ -144,7 +158,7 @@ export default function Upload() {
           <select
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)]"
+            className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
             disabled={uploading}
           >
             <option value="">Select Month</option>
@@ -165,7 +179,7 @@ export default function Upload() {
           <select
             value={year}
             onChange={(e) => setYear(e.target.value)}
-            className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)]"
+            className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
             disabled={uploading}
           >
             <option value="">Select Year</option>
@@ -178,7 +192,7 @@ export default function Upload() {
         <button
           onClick={handleUpload}
           disabled={uploading}
-          className={`w-full py-2 px-4 rounded-md text-white transition-all duration-200 ${
+          className={`w-full py-2 px-4 rounded-md text-white transition-all duration-200 cursor-pointer ${
             uploading
               ? "bg-[var(--sidebar-border-color)] cursor-not-allowed"
               : "bg-[var(--signin-btn-bg-color)]"
@@ -206,7 +220,7 @@ export default function Upload() {
               </p>
               <button
                 onClick={handleCopyUrl}
-                className="py-1 px-4 text-sm font-medium text-white rounded-md bg-[var(--signin-btn-bg-color)]"
+                className="py-1 px-4 text-sm font-medium text-white rounded-md bg-[var(--signin-btn-bg-color)] cursor-pointer"
               >
                 Copy URL
               </button>
