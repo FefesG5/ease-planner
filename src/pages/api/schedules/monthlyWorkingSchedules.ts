@@ -37,9 +37,8 @@ async function fetchMonthlyWorkingSchedules() {
           };
 
           const [signedUrl] = await file.getSignedUrl(options);
-          console.log("Signed URL: ", signedUrl); // Log the signed URL
 
-          // Return the document data along with the signed URL
+          // Return the document data along with the signed URL (without logging)
           return {
             id: doc.id,
             ...data,
