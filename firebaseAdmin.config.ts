@@ -5,7 +5,6 @@ let privateKey: string | undefined = process.env.FIREBASE_PRIVATE_KEY;
 
 try {
   if (privateKey) {
-    console.log("Private key found, processing...");
     // Replace all '\\n' with actual '\n' characters to properly format the key
     privateKey = privateKey.replace(/\\n/g, "\n");
   } else {
@@ -17,7 +16,6 @@ try {
 
 try {
   if (!admin.apps.length) {
-    console.log("Initializing Firebase Admin...");
     admin.initializeApp({
       credential: admin.credential.cert({
         projectId: process.env.FIREBASE_PROJECT_ID || "",
@@ -26,9 +24,6 @@ try {
       }),
       storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     });
-    console.log("Firebase Admin initialized successfully");
-  } else {
-    console.log("Firebase Admin already initialized");
   }
 } catch (initializationError) {
   console.error("Firebase Admin initialization error:", initializationError);
