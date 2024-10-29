@@ -1,41 +1,18 @@
 import { useState, ChangeEvent, useRef } from "react";
-import { useAuthContext } from "@/contexts/AuthContext";
-import Spinner from "@/components/Spinner/Spinner";
-import DashboardLayout from "@/components/Dashboard/DashboardLayout";
+import withDashboardLayout from "@/hoc/withDashboardLayout"; // Correct import path to the HOC
 
-export default function Upload() {
-  const { user, loading, isAuthorized, signOutUser } = useAuthContext();
+function Upload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [signedUrl, setSignedUrl] = useState<string>("");
   const [copyMessage, setCopyMessage] = useState<string>("");
 
-  const [fileType, setFileType] = useState<string>(""); // Start with an empty value for file type
+  const [fileType, setFileType] = useState<string>("");
   const [month, setMonth] = useState<string>("");
   const [year, setYear] = useState<string>("");
 
-  const fileInputRef = useRef<HTMLInputElement>(null); // Reference for the file input
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-center text-[color:var(--body-text-color)]">
-        <p className="text-lg">You must be logged in to access this page.</p>
-      </div>
-    );
-  }
-
-  if (!isAuthorized) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-center text-[color:var(--body-text-color)]">
-        <p className="text-lg">You are not authorized to access this page.</p>
-      </div>
-    );
-  }
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -89,11 +66,13 @@ export default function Upload() {
           fileInputRef.current.value = "";
         }
       } else {
-        setMessage("Failed to upload file.");
+        setMessage("Failed to upload file. Please try again.");
       }
     } catch (error) {
       console.error("Upload error:", error);
-      setMessage("Error uploading file.");
+      setMessage(
+        "Error uploading file. Please check your network connection and try again.",
+      );
     } finally {
       setUploading(false);
     }
@@ -109,7 +88,6 @@ export default function Upload() {
     }
   };
 
-  // Trigger file input click when the div is clicked
   const triggerFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -117,122 +95,135 @@ export default function Upload() {
   };
 
   return (
-    <DashboardLayout user={user} signOutUser={signOutUser}>
-      <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md rounded-lg mt-6 bg-[var(--user-section-bg-color)]">
-        <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[color:var(--body-text-color)]">
-          Upload Files
-        </h1>
-        <p className="mb-4 text-sm sm:text-base text-center text-[color:var(--body-text-color)]">
-          Upload the files to get started with schedule generation.
-        </p>
+    <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md rounded-lg mt-4 bg-[var(--user-section-bg-color)]">
+      <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[color:var(--body-text-color)]">
+        Upload Files
+      </h1>
+      <p className="mb-4 text-sm sm:text-base text-center text-[color:var(--body-text-color)]">
+        Upload the files to get started with schedule generation.
+      </p>
 
-        <div className="flex flex-col items-center mb-4 w-full">
-          <div
-            className="w-full text-sm py-2 px-4 rounded-full font-semibold text-center bg-blue-600 text-white cursor-pointer hover:bg-blue-700"
-            onClick={triggerFileInput}
-          >
-            {selectedFile ? selectedFile.name : "Choose File (No file chosen)"}
-          </div>
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            className="hidden"
-            disabled={uploading}
-          />
-
-          <select
-            value={fileType}
-            onChange={(e) => setFileType(e.target.value)}
-            className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
-            disabled={uploading}
-          >
-            <option value="" disabled>
-              Select File Type
-            </option>
-            <option value="shukkimboTemplate">Shukkimbo Template</option>
-            <option value="workingSchedule">Working Schedule</option>
-          </select>
-
-          <select
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
-            disabled={uploading}
-          >
-            <option value="">Select Month</option>
-            <option value="January">January</option>
-            <option value="February">February</option>
-            <option value="March">March</option>
-            <option value="April">April</option>
-            <option value="May">May</option>
-            <option value="June">June</option>
-            <option value="July">July</option>
-            <option value="August">August</option>
-            <option value="September">September</option>
-            <option value="October">October</option>
-            <option value="November">November</option>
-            <option value="December">December</option>
-          </select>
-
-          <select
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
-            disabled={uploading}
-          >
-            <option value="">Select Year</option>
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-          </select>
+      <div className="flex flex-col items-center mb-4 w-full">
+        <div
+          className={`w-full text-sm py-2 px-4 rounded-full font-semibold text-center cursor-pointer ${
+            uploading
+              ? "bg-[var(--sidebar-border-color)] text-gray-400 cursor-not-allowed"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
+          onClick={!uploading ? triggerFileInput : undefined}
+        >
+          {selectedFile ? selectedFile.name : "Choose File (No file chosen)"}
         </div>
 
-        <button
-          onClick={handleUpload}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
           disabled={uploading}
-          className={`w-full py-2 px-4 rounded-md text-white transition-all duration-200 cursor-pointer ${
-            uploading
-              ? "bg-[var(--sidebar-border-color)] cursor-not-allowed"
-              : "bg-[var(--signin-btn-bg-color)]"
-          }`}
+        />
+
+        <select
+          value={fileType}
+          onChange={(e) => setFileType(e.target.value)}
+          className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+          disabled={uploading}
         >
-          {uploading ? "Uploading..." : "Upload"}
-        </button>
+          <option value="" disabled>
+            Select File Type
+          </option>
+          <option value="shukkimboTemplate">Shukkimbo Template</option>
+          <option value="workingSchedule">Working Schedule</option>
+        </select>
 
-        {message && (
-          <div className="mt-4 h-20 w-full flex items-center justify-center transition-all duration-300">
-            <div className="p-3 text-center rounded-md text-sm sm:text-base bg-[var(--signin-container-bg-color)] text-[color:var(--body-text-color)]">
-              {message}
-            </div>
-          </div>
-        )}
+        <select
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+          disabled={uploading}
+        >
+          <option value="">Select Month</option>
+          {/* Map months */}
+          {[
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ].map((month) => (
+            <option key={month} value={month}>
+              {month}
+            </option>
+          ))}
+        </select>
 
-        {signedUrl && (
-          <div className="mt-4 p-4 rounded-md border w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
-            <p className="mb-2 text-sm sm:text-base text-center text-[color:var(--body-text-color)]">
-              Your file is ready!
-            </p>
-            <div className="flex flex-col items-center">
-              <p className="text-xs sm:text-sm break-all w-full mb-2 text-left p-2 rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)]">
-                {signedUrl}
-              </p>
-              <button
-                onClick={handleCopyUrl}
-                className="py-1 px-4 text-sm font-medium text-white rounded-md bg-[var(--signin-btn-bg-color)] cursor-pointer"
-              >
-                Copy URL
-              </button>
-              {copyMessage && (
-                <p className="mt-2 text-xs sm:text-sm text-center text-[color:var(--body-text-color)]">
-                  {copyMessage}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
+        <select
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+          disabled={uploading}
+        >
+          <option value="">Select Year</option>
+          {[2023, 2024, 2025].map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
       </div>
-    </DashboardLayout>
+
+      <button
+        onClick={handleUpload}
+        disabled={uploading}
+        className={`w-full py-2 px-4 rounded-md text-white transition-all duration-200 cursor-pointer ${
+          uploading
+            ? "bg-[var(--sidebar-border-color)] cursor-not-allowed"
+            : "bg-[var(--signin-btn-bg-color)] hover:bg-blue-600"
+        }`}
+      >
+        {uploading ? "Uploading..." : "Upload"}
+      </button>
+
+      {message && (
+        <div className="mt-4 h-20 w-full flex items-center justify-center transition-all duration-300">
+          <div className="p-3 text-center rounded-md text-sm sm:text-base bg-[var(--signin-container-bg-color)] text-[color:var(--body-text-color)]">
+            {message}
+          </div>
+        </div>
+      )}
+
+      {signedUrl && (
+        <div className="mt-4 p-4 rounded-md border w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
+          <p className="mb-2 text-sm sm:text-base text-center text-[color:var(--body-text-color)]">
+            Your file is ready!
+          </p>
+          <div className="flex flex-col items-center">
+            <p className="text-xs sm:text-sm break-all w-full mb-2 text-left p-2 rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)]">
+              {signedUrl}
+            </p>
+            <button
+              onClick={handleCopyUrl}
+              className="py-1 px-4 text-sm font-medium text-white rounded-md bg-[var(--signin-btn-bg-color)] cursor-pointer hover:bg-blue-600"
+            >
+              Copy URL
+            </button>
+            {copyMessage && (
+              <p className="mt-2 text-xs sm:text-sm text-center text-[color:var(--body-text-color)]">
+                {copyMessage}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
+
+export default withDashboardLayout(Upload);
