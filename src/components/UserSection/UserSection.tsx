@@ -9,13 +9,13 @@ interface UserSectionProps {
 
 const UserSection: React.FC<UserSectionProps> = ({ user, signOutUser }) => {
   return (
-    <div className="flex items-center justify-between p-2 bg-[var(--user-section-bg-color)] border-b border-gray-300 shadow-md">
+    <div className="flex items-center justify-between p-3 bg-[var(--user-section-bg-color)] border-b border-gray-300 shadow-md">
       <div className="flex items-center space-x-4">
         <Image
           src={user.photoURL || "/user-icon.svg"}
           alt={`${user.displayName || "User"}'s profile`}
-          width={50}
-          height={50}
+          width={40}
+          height={40}
           className="rounded-full border-2 border-gray-300 shadow-sm"
         />
         <div className="flex flex-col">
