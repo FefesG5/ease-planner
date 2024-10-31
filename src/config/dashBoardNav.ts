@@ -25,4 +25,9 @@ export const dashboardNav: NavItem[] = [
     label: "Review & Edit",
     icon: "/edit-schedule-icon.svg",
   },
+  {
+    href: "/access/help",
+    label: "Help",
+    icon: "/help-icon.svg",
+  },
 ];
