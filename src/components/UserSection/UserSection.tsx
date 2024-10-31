@@ -9,7 +9,7 @@ interface UserSectionProps {
 
 const UserSection: React.FC<UserSectionProps> = ({ user, signOutUser }) => {
   return (
-    <div className="flex items-center justify-between p-4 bg-[var(--user-section-bg-color)] border-b border-gray-300 shadow-md">
+    <div className="flex items-center justify-between p-2 bg-[var(--user-section-bg-color)] border-b border-gray-300 shadow-md">
       <div className="flex items-center space-x-4">
         <Image
           src={user.photoURL || "/user-icon.svg"}
