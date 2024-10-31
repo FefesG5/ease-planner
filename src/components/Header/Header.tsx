@@ -40,7 +40,7 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`${poppins.className} flex items-center justify-between py-6 px-6 shadow-md bg-[var(--header-bg-color)]`}
+      className={`${poppins.className} flex items-center justify-between py-5 px-5 shadow-md bg-[var(--header-bg-color)]`}
     >
       {/* Logo Container */}
       <div>
