@@ -29,6 +29,7 @@ const DashboardLayout = ({
                 <Link
                   href={item.href}
                   className="flex items-center justify-center md:justify-start text-lg p-2 rounded text-[color:var(--nav-text-color)] hover:bg-[var(--nav-hover-bg-color)] hover:text-[var(--nav-text-hover-color)]"
+                  title={item.label}
                 >
                   {item.icon && (
                     <Image
