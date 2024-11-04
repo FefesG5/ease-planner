@@ -21,6 +21,7 @@
   --user-section-bg-color: #f2efe3;
   --error-message-text-color: #d32f2f;
   --spinnner-border-left-color: #09f;
+  --schedule-list-bg-color: #f6f2e7;
 }
 
 [data-theme="dark"] {
@@ -41,6 +42,7 @@
 
   --user-section-bg-color: #2a3e50;
   --error-message-text-color: #d74444;
+  --schedule-list-bg-color: #1f3a56;
 }
 
 body {
