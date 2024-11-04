@@ -18,8 +18,8 @@ function Schedule() {
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
     null,
   );
-  const [checkedSchedule, setCheckedSchedule] = useState<string | null>(null); // Track the selected file with a checkbox
-  const [isMobilePreviewOpen, setIsMobilePreviewOpen] = useState(false); // State for mobile preview
+  const [checkedSchedule, setCheckedSchedule] = useState<string | null>(null);
+  const [isMobilePreviewOpen, setIsMobilePreviewOpen] = useState(false);
 
   // States to store selected filter values for year and month
   const [filterYear, setFilterYear] = useState<string | null>(null);
@@ -82,16 +82,16 @@ function Schedule() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row lg:flex-1 p-4 space-y-4 lg:space-y-0 lg:space-x-8 min-w-0">
+    <div className="flex flex-col lg:flex-row lg:flex-1 p-2 space-y-2 lg:space-y-0 lg:space-x-6 min-w-0">
       {/* Left Section - Filters and File List */}
-      <div className="lg:w-1/3 w-full space-y-6 text-[color:var(--body-text-color)] lg:flex-shrink-0">
-        <h1 className="text-3xl font-bold mb-4 text-center lg:text-left">
-          Available Working Schedules
+      <div className="lg:w-1/4 w-full space-y-4 p-4 overflow-auto lg:overflow-hidden text-[color:var(--body-text-color)] lg:flex-shrink-0 bg-[var(--user-section-bg-color)] border border-[var(--sidebar-border-color)] shadow-sm rounded-lg">
+        <h1 className="text-xl font-semibold mb-1 text-center lg:text-left">
+          Available Schedules
         </h1>
         {/* Filters */}
-        <div className="space-y-2">
+        <div className="space-y-1">
           <select
-            className="form-select w-full p-2 rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+            className="form-select w-full p-1 text-sm rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
             value={filterYear || ""}
             onChange={(e) => setFilterYear(e.target.value || null)}
           >
@@ -104,7 +104,7 @@ function Schedule() {
           </select>
 
           <select
-            className="form-select w-full p-2 rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+            className="form-select w-full p-1 text-sm rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
             value={filterMonth || ""}
             onChange={(e) => setFilterMonth(e.target.value || null)}
           >
@@ -118,24 +118,22 @@ function Schedule() {
         </div>
 
         {/* Schedule List */}
-        <ul className="space-y-4 overflow-y-auto lg:h-auto h-96">
+        <ul className="space-y-1 overflow-y-auto lg:h-80 h-64">
           {filteredSchedules.map((schedule) => (
             <li
               key={schedule.id}
-              className="p-4 border rounded-lg shadow-md hover:shadow-lg cursor-pointer flex justify-between items-center bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]"
+              className="p-2 border rounded-md shadow-sm hover:shadow-md cursor-pointer flex justify-between items-center bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]"
             >
               <div
-                className="flex items-center space-x-4"
+                className="flex items-center space-x-2"
                 onClick={() => handleScheduleSelect(schedule)}
               >
-                <span className="text-2xl text-[color:var(--body-text-color)]">
+                <span className="text-lg text-[color:var(--body-text-color)]">
                   📄
                 </span>
-                <div>
-                  <p className="font-medium text-lg text-[color:var(--body-text-color)]">
-                    {schedule.name}
-                  </p>
-                  <p className="text-sm text-[color:var(--body-text-color)]">
+                <div className="text-xs">
+                  <p className="font-medium">{schedule.name}</p>
+                  <p className="text-xs">
                     {schedule.month} {schedule.year}
                   </p>
                 </div>
@@ -144,7 +142,7 @@ function Schedule() {
                 type="checkbox"
                 checked={checkedSchedule === schedule.id}
                 onChange={() => handleCheckboxChange(schedule.id)}
-                className="form-checkbox h-5 w-5 text-blue-500 border-[var(--sidebar-border-color)]"
+                className="form-checkbox h-3 w-3 text-blue-500 border-[var(--sidebar-border-color)]"
               />
             </li>
           ))}
@@ -152,7 +150,7 @@ function Schedule() {
 
         {/* Generate Button */}
         <button
-          className="mt-4 w-full bg-[var(--signin-btn-bg-color)] text-white p-2 rounded-md hover:bg-blue-600"
+          className="mt-2 w-full bg-[var(--signin-btn-bg-color)] text-white p-1 rounded-md text-sm hover:bg-blue-600"
           disabled={!checkedSchedule}
         >
           Generate
@@ -161,14 +159,14 @@ function Schedule() {
 
       {/* Right Section (Preview) for Desktop */}
       {selectedSchedule && (
-        <div className="hidden lg:block lg:w-2/3">
-          <div className="sticky top-0 border rounded-lg p-4 shadow-lg bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
-            <h2 className="text-2xl font-semibold mb-4 text-[color:var(--body-text-color)]">
+        <div className="flex-grow lg:w-3/4">
+          <div className="border rounded-md p-2 shadow-md bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)] h-[calc(100vh-120px)] overflow-auto">
+            <h2 className="text-lg font-semibold mb-1 text-[var(--body-text-color)]">
               Preview: {selectedSchedule.name}
             </h2>
             <iframe
               src={selectedSchedule.signedUrl}
-              className="w-full h-96 border rounded-lg"
+              className="w-full h-full border rounded-md"
               title={`Preview of ${selectedSchedule.name}`}
             ></iframe>
           </div>
@@ -177,9 +175,9 @@ function Schedule() {
 
       {/* Mobile Modal Preview */}
       {isMobilePreviewOpen && selectedSchedule && (
-        <div className="lg:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-4 overflow-y-auto border-[var(--sidebar-border-color)]">
+        <div className="lg:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-2 overflow-y-auto border-[var(--sidebar-border-color)]">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-[color:var(--body-text-color)]">
+            <h2 className="text-lg font-semibold text-[var(--body-text-color)]">
               Preview: {selectedSchedule.name}
             </h2>
             <button
@@ -189,10 +187,10 @@ function Schedule() {
               Close
             </button>
           </div>
-          <div className="mt-4">
+          <div className="mt-2">
             <iframe
               src={selectedSchedule.signedUrl}
-              className="w-full h-[75vh] border rounded-lg"
+              className="w-full h-[70vh] border rounded-md"
               title={`Preview of ${selectedSchedule.name}`}
             ></iframe>
           </div>
