@@ -82,71 +82,75 @@ function Schedule() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row lg:flex-1 p-2 space-y-2 lg:space-y-0 lg:space-x-6 min-w-0">
+    <div className="flex lg:flex-row flex-col lg:flex-1 p-2 space-y-2 lg:space-y-0 lg:space-x-6 min-w-0">
       {/* Left Section - Filters and File List */}
-      <div className="lg:w-1/4 w-full space-y-4 p-4 overflow-auto lg:overflow-hidden text-[color:var(--body-text-color)] lg:flex-shrink-0 bg-[var(--user-section-bg-color)] border border-[var(--sidebar-border-color)] shadow-sm rounded-lg">
-        <h1 className="text-xl font-semibold mb-1 text-center lg:text-left">
-          Available Schedules
-        </h1>
-        {/* Filters */}
-        <div className="space-y-1">
-          <select
-            className="form-select w-full p-1 text-sm rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
-            value={filterYear || ""}
-            onChange={(e) => setFilterYear(e.target.value || null)}
-          >
-            <option value="">Filter by Year</option>
-            {Array.from(new Set(schedules.map((s) => s.year))).map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className="form-select w-full p-1 text-sm rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
-            value={filterMonth || ""}
-            onChange={(e) => setFilterMonth(e.target.value || null)}
-          >
-            <option value="">Filter by Month</option>
-            {Array.from(new Set(schedules.map((s) => s.month))).map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Schedule List */}
-        <ul className="space-y-1 overflow-y-auto lg:h-80 h-64">
-          {filteredSchedules.map((schedule) => (
-            <li
-              key={schedule.id}
-              className="p-2 border rounded-md shadow-sm hover:shadow-md cursor-pointer flex justify-between items-center bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]"
+      <div className="lg:w-1/4 w-full flex flex-col justify-between min-h-[600px] p-4 overflow-hidden text-[color:var(--body-text-color)] lg:flex-shrink-0 bg-[var(--user-section-bg-color)] border border-[var(--sidebar-border-color)] shadow-sm rounded-lg">
+        <div className="space-y-4">
+          <h1 className="text-xl font-semibold mb-1 text-center lg:text-left">
+            Available Schedules
+          </h1>
+          {/* Filters */}
+          <div className="space-y-1">
+            <select
+              className="form-select w-full p-1 text-sm rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+              value={filterYear || ""}
+              onChange={(e) => setFilterYear(e.target.value || null)}
             >
-              <div
-                className="flex items-center space-x-2"
-                onClick={() => handleScheduleSelect(schedule)}
+              <option value="">Filter by Year</option>
+              {Array.from(new Set(schedules.map((s) => s.year))).map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="form-select w-full p-1 text-sm rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+              value={filterMonth || ""}
+              onChange={(e) => setFilterMonth(e.target.value || null)}
+            >
+              <option value="">Filter by Month</option>
+              {Array.from(new Set(schedules.map((s) => s.month))).map(
+                (month) => (
+                  <option key={month} value={month}>
+                    {month}
+                  </option>
+                ),
+              )}
+            </select>
+          </div>
+
+          {/* Schedule List */}
+          <ul className="space-y-1 overflow-y-auto lg:max-h-[300px] h-64">
+            {filteredSchedules.map((schedule) => (
+              <li
+                key={schedule.id}
+                className="p-2 border rounded-md shadow-sm hover:shadow-md cursor-pointer flex justify-between items-center bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]"
               >
-                <span className="text-lg text-[color:var(--body-text-color)]">
-                  📄
-                </span>
-                <div className="text-xs">
-                  <p className="font-medium">{schedule.name}</p>
-                  <p className="text-xs">
-                    {schedule.month} {schedule.year}
-                  </p>
+                <div
+                  className="flex items-center space-x-2"
+                  onClick={() => handleScheduleSelect(schedule)}
+                >
+                  <span className="text-lg text-[color:var(--body-text-color)]">
+                    📄
+                  </span>
+                  <div className="text-xs">
+                    <p className="font-medium">{schedule.name}</p>
+                    <p className="text-xs">
+                      {schedule.month} {schedule.year}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <input
-                type="checkbox"
-                checked={checkedSchedule === schedule.id}
-                onChange={() => handleCheckboxChange(schedule.id)}
-                className="form-checkbox h-3 w-3 text-blue-500 border-[var(--sidebar-border-color)]"
-              />
-            </li>
-          ))}
-        </ul>
+                <input
+                  type="checkbox"
+                  checked={checkedSchedule === schedule.id}
+                  onChange={() => handleCheckboxChange(schedule.id)}
+                  className="form-checkbox h-3 w-3 text-blue-500 border-[var(--sidebar-border-color)]"
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {/* Generate Button */}
         <button
@@ -160,13 +164,13 @@ function Schedule() {
       {/* Right Section (Preview) for Desktop */}
       {selectedSchedule && (
         <div className="flex-grow lg:w-3/4">
-          <div className="border rounded-md p-2 shadow-md bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)] h-[calc(100vh-120px)] overflow-auto">
+          <div className="border rounded-md p-2 shadow-md bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)] min-h-[600px] overflow-auto">
             <h2 className="text-lg font-semibold mb-1 text-[var(--body-text-color)]">
               Preview: {selectedSchedule.name}
             </h2>
             <iframe
               src={selectedSchedule.signedUrl}
-              className="w-full h-full border rounded-md"
+              className="w-full h-[500px] border rounded-md"
               title={`Preview of ${selectedSchedule.name}`}
             ></iframe>
           </div>
