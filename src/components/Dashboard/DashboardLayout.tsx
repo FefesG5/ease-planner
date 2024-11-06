@@ -47,9 +47,8 @@ const DashboardLayout = ({
           </ul>
         </nav>
 
-        <main className="flex-1 p-4 bg-[var(--main-content-bg-color)]">
-          {children}
-        </main>
+        {/* Main content area */}
+        <main className="flex-1 p-0 sm:p-4">{children}</main>
       </div>
     </div>
   );
