@@ -95,7 +95,7 @@ function Upload() {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md rounded-lg mt-4 bg-[var(--user-section-bg-color)]">
+    <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md mt-0 bg-[var(--user-section-bg-color)]">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[color:var(--body-text-color)]">
         Upload Files
       </h1>
@@ -105,7 +105,7 @@ function Upload() {
 
       <div className="flex flex-col items-center mb-4 w-full">
         <div
-          className={`w-full text-sm py-2 px-4 rounded-full font-semibold text-center cursor-pointer ${
+          className={`w-full text-sm py-2 px-4 font-semibold text-center cursor-pointer ${
             uploading
               ? "bg-[var(--sidebar-border-color)] text-gray-400 cursor-not-allowed"
               : "bg-blue-600 text-white hover:bg-blue-700"
@@ -143,7 +143,6 @@ function Upload() {
           disabled={uploading}
         >
           <option value="">Select Month</option>
-          {/* Map months */}
           {[
             "January",
             "February",
@@ -193,14 +192,14 @@ function Upload() {
 
       {message && (
         <div className="mt-4 h-20 w-full flex items-center justify-center transition-all duration-300">
-          <div className="p-3 text-center rounded-md text-sm sm:text-base bg-[var(--signin-container-bg-color)] text-[color:var(--body-text-color)]">
+          <div className="p-3 text-center text-sm sm:text-base bg-[var(--signin-container-bg-color)] text-[color:var(--body-text-color)]">
             {message}
           </div>
         </div>
       )}
 
       {signedUrl && (
-        <div className="mt-4 p-4 rounded-md border w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
+        <div className="mt-4 p-4 border w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
           <p className="mb-2 text-sm sm:text-base text-center text-[color:var(--body-text-color)]">
             Your file is ready!
           </p>
