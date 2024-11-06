@@ -125,7 +125,7 @@ function Schedule() {
             {filteredSchedules.map((schedule) => (
               <li
                 key={schedule.id}
-                className="p-2 border rounded-md shadow-sm hover:shadow-md cursor-pointer flex justify-between items-center bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]"
+                className="p-3 border rounded-lg shadow-md hover:shadow-lg cursor-pointer flex justify-between items-center bg-[var(--schedule-list-bg-color)] border-[var(--sidebar-border-color)] hover:bg-[var(--schedule-item-hover-bg-color)] transition-all duration-200 ease-in-out"
               >
                 <div
                   className="flex items-center space-x-2"
@@ -135,8 +135,10 @@ function Schedule() {
                     📄
                   </span>
                   <div className="text-xs">
-                    <p className="font-medium">{schedule.name}</p>
-                    <p className="text-xs">
+                    <p className="font-semibold text-[color:var(--body-text-color)]">
+                      {schedule.name}
+                    </p>
+                    <p className="text-[color:var(--body-text-color)]">
                       {schedule.month} {schedule.year}
                     </p>
                   </div>
