@@ -82,9 +82,9 @@ function Schedule() {
   }
 
   return (
-    <div className="flex lg:flex-row flex-col lg:flex-1 p-2 space-y-2 lg:space-y-0 lg:space-x-6 min-w-0">
+    <div className="flex lg:flex-row flex-col lg:flex-1 space-y-2 lg:space-y-0 lg:space-x-6 min-w-0 p-0 lg:p-4">
       {/* Left Section - Filters and File List */}
-      <div className="lg:w-1/4 w-full flex flex-col justify-between min-h-[600px] p-4 overflow-hidden text-[color:var(--body-text-color)] lg:flex-shrink-0 bg-[var(--user-section-bg-color)] border border-[var(--sidebar-border-color)] shadow-sm rounded-lg">
+      <div className="lg:w-1/4 w-full flex flex-col justify-between min-h-[600px] p-2 lg:p-4 text-[color:var(--body-text-color)] lg:flex-shrink-0 bg-[var(--user-section-bg-color)] border border-[var(--sidebar-border-color)] shadow-sm">
         <div className="space-y-4">
           <h1 className="text-xl font-semibold mb-1 text-center lg:text-left">
             Available Schedules
@@ -92,7 +92,7 @@ function Schedule() {
           {/* Filters */}
           <div className="space-y-1">
             <select
-              className="form-select w-full p-1 text-sm rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+              className="form-select w-full p-2 text-sm bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
               value={filterYear || ""}
               onChange={(e) => setFilterYear(e.target.value || null)}
             >
@@ -105,7 +105,7 @@ function Schedule() {
             </select>
 
             <select
-              className="form-select w-full p-1 text-sm rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+              className="form-select w-full p-2 text-sm bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
               value={filterMonth || ""}
               onChange={(e) => setFilterMonth(e.target.value || null)}
             >
@@ -125,7 +125,7 @@ function Schedule() {
             {filteredSchedules.map((schedule) => (
               <li
                 key={schedule.id}
-                className="p-3 border rounded-lg shadow-md hover:shadow-lg cursor-pointer flex justify-between items-center bg-[var(--schedule-list-bg-color)] border-[var(--sidebar-border-color)] hover:bg-[var(--schedule-item-hover-bg-color)] transition-all duration-200 ease-in-out"
+                className="p-3 border shadow-sm hover:shadow-md cursor-pointer flex justify-between items-center bg-[var(--schedule-list-bg-color)] border-[var(--sidebar-border-color)] hover:bg-[var(--schedule-item-hover-bg-color)] transition-all duration-200 ease-in-out"
               >
                 <div
                   className="flex items-center space-x-2"
@@ -147,7 +147,7 @@ function Schedule() {
                   type="checkbox"
                   checked={checkedSchedule === schedule.id}
                   onChange={() => handleCheckboxChange(schedule.id)}
-                  className="form-checkbox h-3 w-3 text-blue-500 border-[var(--sidebar-border-color)]"
+                  className="form-checkbox h-4 w-4 text-blue-500 border-[var(--sidebar-border-color)]"
                 />
               </li>
             ))}
@@ -156,7 +156,7 @@ function Schedule() {
 
         {/* Generate Button */}
         <button
-          className="mt-2 w-full bg-[var(--signin-btn-bg-color)] text-white p-1 rounded-md text-sm hover:bg-blue-600"
+          className="mt-4 w-full bg-[var(--signin-btn-bg-color)] text-white p-2 text-sm hover:bg-blue-600"
           disabled={!checkedSchedule}
         >
           Generate
@@ -166,13 +166,13 @@ function Schedule() {
       {/* Right Section (Preview) for Desktop */}
       {selectedSchedule && (
         <div className="flex-grow lg:w-3/4">
-          <div className="border rounded-md p-2 shadow-md bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)] min-h-[600px] overflow-auto">
-            <h2 className="text-lg font-semibold mb-1 text-[var(--body-text-color)]">
+          <div className="border lg:p-4 p-2 shadow-md bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)] min-h-[600px] overflow-auto">
+            <h2 className="text-lg font-semibold mb-3 text-[var(--body-text-color)]">
               Preview: {selectedSchedule.name}
             </h2>
             <iframe
               src={selectedSchedule.signedUrl}
-              className="w-full h-[500px] border rounded-md"
+              className="w-full h-[500px] border"
               title={`Preview of ${selectedSchedule.name}`}
             ></iframe>
           </div>
@@ -181,7 +181,7 @@ function Schedule() {
 
       {/* Mobile Modal Preview */}
       {isMobilePreviewOpen && selectedSchedule && (
-        <div className="lg:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-2 overflow-y-auto border-[var(--sidebar-border-color)]">
+        <div className="lg:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-0 overflow-y-auto border-[var(--sidebar-border-color)]">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold text-[var(--body-text-color)]">
               Preview: {selectedSchedule.name}
@@ -196,7 +196,7 @@ function Schedule() {
           <div className="mt-2">
             <iframe
               src={selectedSchedule.signedUrl}
-              className="w-full h-[70vh] border rounded-md"
+              className="w-full h-[70vh] border"
               title={`Preview of ${selectedSchedule.name}`}
             ></iframe>
           </div>
