@@ -82,11 +82,11 @@ function Schedule() {
   }
 
   return (
-    <div className="flex lg:flex-row flex-col lg:flex-1 space-y-2 lg:space-y-0 lg:space-x-6 min-w-0 p-0 lg:p-4">
+    <div className="flex xl:flex-row flex-col xl:flex-1 space-y-2 xl:space-y-0 xl:space-x-4 min-w-0 p-0 xl:p-4">
       {/* Left Section - Filters and File List */}
-      <div className="lg:w-1/4 w-full flex flex-col justify-between min-h-[600px] p-2 lg:p-4 text-[color:var(--body-text-color)] lg:flex-shrink-0 bg-[var(--user-section-bg-color)] border border-[var(--sidebar-border-color)] shadow-sm">
+      <div className="xl:w-[30%] w-full flex flex-col justify-between min-h-[600px] p-4 xl:p-4 text-[color:var(--body-text-color)] xl:flex-shrink-0 bg-[var(--user-section-bg-color)]">
         <div className="space-y-4">
-          <h1 className="text-xl font-semibold mb-1 text-center lg:text-left">
+          <h1 className="text-xl font-semibold mb-1 text-center xl:text-left">
             Available Schedules
           </h1>
           {/* Filters */}
@@ -121,7 +121,7 @@ function Schedule() {
           </div>
 
           {/* Schedule List */}
-          <ul className="space-y-1 overflow-y-auto lg:max-h-[300px] h-64">
+          <ul className="space-y-1 overflow-y-auto xl:max-h-[300px] h-64">
             {filteredSchedules.map((schedule) => (
               <li
                 key={schedule.id}
@@ -165,8 +165,8 @@ function Schedule() {
 
       {/* Right Section (Preview) for Desktop */}
       {selectedSchedule && (
-        <div className="flex-grow lg:w-3/4">
-          <div className="border lg:p-4 p-2 shadow-md bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)] min-h-[600px] overflow-auto">
+        <div className="flex-grow xl:w-[70%] hidden xl:block">
+          <div className="border xl:p-4 p-2 shadow-md bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)] min-h-[600px] overflow-auto">
             <h2 className="text-lg font-semibold mb-3 text-[var(--body-text-color)]">
               Preview: {selectedSchedule.name}
             </h2>
@@ -181,7 +181,7 @@ function Schedule() {
 
       {/* Mobile Modal Preview */}
       {isMobilePreviewOpen && selectedSchedule && (
-        <div className="lg:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-0 overflow-y-auto border-[var(--sidebar-border-color)]">
+        <div className="xl:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-0 overflow-y-auto border-[var(--sidebar-border-color)]">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold text-[var(--body-text-color)]">
               Preview: {selectedSchedule.name}
