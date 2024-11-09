@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
   getFirestore,
@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { app } from "../../firebase.config";
 import { useQuery } from "@tanstack/react-query";
+import Router from "next/router";
 
 interface AuthContextType {
   user: User | null;
@@ -56,6 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const signOutUser = async (): Promise<void> => {
     await auth.signOut();
     setUser(null);
+    Router.push("/access");
   };
 
   return (
