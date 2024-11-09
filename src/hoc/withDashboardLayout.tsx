@@ -1,6 +1,7 @@
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
 import Spinner from "@/components/Spinner/Spinner";
+import Router from "next/router";
 
 const withDashboardLayout = <P extends object>(
   Component: React.ComponentType<P>,
@@ -13,11 +14,8 @@ const withDashboardLayout = <P extends object>(
     }
 
     if (!user) {
-      return (
-        <div className="flex items-center justify-center min-h-screen text-center text-[color:var(--body-text-color)]">
-          <p className="text-lg">You must be logged in to access this page.</p>
-        </div>
-      );
+      Router.push("/access"); // Redirect to login page if not logged in
+      return null; // Return nothing temporarily while redirecting
     }
 
     if (!isAuthorized) {
