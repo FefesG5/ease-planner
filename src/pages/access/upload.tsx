@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, useRef } from "react";
-import withDashboardLayout from "@/hoc/withDashboardLayout"; // Correct import path to the HOC
+import withDashboardLayout from "@/hoc/withDashboardLayout";
 
 function Upload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -199,20 +199,23 @@ function Upload() {
       )}
 
       {signedUrl && (
-        <div className="mt-4 p-4 border w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
+        <div className="mt-4 p-4 border w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)] rounded-md">
           <p className="mb-2 text-sm sm:text-base text-center text-[color:var(--body-text-color)]">
             Your file is ready!
           </p>
-          <div className="flex flex-col items-center">
-            <p className="text-xs sm:text-sm break-all w-full mb-2 text-left p-2 rounded-md bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)]">
-              {signedUrl}
-            </p>
-            <button
-              onClick={handleCopyUrl}
-              className="py-1 px-4 text-sm font-medium text-white rounded-md bg-[var(--signin-btn-bg-color)] cursor-pointer hover:bg-blue-600"
-            >
-              Copy URL
-            </button>
+          <div className="flex flex-col items-center w-full">
+            {/* Alias for the URL with full copy button */}
+            <div className="flex items-center justify-between w-full p-2 bg-[var(--signin-input-bg-color)] rounded-md">
+              <p className="text-xs sm:text-sm text-[color:var(--body-text-color)]">
+                File Link - Click Copy
+              </p>
+              <button
+                onClick={handleCopyUrl}
+                className="py-1 px-3 text-xs font-medium text-white rounded-md bg-[var(--signin-btn-bg-color)] hover:bg-blue-600"
+              >
+                Copy
+              </button>
+            </div>
             {copyMessage && (
               <p className="mt-2 text-xs sm:text-sm text-center text-[color:var(--body-text-color)]">
                 {copyMessage}
