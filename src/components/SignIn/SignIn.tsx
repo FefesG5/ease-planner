@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useState } from "react";
 import { app } from "../../../firebase.config";
+import { playfairDisplay } from "@/app/ui/fonts";
 
 const SignIn = () => {
   const [message, setMessage] = useState("");
@@ -23,7 +24,9 @@ const SignIn = () => {
 
   return (
     <div className="text-center p-8 bg-[var(--signin-container-bg-color)] max-w-full mx-auto sm:max-w-xs md:max-w-md lg:max-w-lg">
-      <h2 className="text-2xl font-bold mb-4">Welcome to Ease Planner</h2>
+      <h2 className={`text-2xl font-bold mb-4 ${playfairDisplay.className}`}>
+        Welcome to Ease Planner
+      </h2>
       <p className="mb-6 text-lg text-[var(--body-text-color)]">
         Please sign in to continue. Use your Google account to get started.
       </p>
