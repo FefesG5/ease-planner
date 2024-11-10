@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
-import { poppins } from "@/app/ui/fonts";
+import { poppins, playfairDisplay } from "@/app/ui/fonts";
 
 export default function RootLayout({
   children,
@@ -16,7 +16,7 @@ export default function RootLayout({
         backgroundSize: "cover",
         backgroundPosition: "50% 50%",
         backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed", // Prevents the zoom effect on the video uploads page
+        backgroundAttachment: "fixed",
         animation: "backgroundMove 70s ease-in-out infinite",
       }}
     >
