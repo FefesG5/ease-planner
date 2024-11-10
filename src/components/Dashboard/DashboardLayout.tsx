@@ -48,7 +48,7 @@ const DashboardLayout = ({
         </nav>
 
         {/* Main content area */}
-        <main className="flex-1 p-0 sm:p-4">{children}</main>
+        <main className="flex-1 p-0">{children}</main>
       </div>
     </div>
   );
