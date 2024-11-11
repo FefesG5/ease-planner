@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import Spinner from "@/components/Spinner/Spinner";
 
@@ -12,9 +13,6 @@ interface Schedule {
 }
 
 function Schedule() {
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
     null,
   );
@@ -25,34 +23,29 @@ function Schedule() {
   const [filterYear, setFilterYear] = useState<string | null>(null);
   const [filterMonth, setFilterMonth] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchSchedules = async () => {
-      try {
-        const response = await fetch("/api/schedules/monthlyWorkingSchedules");
-        if (!response.ok) {
-          throw new Error("Failed to fetch schedules");
-        }
-        const data: Schedule[] = await response.json();
-        setSchedules(data);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unknown error occurred");
-        }
-      } finally {
-        setIsLoading(false);
+  // Using React Query to fetch schedules
+  const {
+    data: schedules = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Schedule[], Error>({
+    queryKey: ["schedules"],
+    queryFn: async (): Promise<Schedule[]> => {
+      const response = await fetch("/api/schedules/monthlyWorkingSchedules");
+      if (!response.ok) {
+        throw new Error("Failed to fetch schedules");
       }
-    };
-
-    fetchSchedules();
-  }, []);
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   // Filter schedules based on selected year and month
   const filteredSchedules = schedules.filter((schedule) => {
-    if (filterYear && schedule.year !== filterYear) return false;
-    if (filterMonth && schedule.month !== filterMonth) return false;
-    return true;
+    const matchesYear = !filterYear || schedule.year === filterYear;
+    const matchesMonth = !filterMonth || schedule.month === filterMonth;
+    return matchesYear && matchesMonth;
   });
 
   // Handle selecting a schedule to preview
@@ -77,8 +70,8 @@ function Schedule() {
     return <Spinner />;
   }
 
-  if (error) {
-    return <p className="text-center text-red-500">{error}</p>;
+  if (isError) {
+    return <p className="text-center text-red-500">{error?.message}</p>;
   }
 
   return (
@@ -94,7 +87,9 @@ function Schedule() {
             <select
               className="form-select w-full p-2 text-sm bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
               value={filterYear || ""}
-              onChange={(e) => setFilterYear(e.target.value || null)}
+              onChange={(e) =>
+                setFilterYear(e.target.value !== "" ? e.target.value : null)
+              }
             >
               <option value="">Filter by Year</option>
               {Array.from(new Set(schedules.map((s) => s.year))).map((year) => (
@@ -106,7 +101,7 @@ function Schedule() {
 
             <select
               className="form-select w-full p-2 text-sm bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
-              value={filterMonth || ""}
+              value={filterMonth ?? ""}
               onChange={(e) => setFilterMonth(e.target.value || null)}
             >
               <option value="">Filter by Month</option>
@@ -122,7 +117,7 @@ function Schedule() {
 
           {/* Schedule List */}
           <ul className="space-y-1 overflow-y-auto xl:max-h-[300px] h-64">
-            {filteredSchedules.map((schedule) => (
+            {filteredSchedules.map((schedule: Schedule) => (
               <li
                 key={schedule.id}
                 className="p-3 border shadow-sm hover:shadow-md cursor-pointer flex justify-between items-center bg-[var(--schedule-list-bg-color)] border-[var(--sidebar-border-color)] hover:bg-[var(--schedule-item-hover-bg-color)] transition-all duration-200 ease-in-out"
