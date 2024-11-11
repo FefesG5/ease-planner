@@ -131,10 +131,10 @@ function Schedule() {
                   </span>
                   <div className="text-xs">
                     <p className="font-semibold text-[color:var(--body-text-color)]">
-                      {schedule.name}
-                    </p>
-                    <p className="text-[color:var(--body-text-color)]">
                       {schedule.month} {schedule.year}
+                    </p>
+                    <p className="italic text-[color:var(--body-text-color)]">
+                      {schedule.name}
                     </p>
                   </div>
                 </div>
