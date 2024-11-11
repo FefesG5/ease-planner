@@ -170,7 +170,7 @@ function Upload() {
           disabled={uploading}
         >
           <option value="">Select Year</option>
-          {[2023, 2024, 2025].map((year) => (
+          {[2024, 2025].map((year) => (
             <option key={year} value={year}>
               {year}
             </option>
