@@ -176,10 +176,10 @@ function Schedule() {
 
       {/* Mobile Modal Preview */}
       {isMobilePreviewOpen && selectedSchedule && (
-        <div className="xl:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-0 overflow-y-auto border-[var(--sidebar-border-color)]">
-          <div className="flex justify-between items-center">
+        <div className="xl:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-4 overflow-y-auto">
+          <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-[var(--body-text-color)]">
-              Preview: {selectedSchedule.name}
+              Preview: {selectedSchedule.month} {selectedSchedule.year}
             </h2>
             <button
               onClick={closeMobilePreview}
@@ -191,7 +191,7 @@ function Schedule() {
           <div className="mt-2">
             <iframe
               src={selectedSchedule.signedUrl}
-              className="w-full h-[70vh] border"
+              className="w-full h-[80vh]"
               title={`Preview of ${selectedSchedule.name}`}
             ></iframe>
           </div>
