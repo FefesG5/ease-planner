@@ -1,5 +1,7 @@
 import { useState, ChangeEvent, useRef } from "react";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
+import { getAuth } from "firebase/auth"; // Firebase authentication
+import { useAuthContext } from "@/contexts/AuthContext"; // Custom hook for Auth context (if needed)
 
 function Upload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -13,6 +15,7 @@ function Upload() {
   const [year, setYear] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuthContext(); // Ensure user is authenticated
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -48,8 +51,21 @@ function Upload() {
     formData.append("year", year);
 
     try {
+      // Get Firebase auth token
+      const auth = getAuth();
+      const token = await auth.currentUser?.getIdToken();
+
+      if (!token) {
+        setMessage("You must be logged in to upload files.");
+        setUploading(false);
+        return;
+      }
+
       const response = await fetch("/api/uploads/uploadFile", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -204,7 +220,6 @@ function Upload() {
             Your file is ready!
           </p>
           <div className="flex flex-col items-center w-full">
-            {/* Alias for the URL with full copy button */}
             <div className="flex items-center justify-between w-full p-2 bg-[var(--signin-input-bg-color)] rounded-md">
               <p className="text-xs sm:text-sm text-[color:var(--body-text-color)]">
                 File Link - Click Copy
