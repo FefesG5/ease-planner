@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import Spinner from "@/components/Spinner/Spinner";
+import { getAuth } from "firebase/auth";
 
 // Define the Schedule interface
 interface Schedule {
@@ -32,13 +33,26 @@ function Schedule() {
   } = useQuery<Schedule[], Error>({
     queryKey: ["schedules"],
     queryFn: async (): Promise<Schedule[]> => {
-      const response = await fetch("/api/schedules/monthlyWorkingSchedules");
+      const auth = getAuth();
+      const token = await auth.currentUser?.getIdToken();
+
+      if (!token) {
+        throw new Error("User is not authenticated.");
+      }
+
+      const response = await fetch("/api/schedules/monthlyWorkingSchedules", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (!response.ok) {
         throw new Error("Failed to fetch schedules");
       }
       return response.json();
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
   // Filter schedules based on selected year and month
