@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { storage, firestore } from "../../../../firebaseAdmin.config"; // Adjust the path to your firebaseAdmin.config.ts
+import { storage, firestore } from "../../../../firebaseAdmin.config";
 import { GetSignedUrlConfig } from "@google-cloud/storage";
+import { getAuth } from "firebase-admin/auth";
 
 interface ScheduleData {
   fileType: string;
@@ -20,32 +21,30 @@ async function fetchMonthlyWorkingSchedules() {
 
     // Map the documents to an array of objects and generate signed URLs for each file
     const schedules = await Promise.all(
-      snapshot.docs.map(
-        async (doc: FirebaseFirestore.QueryDocumentSnapshot) => {
-          const data = doc.data() as ScheduleData; // Explicit typing of document data
-          const filePath = data.storagePath; // 'gs://...' path from Firestore
+      snapshot.docs.map(async (doc) => {
+        const data = doc.data() as ScheduleData; // Explicit typing of document data
+        const filePath = data.storagePath; // 'gs://...' path from Firestore
 
-          // Generate a signed URL (temporary URL) for the file
-          const bucket = storage.bucket(); // Get reference to the storage bucket
-          const file = bucket.file(
-            filePath.replace("gs://ease-planner-33986.appspot.com/", ""),
-          ); // Replace 'gs://' with the correct path
+        // Generate a signed URL (temporary URL) for the file
+        const bucket = storage.bucket(); // Get reference to the storage bucket
+        const file = bucket.file(
+          filePath.replace("gs://ease-planner-33986.appspot.com/", ""),
+        ); // Replace 'gs://' with the correct path
 
-          const options: GetSignedUrlConfig = {
-            action: "read",
-            expires: Date.now() + 60 * 60 * 1000, // URL expires in 1 hour
-          };
+        const options: GetSignedUrlConfig = {
+          action: "read",
+          expires: Date.now() + 60 * 60 * 1000, // URL expires in 1 hour
+        };
 
-          const [signedUrl] = await file.getSignedUrl(options);
+        const [signedUrl] = await file.getSignedUrl(options);
 
-          // Return the document data along with the signed URL (without logging)
-          return {
-            id: doc.id,
-            ...data,
-            signedUrl, // This will be the usable URL
-          };
-        },
-      ),
+        // Return the document data along with the signed URL
+        return {
+          id: doc.id,
+          ...data,
+          signedUrl, // This will be the usable URL
+        };
+      }),
     );
 
     return schedules;
@@ -61,6 +60,23 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method === "GET") {
+    const authHeader = req.headers.authorization;
+
+    // Check if Authorization header is present
+    if (!authHeader) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+      // Verify the token using Firebase Admin SDK
+      await getAuth().verifyIdToken(token);
+    } catch (error) {
+      console.error("Invalid or expired token:", error);
+      return res.status(401).json({ error: "Invalid or expired token" });
+    }
+
     try {
       const schedules = await fetchMonthlyWorkingSchedules();
       return res.status(200).json(schedules);
