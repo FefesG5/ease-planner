@@ -11,8 +11,13 @@ export const dashboardNav: NavItem[] = [
     icon: "/dashboard-icon.svg",
   },
   {
+    href: "/access/parse-schedule",
+    label: "Parse Schedule",
+    icon: "/parse-schedule-icon.svg",
+  },
+  {
     href: "/access/upload",
-    label: "Upload Files",
+    label: "Upload File",
     icon: "/upload-file-icon.svg",
   },
   {
