@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import Spinner from "@/components/Spinner/Spinner";
-import { getAuth } from "firebase/auth";
+import { useAuthContext } from "@/contexts/AuthContext"; // Import useAuthContext to get the user
 
 // Define the Schedule interface
 interface Schedule {
@@ -24,6 +24,8 @@ function Schedule() {
   const [filterYear, setFilterYear] = useState<string | null>(null);
   const [filterMonth, setFilterMonth] = useState<string | null>(null);
 
+  const { user } = useAuthContext(); // Get the authenticated user from context
+
   // Using React Query to fetch schedules
   const {
     data: schedules = [],
@@ -33,12 +35,11 @@ function Schedule() {
   } = useQuery<Schedule[], Error>({
     queryKey: ["schedules"],
     queryFn: async (): Promise<Schedule[]> => {
-      const auth = getAuth();
-      const token = await auth.currentUser?.getIdToken();
-
-      if (!token) {
-        throw new Error("User is not authenticated.");
+      if (!user) {
+        throw new Error("User not authenticated");
       }
+
+      const token = await user.getIdToken();
 
       const response = await fetch("/api/schedules/monthlyWorkingSchedules", {
         method: "GET",
