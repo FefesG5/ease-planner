@@ -1,7 +1,6 @@
 import { useState, ChangeEvent, useRef } from "react";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
-import { getAuth } from "firebase/auth"; // Firebase authentication
-import { useAuthContext } from "@/contexts/AuthContext"; // Custom hook for Auth context (if needed)
+import { useAuthContext } from "@/contexts/AuthContext";
 
 function Upload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -51,15 +50,14 @@ function Upload() {
     formData.append("year", year);
 
     try {
-      // Get Firebase auth token
-      const auth = getAuth();
-      const token = await auth.currentUser?.getIdToken();
-
-      if (!token) {
+      // Get token from the user in context
+      if (!user) {
         setMessage("You must be logged in to upload files.");
         setUploading(false);
         return;
       }
+
+      const token = await user.getIdToken();
 
       const response = await fetch("/api/uploads/uploadFile", {
         method: "POST",
