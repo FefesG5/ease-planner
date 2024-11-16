@@ -16,7 +16,7 @@ interface ScheduleData {
 // Function to fetch monthly working schedules from Firestore
 async function fetchMonthlyWorkingSchedules() {
   try {
-    const collectionRef = firestore.collection("monthlyWorkingSchedules");
+    const collectionRef = firestore.collection("monthlyWorkingSchedulesPDFs");
     const snapshot = await collectionRef.get();
 
     // Map the documents to an array of objects and generate signed URLs for each file
