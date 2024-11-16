@@ -14,7 +14,7 @@ interface Schedule {
 function ParseSchedule() {
   const [weeklyData, setWeeklyData] = useState<string>("");
   const [weeksData, setWeeksData] = useState<Schedule[][]>([]);
-  const [ariFullSchedule, setAriFullSchedule] = useState<Schedule[]>([]);
+  const [fullSchedule, setFullSchedule] = useState<Schedule[]>([]);
   const [message, setMessage] = useState<string>("");
 
   // Function to extract all schedules from the parsed data
@@ -143,8 +143,8 @@ function ParseSchedule() {
 
   // Handle generating the full schedule
   const handleGenerateFullSchedule = () => {
-    const fullSchedule = weeksData.flat();
-    setAriFullSchedule(fullSchedule);
+    const fullScheduleData = weeksData.flat();
+    setFullSchedule(fullScheduleData);
     setMessage("Full schedule generated successfully!");
   };
 
@@ -198,9 +198,9 @@ function ParseSchedule() {
 
       <div className="mt-6">
         <h2>Teachers&apos; Full Schedule:</h2>
-        {ariFullSchedule.length > 0 ? (
+        {fullSchedule.length > 0 ? (
           <pre className="bg-gray-100 p-4 rounded-md my-4">
-            {JSON.stringify(ariFullSchedule, null, 2)}
+            {JSON.stringify(fullSchedule, null, 2)}
           </pre>
         ) : (
           <p>
@@ -209,7 +209,7 @@ function ParseSchedule() {
         )}
       </div>
 
-      {ariFullSchedule.length > 0 && (
+      {fullSchedule.length > 0 && (
         <button
           className="w-full py-2 px-4 rounded-md text-white bg-blue-500 hover:bg-blue-600 mt-4"
           onClick={() =>
