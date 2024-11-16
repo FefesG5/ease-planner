@@ -17,75 +17,78 @@ function ParseSchedule() {
   const [ariFullSchedule, setAriFullSchedule] = useState<Schedule[]>([]);
   const [message, setMessage] = useState<string>("");
 
-  // Function to extract Ari's schedule from the parsed data
-  const extractAriSchedule = (data: string[][]): Schedule[] => {
-    const ariSchedules: Schedule[] = [];
-    const daysRowIndex = 1; // The second row contains the days
-    const datesRowIndex = 0; // The first row contains the dates
-    const ariRowIndex1 = 5; // First row for Ari's schedule
-    const ariRowIndex2 = 6; // Second row for Ari's schedule
+  // Function to extract all schedules from the parsed data
+  const extractSchedules = (data: string[][]): Schedule[] => {
+    const schedules: Schedule[] = [];
+    let dates: string[] = [];
+    let days: string[] = [];
+    const teacherNames = [
+      "Ari",
+      "Chai",
+      "Rachel",
+      "Itxy",
+      "Yuri",
+      "Zoe",
+      "Atsumi",
+      "Michelle",
+      "Sora",
+      "Ayaka",
+      "Yoshi K",
+      "Haruki",
+      "Sota",
+      "Yuki",
+      "Haruto",
+      "Mamiko",
+    ];
 
-    const dates = data[datesRowIndex];
-    const days = data[daysRowIndex];
-    const ariRow1 = data[ariRowIndex1];
-    const ariRow2 = data[ariRowIndex2];
-
-    // Iterate through both rows to extract Ari's shifts
-    for (let i = 0; i < ariRow1.length; i++) {
-      // Handle row 5 (ariRow1)
-      if (
-        ariRow1[i] &&
-        ariRow1[i].trim() !== "" &&
-        ariRow1[i] !== "Office" &&
-        ariRow1[i] !== "NT" &&
-        ariRow1[i] !== "Ari(F)" &&
-        ariRow1[i] !== "M"
-      ) {
-        // Ensure there is a valid date and day at the same index
-        if (
-          dates[i] &&
-          dates[i].trim() !== "" &&
-          days[i] &&
-          days[i].trim() !== ""
-        ) {
-          ariSchedules.push({
-            Employee: "Ari(F)",
-            Date: dates[i].trim(),
-            Day: days[i].trim(),
-            School: "M", // Assume M is used for School based on the row label, you can adjust if needed
-            Shift: ariRow1[i].trim(),
-          });
-        }
+    // Step 1: Extract dates and days rows
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
+      if (i === 0) {
+        // Assuming first row contains dates
+        dates = row;
+      } else if (i === 1) {
+        // Assuming second row contains days
+        days = row;
       }
+    }
 
-      // Handle row 6 (ariRow2)
-      if (
-        ariRow2[i] &&
-        ariRow2[i].trim() !== "" &&
-        ariRow2[i] !== "Office" &&
-        ariRow2[i] !== "NT" &&
-        ariRow2[i] !== "T"
-      ) {
-        // Ensure there is a valid date and day at the same index
-        if (
-          dates[i] &&
-          dates[i].trim() !== "" &&
-          days[i] &&
-          days[i].trim() !== ""
-        ) {
-          ariSchedules.push({
-            Employee: "Ari(F)",
-            Date: dates[i].trim(),
-            Day: days[i].trim(),
-            School: "T", // Assume T is used for School based on the row label, you can adjust if needed
-            Shift: ariRow2[i].trim(),
-          });
+    // Step 2: Iterate through rows starting from the 6th row to find teachers and extract schedules
+    for (let i = 5; i < data.length - 1; i++) {
+      const currentRow = data[i];
+      const nextRow = data[i + 1];
+
+      // Step 3: Identify teacher names in the second column
+      if (teacherNames.some((name) => currentRow[1]?.trim().includes(name))) {
+        const teacherName = currentRow[1]?.trim();
+        const schoolM = currentRow[2]?.trim() === "M" ? "M" : "";
+        const schoolT = nextRow[2]?.trim() === "T" ? "T" : "";
+
+        // Step 4: Extract shifts for the current teacher
+        for (let j = 3; j < currentRow.length; j++) {
+          if (currentRow[j] && currentRow[j].includes(":")) {
+            schedules.push({
+              Employee: teacherName,
+              Date: dates[j] || "",
+              Day: days[j] || "",
+              School: schoolM,
+              Shift: currentRow[j].trim(),
+            });
+          }
+          if (nextRow[j] && nextRow[j].includes(":")) {
+            schedules.push({
+              Employee: teacherName,
+              Date: dates[j] || "",
+              Day: days[j] || "",
+              School: schoolT,
+              Shift: nextRow[j].trim(),
+            });
+          }
         }
       }
     }
 
-    console.log("Extracted Ari Schedules:", ariSchedules);
-    return ariSchedules;
+    return schedules;
   };
 
   // Handle text area change for weekly data input
@@ -116,13 +119,13 @@ function ParseSchedule() {
           } else {
             const data: string[][] = result.data;
             console.log("Parsed Data:", data);
-            const extractedSchedule = extractAriSchedule(data);
+            const extractedSchedule = extractSchedules(data);
             if (extractedSchedule.length > 0) {
               setWeeksData((prevWeeks) => [...prevWeeks, extractedSchedule]);
               setWeeklyData(""); // Clear weekly data after saving
               setMessage("Week added successfully!");
             } else {
-              setMessage("No schedule found for Ari in the provided week.");
+              setMessage("No valid schedule found in the provided week.");
             }
           }
         },
@@ -147,7 +150,7 @@ function ParseSchedule() {
   return (
     <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md mt-0 bg-[var(--user-section-bg-color)]">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[color:var(--body-text-color)]">
-        Parse Weekly Schedule for Ari
+        Parse Weekly Schedule for Teachers
       </h1>
       <textarea
         value={weeklyData}
@@ -169,12 +172,12 @@ function ParseSchedule() {
           weeksData.map((week, index) => (
             <div key={index} className="bg-gray-100 p-4 rounded-md my-4">
               <h3 className="font-semibold">
-                Week {index + 1} Schedule for Ari:
+                Week {index + 1} Schedule for Teachers:
               </h3>
               {week.length > 0 ? (
                 <pre className="text-sm">{JSON.stringify(week, null, 2)}</pre>
               ) : (
-                <p>No schedule found for Ari in this week.</p>
+                <p>No valid schedule found for this week.</p>
               )}
             </div>
           ))
@@ -193,7 +196,7 @@ function ParseSchedule() {
       )}
 
       <div className="mt-6">
-      <h2>Ari&apos;s Full Schedule:</h2>
+        <h2>Teachers&apos; Full Schedule:</h2>
         {ariFullSchedule.length > 0 ? (
           <pre className="bg-gray-100 p-4 rounded-md my-4">
             {JSON.stringify(ariFullSchedule, null, 2)}
