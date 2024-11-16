@@ -36,6 +36,7 @@ function ParseSchedule() {
       "Yoshi K",
       "Haruki",
       "Sota",
+      "Shivani",
       "Yuki",
       "Haruto",
       "Mamiko",
