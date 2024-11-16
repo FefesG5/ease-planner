@@ -126,8 +126,8 @@ export default async function handler(
       // Determine the Firestore collection
       const collectionName =
         fileType === "shukkimboTemplate"
-          ? "monthlyShukkimboTemplates"
-          : "monthlyWorkingSchedules";
+          ? "monthlyShukkimboTemplatesPDFs"
+          : "monthlyWorkingSchedulesPDFs";
 
       // Save metadata to Firestore for future reference
       const docRef = firestore.collection(collectionName).doc(uniqueDocId);
