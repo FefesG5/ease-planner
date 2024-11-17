@@ -13,13 +13,29 @@ const MonthYearSelect: React.FC<MonthYearSelectProps> = ({
   onYearChange,
   disabled = false,
 }) => {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
   const selectClasses =
     "w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base";
 
   return (
     <div className="flex flex-col gap-4">
+      {/* Month Select */}
       <select
-        value={month ?? ""}
+        value={month !== null ? month.toString() : ""}
         onChange={(e) => {
           const value = e.target.value ? Number(e.target.value) : null;
           onMonthChange(value);
@@ -28,28 +44,16 @@ const MonthYearSelect: React.FC<MonthYearSelectProps> = ({
         disabled={disabled}
       >
         <option value="">Select Month</option>
-        {[
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ].map((month, index) => (
+        {monthNames.map((monthName, index) => (
           <option key={index} value={index + 1}>
-            {month}
+            {monthName}
           </option>
         ))}
       </select>
 
+      {/* Year Select */}
       <select
-        value={year ?? ""}
+        value={year !== null ? year.toString() : ""}
         onChange={(e) => {
           const value = e.target.value ? Number(e.target.value) : null;
           onYearChange(value);
