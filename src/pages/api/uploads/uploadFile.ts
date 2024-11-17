@@ -3,6 +3,7 @@ import { storage, firestore } from "../../../../firebaseAdmin.config";
 import formidable from "formidable";
 import { v4 as uuidv4 } from "uuid";
 import { getAuth } from "firebase-admin/auth";
+import { monthNames } from "@/utils/month";
 
 // Disable body parsing by Next.js so formidable can handle the multipart form data
 export const config = {
@@ -10,21 +11,6 @@ export const config = {
     bodyParser: false,
   },
 };
-
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 // Helper function to parse form data using formidable (returns a Promise)
 const parseForm = async (
