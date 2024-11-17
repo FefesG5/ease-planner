@@ -1,6 +1,7 @@
 import { useState, ChangeEvent, useRef } from "react";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
+import MonthYearSelect from "@/components/MonthYearSelect/MonthYearSelect";
 
 function Upload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -10,15 +11,21 @@ function Upload() {
   const [copyMessage, setCopyMessage] = useState<string>("");
 
   const [fileType, setFileType] = useState<string>("");
-  const [month, setMonth] = useState<string>("");
-  const [year, setYear] = useState<string>("");
+  const [month, setMonth] = useState<number | null>(null);
+  const [year, setYear] = useState<number | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { user } = useAuthContext(); // Ensure user is authenticated
+  const { user } = useAuthContext();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setSelectedFile(event.target.files[0]);
+    }
+  };
+
+  const triggerFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
@@ -27,17 +34,16 @@ function Upload() {
       setMessage("Please select a file to upload.");
       return;
     }
-
     if (!fileType) {
       setMessage("Please select a file type.");
       return;
     }
-
     if (!month || !year) {
       setMessage("Please select a month and a year.");
       return;
     }
 
+    // Set uploading state, clear messages
     setUploading(true);
     setMessage("");
     setSignedUrl("");
@@ -46,11 +52,10 @@ function Upload() {
     const formData = new FormData();
     formData.append("file", selectedFile);
     formData.append("fileType", fileType);
-    formData.append("month", month);
-    formData.append("year", year);
+    formData.append("month", month.toString());
+    formData.append("year", year.toString());
 
     try {
-      // Get token from the user in context
       if (!user) {
         setMessage("You must be logged in to upload files.");
         setUploading(false);
@@ -58,7 +63,6 @@ function Upload() {
       }
 
       const token = await user.getIdToken();
-
       const response = await fetch("/api/uploads/uploadFile", {
         method: "POST",
         headers: {
@@ -71,10 +75,9 @@ function Upload() {
         const data = await response.json();
         setMessage("File uploaded successfully!");
         setSignedUrl(data.signedUrl);
-
         setSelectedFile(null);
-        setMonth("");
-        setYear("");
+        setMonth(null);
+        setYear(null);
 
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
@@ -102,24 +105,14 @@ function Upload() {
     }
   };
 
-  const triggerFileInput = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   return (
     <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md mt-0 bg-[var(--user-section-bg-color)]">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[color:var(--body-text-color)]">
         Upload Files
       </h1>
-      <p className="mb-4 text-sm sm:text-base text-center text-[color:var(--body-text-color)]">
-        Upload the files to get started with schedule generation.
-      </p>
-
-      <div className="flex flex-col items-center mb-4 w-full">
+      <div className="flex flex-col gap-4 w-full">
         <div
-          className={`w-full text-sm py-2 px-4 font-semibold text-center cursor-pointer ${
+          className={`w-full text-sm py-2 px-4 font-semibold text-center rounded-md cursor-pointer ${
             uploading
               ? "bg-[var(--sidebar-border-color)] text-gray-400 cursor-not-allowed"
               : "bg-blue-600 text-white hover:bg-blue-700"
@@ -140,7 +133,7 @@ function Upload() {
         <select
           value={fileType}
           onChange={(e) => setFileType(e.target.value)}
-          className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+          className="w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base"
           disabled={uploading}
         >
           <option value="" disabled>
@@ -150,52 +143,19 @@ function Upload() {
           <option value="workingSchedule">Working Schedule</option>
         </select>
 
-        <select
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
-          className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+        <MonthYearSelect
+          month={month}
+          year={year}
+          onMonthChange={setMonth}
+          onYearChange={setYear}
           disabled={uploading}
-        >
-          <option value="">Select Month</option>
-          {[
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-          ].map((month) => (
-            <option key={month} value={month}>
-              {month}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-          className="w-full mt-4 p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
-          disabled={uploading}
-        >
-          <option value="">Select Year</option>
-          {[2024, 2025].map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       <button
         onClick={handleUpload}
         disabled={uploading}
-        className={`w-full py-2 px-4 rounded-md text-white transition-all duration-200 cursor-pointer ${
+        className={`w-full mt-4 py-2 px-4 rounded-md text-white transition-all duration-200 ${
           uploading
             ? "bg-[var(--sidebar-border-color)] cursor-not-allowed"
             : "bg-[var(--signin-btn-bg-color)] hover:bg-blue-600"
@@ -219,12 +179,15 @@ function Upload() {
           </p>
           <div className="flex flex-col items-center w-full">
             <div className="flex items-center justify-between w-full p-2 bg-[var(--signin-input-bg-color)] rounded-md">
-              <p className="text-xs sm:text-sm text-[color:var(--body-text-color)]">
-                File Link - Click Copy
-              </p>
+              <input
+                type="text"
+                value={signedUrl}
+                readOnly
+                className="w-full bg-transparent text-xs sm:text-sm text-[color:var(--body-text-color)] cursor-default"
+              />
               <button
                 onClick={handleCopyUrl}
-                className="py-1 px-3 text-xs font-medium text-white rounded-md bg-[var(--signin-btn-bg-color)] hover:bg-blue-600"
+                className="py-1 px-3 ml-2 text-xs font-medium text-white rounded-md bg-[var(--signin-btn-bg-color)] hover:bg-blue-600"
               >
                 Copy
               </button>
