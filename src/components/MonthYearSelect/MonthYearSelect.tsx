@@ -1,3 +1,5 @@
+import { monthNames } from "@/utils/month";
+
 interface MonthYearSelectProps {
   month: number | null;
   year: number | null;
@@ -13,21 +15,6 @@ const MonthYearSelect: React.FC<MonthYearSelectProps> = ({
   onYearChange,
   disabled = false,
 }) => {
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   const selectClasses =
     "w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base";
 
