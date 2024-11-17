@@ -3,6 +3,7 @@ import withDashboardLayout from "@/hoc/withDashboardLayout";
 import MonthYearSelect from "@/components/MonthYearSelect/MonthYearSelect";
 import Papa from "papaparse";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { teacherNames } from "@/data/teachersName";
 
 // Define the schedule type
 interface Schedule {
@@ -27,25 +28,6 @@ function ParseSchedule() {
     const schedules: Schedule[] = [];
     let dates: string[] = [];
     let days: string[] = [];
-    const teacherNames = [
-      "Ari",
-      "Chai",
-      "Rachel",
-      "Itxy",
-      "Yuri",
-      "Zoe",
-      "Atsumi",
-      "Michelle",
-      "Sora",
-      "Ayaka",
-      "Yoshi K",
-      "Haruki",
-      "Sota",
-      "Shivani",
-      "Yuki",
-      "Haruto",
-      "Mamiko",
-    ];
 
     // Step 1: Extract dates and days rows
     for (let i = 0; i < data.length; i++) {
