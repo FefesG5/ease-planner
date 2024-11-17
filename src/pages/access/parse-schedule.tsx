@@ -1,6 +1,7 @@
 import { useState } from "react";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import Papa from "papaparse";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 // Define the schedule type
 interface Schedule {
@@ -12,10 +13,13 @@ interface Schedule {
 }
 
 function ParseSchedule() {
+  const { user } = useAuthContext(); // Get the current user
   const [weeklyData, setWeeklyData] = useState<string>("");
   const [weeksData, setWeeksData] = useState<Schedule[][]>([]);
   const [fullSchedule, setFullSchedule] = useState<Schedule[]>([]);
   const [message, setMessage] = useState<string>("");
+  const [month, setMonth] = useState<number | "">("");
+  const [year, setYear] = useState<number | "">("");
 
   // Function to extract all schedules from the parsed data
   const extractSchedules = (data: string[][]): Schedule[] => {
@@ -148,6 +152,50 @@ function ParseSchedule() {
     setMessage("Full schedule generated successfully!");
   };
 
+  // Function to send the full schedule to the backend API
+  const handleSendScheduleToBackend = async () => {
+    if (!user) {
+      setMessage("You must be logged in to send the schedule.");
+      return;
+    }
+
+    if (fullSchedule.length === 0 || !month || !year) {
+      setMessage(
+        "Please select a month, year, and parse data before submitting.",
+      );
+      return;
+    }
+
+    setMessage("Sending schedule to backend...");
+
+    try {
+      const token = await user.getIdToken();
+
+      const response = await fetch("/api/schedules/saveSchedule", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          schedule: fullSchedule,
+          year,
+          month,
+        }),
+      });
+
+      if (response.ok) {
+        setMessage("Schedule saved successfully!");
+      } else {
+        const errorData = await response.json();
+        setMessage(`Failed to save schedule: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error("Error sending schedule:", error);
+      setMessage("Error occurred while sending schedule.");
+    }
+  };
+
   return (
     <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md mt-0 bg-[var(--user-section-bg-color)]">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[color:var(--body-text-color)]">
@@ -160,6 +208,22 @@ function ParseSchedule() {
         placeholder="Paste the weekly CSV data here..."
         className="w-full p-3 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] mb-4"
       ></textarea>
+      <div className="flex gap-4 mb-4">
+        <input
+          type="number"
+          value={year || ""}
+          onChange={(e) => setYear(Number(e.target.value))}
+          placeholder="Year"
+          className="w-1/2 p-2 rounded-md border-[var(--signin-input-border-color)]"
+        />
+        <input
+          type="number"
+          value={month || ""}
+          onChange={(e) => setMonth(Number(e.target.value))}
+          placeholder="Month (1-12)"
+          className="w-1/2 p-2 rounded-md border-[var(--signin-input-border-color)]"
+        />
+      </div>
       <button
         onClick={handleParseWeek}
         className="w-full py-2 px-4 rounded-md text-white bg-[var(--signin-btn-bg-color)] hover:bg-blue-600 mb-4"
@@ -212,9 +276,7 @@ function ParseSchedule() {
       {fullSchedule.length > 0 && (
         <button
           className="w-full py-2 px-4 rounded-md text-white bg-blue-500 hover:bg-blue-600 mt-4"
-          onClick={() =>
-            setMessage("Sending request to backend... (not functional yet)")
-          }
+          onClick={handleSendScheduleToBackend}
         >
           Send Schedule to Backend
         </button>
