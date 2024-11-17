@@ -11,6 +11,21 @@ export const config = {
   },
 };
 
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 // Helper function to parse form data using formidable (returns a Promise)
 const parseForm = async (
   req: NextApiRequest,
@@ -32,18 +47,16 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method === "POST") {
+    // Extract the Authorization header for token validation
     const authHeader = req.headers.authorization;
 
-    // Check if Authorization header is present
     if (!authHeader) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    // Extract the Bearer token
     const token = authHeader.split(" ")[1];
 
     try {
-      // Verify the token using Firebase Admin SDK
       await getAuth().verifyIdToken(token);
     } catch (error) {
       console.error("Invalid or expired token:", error);
@@ -68,16 +81,24 @@ export default async function handler(
       };
 
       // Safely extract values from fields
-      const month = getFieldValue(fields.month);
+      const monthValue = getFieldValue(fields.month);
       const year = getFieldValue(fields.year);
       const fileType = getFieldValue(fields.fileType);
 
       // Validate that necessary metadata fields are provided
-      if (!month || !year || !fileType) {
+      if (!monthValue || !year || !fileType) {
         return res.status(400).json({
           error: "Missing required metadata: month, year, or fileType",
         });
       }
+
+      // Convert the month number to a month name
+      const monthIndex = parseInt(monthValue, 10) - 1; // monthValue is expected to be 1-based
+      if (monthIndex < 0 || monthIndex > 11) {
+        return res.status(400).json({ error: "Invalid month value" });
+      }
+
+      const month = monthNames[monthIndex]; // Get the corresponding month name
 
       // Handle the uploaded file
       const uploadedFile = files.file;
@@ -97,7 +118,6 @@ export default async function handler(
         file = uploadedFile;
       }
 
-      // Get filePath and other details
       const filePath = file.filepath;
       if (!filePath) {
         return res.status(400).json({ error: "Filepath is missing" });
