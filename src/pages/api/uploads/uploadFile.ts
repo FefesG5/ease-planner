@@ -3,7 +3,7 @@ import { storage, firestore } from "../../../../firebaseAdmin.config";
 import formidable from "formidable";
 import { v4 as uuidv4 } from "uuid";
 import { getAuth } from "firebase-admin/auth";
-import { monthNames } from "@/utils/month";
+import { getMonthName } from "@/utils/month";
 
 // Disable body parsing by Next.js so formidable can handle the multipart form data
 export const config = {
@@ -78,13 +78,13 @@ export default async function handler(
         });
       }
 
-      // Convert the month number to a month name
-      const monthIndex = parseInt(monthValue, 10) - 1; // monthValue is expected to be 1-based
-      if (monthIndex < 0 || monthIndex > 11) {
+      // Convert the month number to a month name using getMonthName utility
+      const monthIndex = parseInt(monthValue, 10); // monthValue is expected to be 1-based
+      if (monthIndex < 1 || monthIndex > 12) {
         return res.status(400).json({ error: "Invalid month value" });
       }
 
-      const month = monthNames[monthIndex]; // Get the corresponding month name
+      const month = getMonthName(monthIndex); // Get the corresponding month name
 
       // Handle the uploaded file
       const uploadedFile = files.file;
