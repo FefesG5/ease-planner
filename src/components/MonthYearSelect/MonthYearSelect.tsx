@@ -13,15 +13,18 @@ const MonthYearSelect: React.FC<MonthYearSelectProps> = ({
   onYearChange,
   disabled = false,
 }) => {
+  const selectClasses =
+    "w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base";
+
   return (
-    <div className="flex flex-col gap-4 mb-4">
+    <div className="flex flex-col gap-4">
       <select
         value={month ?? ""}
         onChange={(e) => {
           const value = e.target.value ? Number(e.target.value) : null;
           onMonthChange(value);
         }}
-        className="..."
+        className={selectClasses}
         disabled={disabled}
       >
         <option value="">Select Month</option>
@@ -51,7 +54,7 @@ const MonthYearSelect: React.FC<MonthYearSelectProps> = ({
           const value = e.target.value ? Number(e.target.value) : null;
           onYearChange(value);
         }}
-        className="w-full p-1 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base"
+        className={selectClasses}
         disabled={disabled}
       >
         <option value="">Select Year</option>
