@@ -1,5 +1,6 @@
 import { useState } from "react";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
+import MonthYearSelect from "@/components/MonthYearSelect/MonthYearSelect";
 import Papa from "papaparse";
 import { useAuthContext } from "@/contexts/AuthContext";
 
@@ -18,8 +19,8 @@ function ParseSchedule() {
   const [weeksData, setWeeksData] = useState<Schedule[][]>([]);
   const [fullSchedule, setFullSchedule] = useState<Schedule[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [month, setMonth] = useState<number | "">("");
-  const [year, setYear] = useState<number | "">("");
+  const [month, setMonth] = useState<number | null>(null);
+  const [year, setYear] = useState<number | null>(null);
 
   // Function to extract all schedules from the parsed data
   const extractSchedules = (data: string[][]): Schedule[] => {
@@ -209,44 +210,12 @@ function ParseSchedule() {
         className="w-full p-3 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] mb-4"
       ></textarea>
       <div className="flex flex-col gap-4 mb-4">
-        <select
-          value={month}
-          onChange={(e) => setMonth(Number(e.target.value))}
-          className="w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
-        >
-          <option value="">Select Month</option>
-          {[
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-          ].map((month, index) => (
-            <option key={index} value={index + 1}>
-              {month}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={year}
-          onChange={(e) => setYear(Number(e.target.value))}
-          className="w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
-        >
-          <option value="">Select Year</option>
-          {[2024, 2025].map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
+        <MonthYearSelect
+          month={month}
+          year={year}
+          onMonthChange={(value) => setMonth(value)}
+          onYearChange={(value) => setYear(value)}
+        />
       </div>
 
       <button
