@@ -208,22 +208,47 @@ function ParseSchedule() {
         placeholder="Paste the weekly CSV data here..."
         className="w-full p-3 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] mb-4"
       ></textarea>
-      <div className="flex gap-4 mb-4">
-        <input
-          type="number"
-          value={year || ""}
-          onChange={(e) => setYear(Number(e.target.value))}
-          placeholder="Year"
-          className="w-1/2 p-2 rounded-md border-[var(--signin-input-border-color)]"
-        />
-        <input
-          type="number"
-          value={month || ""}
+      <div className="flex flex-col gap-4 mb-4">
+        <select
+          value={month}
           onChange={(e) => setMonth(Number(e.target.value))}
-          placeholder="Month (1-12)"
-          className="w-1/2 p-2 rounded-md border-[var(--signin-input-border-color)]"
-        />
+          className="w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+        >
+          <option value="">Select Month</option>
+          {[
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ].map((month, index) => (
+            <option key={index} value={index + 1}>
+              {month}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={year}
+          onChange={(e) => setYear(Number(e.target.value))}
+          className="w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer"
+        >
+          <option value="">Select Year</option>
+          {[2024, 2025].map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
       </div>
+
       <button
         onClick={handleParseWeek}
         className="w-full py-2 px-4 rounded-md text-white bg-[var(--signin-btn-bg-color)] hover:bg-blue-600 mb-4"
@@ -240,7 +265,9 @@ function ParseSchedule() {
                 Week {index + 1} Schedule for Teachers:
               </h3>
               {week.length > 0 ? (
-                <pre className="text-sm">{JSON.stringify(week, null, 2)}</pre>
+                <pre className="text-xs overflow-auto max-h-40 p-2 bg-gray-200 rounded-md">
+                  {JSON.stringify(week, null, 2)}
+                </pre>
               ) : (
                 <p>No valid schedule found for this week.</p>
               )}
@@ -263,7 +290,7 @@ function ParseSchedule() {
       <div className="mt-6">
         <h2>Teachers&apos; Full Schedule:</h2>
         {fullSchedule.length > 0 ? (
-          <pre className="bg-gray-100 p-4 rounded-md my-4">
+          <pre className="bg-gray-100 p-4 rounded-md my-4 text-xs overflow-auto max-h-40">
             {JSON.stringify(fullSchedule, null, 2)}
           </pre>
         ) : (
