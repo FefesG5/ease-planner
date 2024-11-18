@@ -2,7 +2,7 @@
 
 export const teacherNames = [
   "Ari",
-  "Chai",
+  "Chai (F)",
   "Rachel",
   "Itxy",
   "Yuri",
