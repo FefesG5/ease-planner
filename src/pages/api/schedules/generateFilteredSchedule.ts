@@ -14,7 +14,7 @@ const generateFilteredSchedule = async (
   const { scheduleId, teacherName, userId } = req.body;
 
   if (!scheduleId || !teacherName || !userId) {
-    console.error("Missing scheduleId, teacherName, or userId:", {
+    console.error("Missing required fields:", {
       scheduleId,
       teacherName,
       userId,
@@ -25,16 +25,6 @@ const generateFilteredSchedule = async (
   }
 
   try {
-    // Log scheduleId and userId to verify that we are getting the correct values
-    console.log(
-      "Received scheduleId:",
-      scheduleId,
-      "teacherName:",
-      teacherName,
-      "userId:",
-      userId,
-    );
-
     // Fetch the selected schedule document from the monthlySchedules collection
     const scheduleRef = firestore
       .collection("monthlySchedules")
@@ -47,8 +37,6 @@ const generateFilteredSchedule = async (
     }
 
     const scheduleData = scheduleSnapshot.data();
-    console.log("Fetched schedule data:", scheduleData);
-
     if (!scheduleData || !scheduleData.schedules) {
       console.error("No schedules found in document for ID:", scheduleId);
       return res
@@ -61,37 +49,11 @@ const generateFilteredSchedule = async (
       (entry: { Employee: string }) => entry.Employee === teacherName,
     );
 
-    console.log(
-      "Filtered schedules for teacher:",
-      teacherName,
-      filteredSchedules,
-    );
-
-    // If no schedules are found for the selected teacher, handle gracefully
     if (filteredSchedules.length === 0) {
       console.warn("No schedules found for the selected teacher:", teacherName);
-
-      // Save an empty schedule with a friendly message or skip saving depending on your requirements
-      const userRef = firestore.collection("registered-users").doc(userId);
-      const saveResult = await userRef.collection("filteredSchedules").add({
-        month: scheduleData.month,
-        year: scheduleData.year,
-        schedules: [], // Empty schedules array since no match found
-        generatedAt: new Date().toISOString(),
-        note: `No schedules found for teacher ${teacherName}`,
-      });
-
-      console.log(
-        "Empty schedule saved successfully under user:",
-        userId,
-        "with document ID:",
-        saveResult.id,
-      );
-
-      // Respond with a success message indicating no schedules were found
       return res.status(200).json({
-        message: `No schedules found for teacher ${teacherName}, but an empty entry has been saved.`,
-        empty: true,
+        message: `No schedules found for teacher ${teacherName}.`,
+        found: false,
       });
     }
 
@@ -104,15 +66,11 @@ const generateFilteredSchedule = async (
       generatedAt: new Date().toISOString(),
     });
 
-    console.log(
-      "Filtered schedule saved successfully under user:",
-      userId,
-      "with document ID:",
-      saveResult.id,
-    );
-
-    // Respond with a success message
-    res.status(200).json({ message: "Filtered schedule saved successfully" });
+    console.info("Filtered schedule saved successfully under user:", userId);
+    res.status(200).json({
+      message: "Filtered schedule saved successfully",
+      found: true,
+    });
   } catch (error) {
     console.error("Error generating filtered schedule:", error);
     res.status(500).json({ error: "Internal server error" });
