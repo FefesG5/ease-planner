@@ -7,7 +7,7 @@ export const teacherNames = [
   "Itxy",
   "Yuri",
   "Zoe",
-  "Atsumi",
+  "Atsumi(F)",
   "Michelle",
   "Sora",
   "Ayaka",
