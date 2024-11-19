@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import Spinner from "@/components/Spinner/Spinner";
@@ -34,6 +34,9 @@ function Schedule() {
     message: string;
     type: NotificationType;
   } | null>(null);
+
+  // Ref to store the timeout ID
+  const notificationTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { user } = useAuthContext(); // Get the authenticated user from context
 
@@ -94,6 +97,16 @@ function Schedule() {
   // Show notification
   const showNotification = (message: string, type: NotificationType) => {
     setNotification({ message, type });
+
+    // Clear any existing timeout before setting a new one
+    if (notificationTimeout.current) {
+      clearTimeout(notificationTimeout.current);
+    }
+
+    // Set a timeout to remove the notification after 5 seconds
+    notificationTimeout.current = setTimeout(() => {
+      setNotification(null);
+    }, 5000);
   };
 
   // Handle generating the filtered schedule
@@ -183,7 +196,7 @@ function Schedule() {
   return (
     <div className="relative flex xl:flex-row flex-col xl:flex-1 space-y-2 xl:space-y-0 xl:space-x-4 min-w-0 p-0 xl:p-4">
       {/* Left Section - Filters and File List */}
-      <div className="xl:w-[30%] w-full flex flex-col justify-between min-h-[600px] p-4 xl:p-4 text-[color:var(--body-text-color)] xl:flex-shrink-0 bg-[var(--user-section-bg-color)]">
+      <div className="xl:w-[30%] w-full flex flex-col justify-between min-h-[600px] p-4 xl:p-4 text-[color:var(--body-text-color)] xl:flex-shrink-0 bg-[var(--user-section-bg-color)] relative">
         <div className="space-y-1">
           <h1 className="text-xl font-semibold mb-1 text-center xl:text-left">
             Available Schedules
@@ -267,21 +280,21 @@ function Schedule() {
               </option>
             ))}
           </select>
+
+          {/* Generate Button */}
+          <button
+            className="mt-2 w-full bg-[var(--signin-btn-bg-color)] text-white p-2 text-sm hover:bg-blue-600"
+            disabled={!checkedSchedule || !selectedTeacher}
+            onClick={handleGenerateClick}
+          >
+            Generate
+          </button>
         </div>
 
-        {/* Generate Button */}
-        <button
-          className="mt-4 w-full bg-[var(--signin-btn-bg-color)] text-white p-2 text-sm hover:bg-blue-600"
-          disabled={!checkedSchedule || !selectedTeacher}
-          onClick={handleGenerateClick}
-        >
-          Generate
-        </button>
-
-        {/* Embedded Notification */}
+        {/* Floating Notification */}
         {notification && (
           <div
-            className={`mt-4 p-3 rounded-md shadow-md text-center ${
+            className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 p-3 rounded-md shadow-md text-center w-[90%] max-w-md ${
               notification.type === "success"
                 ? "bg-green-100 text-green-700"
                 : notification.type === "error"
