@@ -14,8 +14,8 @@ interface Schedule {
   signedUrl: string;
 }
 
-// Define NotificationType to specify success or error
-type NotificationType = "success" | "error" | null;
+// Define NotificationType to specify success, error, or info
+type NotificationType = "success" | "error" | "info" | null;
 
 function Schedule() {
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
@@ -91,13 +91,18 @@ function Schedule() {
     setCheckedSchedule(scheduleId === checkedSchedule ? null : scheduleId); // Allow only one checkbox to be checked
   };
 
+  // Show notification
+  const showNotification = (message: string, type: NotificationType) => {
+    setNotification({ message, type });
+  };
+
   // Handle generating the filtered schedule
   const handleGenerateClick = async () => {
     if (!user || !checkedSchedule || !selectedTeacher) {
-      setNotification({
-        message: "Please select a schedule and a teacher before generating.",
-        type: "error",
-      });
+      showNotification(
+        "Please select a schedule and a teacher before generating.",
+        "error",
+      );
       return;
     }
 
@@ -105,10 +110,7 @@ function Schedule() {
     const userId = user.uid;
 
     if (!userId) {
-      setNotification({
-        message: "Unable to identify user. Please try again.",
-        type: "error",
-      });
+      showNotification("Unable to identify user. Please try again.", "error");
       return;
     }
 
@@ -134,36 +136,38 @@ function Schedule() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          scheduleId, // Use the correct schedule ID (e.g., '2024-11')
+          scheduleId,
           teacherName: selectedTeacher,
-          userId, // Pass the user's unique ID directly to the backend
+          userId,
         }),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
         throw new Error(
-          errorData.error || "Failed to generate filtered schedule",
+          responseData.error || "Failed to generate filtered schedule",
         );
       }
 
-      // If the schedule is successfully generated, notify and reset state.
-      setNotification({
-        message: "Filtered schedule saved successfully.",
-        type: "success",
-      });
+      if (responseData.found === false) {
+        showNotification(
+          `No schedules found for teacher ${selectedTeacher}.`,
+          "info",
+        );
+      } else {
+        // If the schedule is successfully generated, notify and reset state.
+        showNotification("Filtered schedule saved successfully.", "success");
 
-      // Reset selected teacher, checked schedule, and mobile preview (if necessary)
-      setSelectedTeacher(null);
-      setCheckedSchedule(null);
-      setSelectedSchedule(null);
-      setIsMobilePreviewOpen(false);
+        // Reset selected teacher, checked schedule, and mobile preview (if necessary)
+        setSelectedTeacher(null);
+        setCheckedSchedule(null);
+        setSelectedSchedule(null);
+        setIsMobilePreviewOpen(false);
+      }
     } catch (error) {
       console.error("Error generating schedule:", error);
-      setNotification({
-        message: "Error generating schedule. Please try again.",
-        type: "error",
-      });
+      showNotification("Error generating schedule. Please try again.", "error");
     }
   };
 
@@ -177,23 +181,10 @@ function Schedule() {
   }
 
   return (
-    <div className="flex xl:flex-row flex-col xl:flex-1 space-y-2 xl:space-y-0 xl:space-x-4 min-w-0 p-0 xl:p-4">
-      {/* Notification */}
-      {notification && (
-        <div
-          className={`p-4 text-center ${
-            notification.type === "success"
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
-        >
-          {notification.message}
-        </div>
-      )}
-
+    <div className="relative flex xl:flex-row flex-col xl:flex-1 space-y-2 xl:space-y-0 xl:space-x-4 min-w-0 p-0 xl:p-4">
       {/* Left Section - Filters and File List */}
       <div className="xl:w-[30%] w-full flex flex-col justify-between min-h-[600px] p-4 xl:p-4 text-[color:var(--body-text-color)] xl:flex-shrink-0 bg-[var(--user-section-bg-color)]">
-        <div className="space-y-4">
+        <div className="space-y-1">
           <h1 className="text-xl font-semibold mb-1 text-center xl:text-left">
             Available Schedules
           </h1>
@@ -265,7 +256,7 @@ function Schedule() {
 
           {/* Teacher Selection */}
           <select
-            className="form-select w-full p-2 mt-4"
+            className="form-select w-full p-2 mt-2"
             value={selectedTeacher ?? ""}
             onChange={(e) => setSelectedTeacher(e.target.value || null)}
           >
@@ -286,6 +277,21 @@ function Schedule() {
         >
           Generate
         </button>
+
+        {/* Embedded Notification */}
+        {notification && (
+          <div
+            className={`mt-4 p-3 rounded-md shadow-md text-center ${
+              notification.type === "success"
+                ? "bg-green-100 text-green-700"
+                : notification.type === "error"
+                  ? "bg-red-100 text-red-700"
+                  : "bg-yellow-100 text-yellow-700"
+            }`}
+          >
+            {notification.message}
+          </div>
+        )}
       </div>
 
       {/* Right Section (Preview) for Desktop */}
@@ -308,7 +314,7 @@ function Schedule() {
       {isMobilePreviewOpen && selectedSchedule && (
         <div className="xl:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-4 overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-[var(--body-text-color)]">
+            <h2 className="text-lg font-semibold text-[color:var(--body-text-color)]">
               Preview: {selectedSchedule.month} {selectedSchedule.year}
             </h2>
             <button
