@@ -1,7 +1,7 @@
 // Temporary Solution until a feteching request for all the users can be created
 
 export const teacherNames = [
-  "Ari",
+  "Ari(F)",
   "Chai (F)",
   "Rachel",
   "Itxy",
