@@ -1,20 +1,9 @@
-// pages/api/saveSchedule.ts
-
 import type { NextApiRequest, NextApiResponse } from "next";
 import { admin, firestore } from "../../../../firebaseAdmin.config";
+import { TeachersShift } from "@/interfaces/teachersShift";
 
-// Define the Schedule interface
-interface Schedule {
-  Employee: string;
-  Date: string;
-  Day: string;
-  School: string;
-  Shift: string;
-}
-
-// Define the request body type
 interface ScheduleRequestBody {
-  schedule: Schedule[];
+  schedule: TeachersShift[];
 }
 
 export default async function handler(
