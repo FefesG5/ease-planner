@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import Spinner from "@/components/Spinner/Spinner";
+import FloatingNotification from "@/components/FloatingNotification/FloatingNotification";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { teacherNames } from "@/data/teachersName";
 import { getMonthNumber } from "@/utils/month";
@@ -295,18 +296,11 @@ function Schedule() {
         </div>
 
         {/* Floating Notification */}
-        {notification && (
-          <div
-            className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 p-3 rounded-md shadow-md text-center w-[90%] max-w-md ${
-              notification.type === "success"
-                ? "bg-green-100 text-green-700"
-                : notification.type === "error"
-                  ? "bg-red-100 text-red-700"
-                  : "bg-yellow-100 text-yellow-700"
-            }`}
-          >
-            {notification.message}
-          </div>
+        {notification && notification.type && (
+          <FloatingNotification
+            message={notification.message}
+            type={notification.type}
+          />
         )}
       </div>
 
