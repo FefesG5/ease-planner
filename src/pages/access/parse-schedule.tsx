@@ -4,28 +4,20 @@ import MonthYearSelect from "@/components/MonthYearSelect/MonthYearSelect";
 import Papa from "papaparse";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { teacherNames } from "@/data/teachersName";
-
-// Define the schedule type
-interface Schedule {
-  Employee: string;
-  Date: string;
-  Day: string;
-  School: string;
-  Shift: string;
-}
+import { TeachersShift } from "@/interfaces/teachersShift";
 
 function ParseSchedule() {
-  const { user } = useAuthContext(); // Get the current user
+  const { user } = useAuthContext();
   const [weeklyData, setWeeklyData] = useState<string>("");
-  const [weeksData, setWeeksData] = useState<Schedule[][]>([]);
-  const [fullSchedule, setFullSchedule] = useState<Schedule[]>([]);
+  const [weeksData, setWeeksData] = useState<TeachersShift[][]>([]);
+  const [fullSchedule, setFullSchedule] = useState<TeachersShift[]>([]);
   const [message, setMessage] = useState<string>("");
   const [month, setMonth] = useState<number | null>(null);
   const [year, setYear] = useState<number | null>(null);
 
   // Function to extract all schedules from the parsed data
-  const extractSchedules = (data: string[][]): Schedule[] => {
-    const schedules: Schedule[] = [];
+  const extractSchedules = (data: string[][]): TeachersShift[] => {
+    const schedules: TeachersShift[] = [];
     let dates: string[] = [];
     let days: string[] = [];
 
