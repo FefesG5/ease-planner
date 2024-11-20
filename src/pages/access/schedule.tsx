@@ -265,7 +265,7 @@ function Schedule() {
 
           {/* Teacher Selection */}
           <select
-            className="w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base"
+            className="form-select w-full p-2 text-sm bg-[var(--signin-input-bg-color)] text-[color:var(--body-text-color)] border-[var(--signin-input-border-color)] cursor-pointer"
             value={selectedTeacher ?? ""}
             onChange={(e) => setSelectedTeacher(e.target.value || null)}
           >
