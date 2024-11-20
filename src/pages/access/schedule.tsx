@@ -6,21 +6,13 @@ import FloatingNotification from "@/components/FloatingNotification/FloatingNoti
 import { useAuthContext } from "@/contexts/AuthContext";
 import { teacherNames } from "@/data/teachersName";
 import { getMonthNumber } from "@/utils/month";
-
-// Define the Schedule interface
-interface Schedule {
-  id: string;
-  name: string;
-  month: string;
-  year: string;
-  signedUrl: string;
-}
+import { SchedulePDF } from "@/interfaces/schedulesInterface";
 
 // Define NotificationType to specify success, error, or info
 type NotificationType = "success" | "error" | "info" | null;
 
 function Schedule() {
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
+  const [selectedSchedule, setSelectedSchedule] = useState<SchedulePDF | null>(
     null,
   );
   const [checkedSchedule, setCheckedSchedule] = useState<string | null>(null);
@@ -48,9 +40,9 @@ function Schedule() {
     isLoading,
     isError,
     error,
-  } = useQuery<Schedule[], Error>({
+  } = useQuery<SchedulePDF[], Error>({
     queryKey: ["schedules"],
-    queryFn: async (): Promise<Schedule[]> => {
+    queryFn: async (): Promise<SchedulePDF[]> => {
       if (!user) {
         throw new Error("User not authenticated");
       }
@@ -69,7 +61,7 @@ function Schedule() {
       }
       return response.json();
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
   });
 
   // Filter schedules based on selected year and month
@@ -80,7 +72,7 @@ function Schedule() {
   });
 
   // Handle selecting a schedule to preview
-  const handleScheduleSelect = (schedule: Schedule) => {
+  const handleScheduleSelect = (schedule: SchedulePDF) => {
     setSelectedSchedule(schedule);
     setIsMobilePreviewOpen(true); // Open the mobile modal for preview
   };
@@ -240,7 +232,7 @@ function Schedule() {
 
           {/* Schedule List */}
           <ul className="space-y-1 overflow-y-auto xl:max-h-[300px] h-64">
-            {filteredSchedules.map((schedule: Schedule) => (
+            {filteredSchedules.map((schedule: SchedulePDF) => (
               <li
                 key={schedule.id}
                 className="p-3 border shadow-sm hover:shadow-md cursor-pointer flex justify-between items-center bg-[var(--schedule-list-bg-color)] border-[var(--sidebar-border-color)] hover:bg-[var(--schedule-item-hover-bg-color)] transition-all duration-200 ease-in-out"
