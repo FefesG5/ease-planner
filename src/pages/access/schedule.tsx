@@ -4,6 +4,7 @@ import withDashboardLayout from "@/hoc/withDashboardLayout";
 import Spinner from "@/components/Spinner/Spinner";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { teacherNames } from "@/data/teachersName";
+import { getMonthNumber } from "@/utils/month";
 
 // Define the Schedule interface
 interface Schedule {
@@ -129,14 +130,16 @@ function Schedule() {
 
     // Extract the year and month from the selected schedule ID (e.g., 'workingSchedule-2024-November-UUID')
     const parts = checkedSchedule.split("-");
-    const year = parts[1]; // e.g., '2024'
-    const monthString = parts[2]; // e.g., 'November'
+    const year = parts[1];
+    const monthString = parts[2];
 
-    // Convert month name to numeric representation (e.g., 'November' -> '11')
-    const month = new Date(Date.parse(`${monthString} 1, 2024`)).getMonth() + 1; // This will give 11 for 'November'
-    const formattedMonth = month < 10 ? `0${month}` : `${month}`; // Ensure month is in 'MM' format (e.g., '11')
+    const month = getMonthNumber(monthString);
+    if (month === null) {
+      showNotification("Invalid month selected. Please try again.", "error");
+      return;
+    }
+    const formattedMonth = month < 10 ? `0${month}` : `${month}`;
 
-    // Construct the correct Firestore document ID (e.g., '2024-11')
     const scheduleId = `${year}-${formattedMonth}`;
 
     try {
