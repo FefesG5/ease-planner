@@ -2,16 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { storage, firestore } from "../../../../firebaseAdmin.config";
 import { GetSignedUrlConfig } from "@google-cloud/storage";
 import { getAuth } from "firebase-admin/auth";
-
-interface ScheduleData {
-  fileType: string;
-  month: string;
-  name: string;
-  storagePath: string;
-  uploadedAt: string;
-  year: string;
-  signedUrl?: string;
-}
+import { ScheduleMetadata } from "@/interfaces/schedulesInterface";
 
 // Function to fetch monthly working schedules from Firestore
 async function fetchMonthlyWorkingSchedules() {
@@ -22,7 +13,7 @@ async function fetchMonthlyWorkingSchedules() {
     // Map the documents to an array of objects and generate signed URLs for each file
     const schedules = await Promise.all(
       snapshot.docs.map(async (doc) => {
-        const data = doc.data() as ScheduleData; // Explicit typing of document data
+        const data = doc.data() as ScheduleMetadata; // Explicit typing of document data
         const filePath = data.storagePath; // 'gs://...' path from Firestore
 
         // Generate a signed URL (temporary URL) for the file
