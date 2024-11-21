@@ -5,8 +5,9 @@ import {
   getCoreRowModel,
   ColumnDef,
   flexRender,
+  CellContext,
 } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 // Define the data type
 type ScheduleData = {
@@ -32,32 +33,12 @@ const firebaseData = [
     School: "M",
     Shift: "12:00-21:00",
   },
-  {
-    Employee: "Ari(F)",
-    Date: "2024/11/12",
-    Day: "Tuesday",
-    School: "T",
-    Shift: "12:00-21:00",
-  },
-  {
-    Employee: "Ari(F)",
-    Date: "2024/11/13",
-    Day: "Wednesday",
-    School: "M",
-    Shift: "12:00-21:00",
-  },
-  {
-    Employee: "Ari(F)",
-    Date: "2024/11/14",
-    Day: "Thursday",
-    School: "M",
-    Shift: "12:00-21:00",
-  },
+  // ... (Other Firebase data as required)
 ];
 
 function Edit() {
-  // Generate full list of dates for November
-  const fullMonthData = useMemo<ScheduleData[]>(() => {
+  // Convert fullMonthData to a state variable
+  const [fullMonthData, setFullMonthData] = useState<ScheduleData[]>(() => {
     const fullData: ScheduleData[] = [];
     const daysOfWeek = [
       "日曜日",
@@ -139,55 +120,80 @@ function Edit() {
     }
 
     return fullData;
-  }, []);
+  });
 
-  // Define columns with string types
-  const columns = useMemo<ColumnDef<ScheduleData, string>[]>(() => {
-    const columnHelper = createColumnHelper<ScheduleData>();
+  // Define the EditableCell component with proper typing and local state
+  const EditableCell = (cellProps: CellContext<ScheduleData, string>) => {
+    const [value, setValue] = useState<string>(cellProps.getValue() ?? "");
 
-    return [
-      columnHelper.accessor("Date", {
-        header: "日付",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("Day", {
-        header: "曜日",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("StartTime", {
-        header: "出社時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("EndTime", {
-        header: "退社時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("Overtime", {
-        header: "通常残業時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("BreakTime", {
-        header: "休憩時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("WorkingHours", {
-        header: "労働時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("LessonHours", {
-        header: "レッスン時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("NonLessonHours", {
-        header: "レッスン外",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("Approval", {
-        header: "承認",
-        cell: (info) => info.getValue(),
-      }),
-    ];
-  }, []);
+    const rowIndex = cellProps.row.index;
+    const columnId = cellProps.column.id;
+
+    const onBlur = () => {
+      // Update the state in the parent component only when the value has changed
+      setFullMonthData((oldData) =>
+        oldData.map((row, index) =>
+          index === rowIndex ? { ...row, [columnId]: value } : row,
+        ),
+      );
+    };
+
+    return (
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={onBlur}
+        className="w-full h-full text-xs bg-transparent border-none p-0 m-0 text-center focus:outline-none"
+        style={{ lineHeight: "1.2" }}
+      />
+    );
+  };
+
+  // Define columns with correct typing
+  const columnHelper = createColumnHelper<ScheduleData>();
+  const columns: ColumnDef<ScheduleData, string>[] = [
+    columnHelper.accessor("Date", {
+      header: "日付",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("Day", {
+      header: "曜日",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("StartTime", {
+      header: "出社時間",
+      cell: EditableCell,
+    }),
+    columnHelper.accessor("EndTime", {
+      header: "退社時間",
+      cell: EditableCell,
+    }),
+    columnHelper.accessor("Overtime", {
+      header: "通常残業時間",
+      cell: EditableCell,
+    }),
+    columnHelper.accessor("BreakTime", {
+      header: "休憩時間",
+      cell: EditableCell,
+    }),
+    columnHelper.accessor("WorkingHours", {
+      header: "労働時間",
+      cell: EditableCell,
+    }),
+    columnHelper.accessor("LessonHours", {
+      header: "レッスン時間",
+      cell: EditableCell,
+    }),
+    columnHelper.accessor("NonLessonHours", {
+      header: "レッスン外",
+      cell: EditableCell,
+    }),
+    columnHelper.accessor("Approval", {
+      header: "承認",
+      cell: (info) => info.getValue(),
+    }),
+  ];
 
   // Create table instance
   const table = useReactTable({
@@ -203,30 +209,37 @@ function Edit() {
         <thead>
           {/* English Headers Row */}
           <tr>
-            <th className="border border-black px-2 py-1 font-normal">Date</th>
-            <th className="border border-black px-2 py-1 font-normal">Day</th>
-            <th className="border border-black px-2 py-1 font-normal">
+            <th className="border border-black px-0.5 py-0.5 font-normal">
+              Date
+            </th>
+            <th
+              className="border border-black px-0.5 py-0.5 font-normal"
+              style={{ width: "80px" }}
+            >
+              Day
+            </th>
+            <th className="border border-black px-0.5 py-0.5 font-normal">
               Starting Time
             </th>
-            <th className="border border-black px-2 py-1 font-normal">
+            <th className="border border-black px-0.5 py-0.5 font-normal">
               Finishing Time
             </th>
-            <th className="border border-black px-2 py-1 font-normal">
+            <th className="border border-black px-0.5 py-0.5 font-normal">
               Overtime
             </th>
-            <th className="border border-black px-2 py-1 font-normal">
+            <th className="border border-black px-0.5 py-0.5 font-normal">
               Break Time
             </th>
-            <th className="border border-black px-2 py-1 font-normal">
+            <th className="border border-black px-0.5 py-0.5 font-normal">
               Working Hours
             </th>
-            <th className="border border-black px-2 py-1 font-normal">
+            <th className="border border-black px-0.5 py-0.5 font-normal">
               Lesson Hours
             </th>
-            <th className="border border-black px-2 py-1 font-normal">
+            <th className="border border-black px-0.5 py-0.5 font-normal">
               Non Lesson Hours
             </th>
-            <th className="border border-black px-2 py-1 font-normal">
+            <th className="border border-black px-0.5 py-0.5 font-normal">
               Approval
             </th>
           </tr>
@@ -235,7 +248,8 @@ function Edit() {
             {table.getHeaderGroups()[0].headers.map((header) => (
               <th
                 key={header.id}
-                className="border border-black px-2 py-1 font-normal"
+                className="border border-black px-0.5 py-0.5 font-normal"
+                style={header.column.id === "Day" ? { width: "80px" } : {}}
               >
                 {header.isPlaceholder
                   ? null
@@ -249,9 +263,13 @@ function Edit() {
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <tr key={row.id} className="text-center">
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="border border-black px-2 py-1">
+                <td
+                  key={cell.id}
+                  className="border border-black px-0.5 py-0.5"
+                  style={cell.column.id === "Day" ? { width: "80px" } : {}}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
