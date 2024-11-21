@@ -6,14 +6,16 @@ import {
   ColumnDef,
   flexRender,
   CellContext,
+  Table,
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 // Define the data type
 type ScheduleData = {
   Employee: string;
   Date: string;
   Day: string;
+  School: string;
   StartTime: string;
   EndTime: string;
   Overtime: string;
@@ -28,17 +30,50 @@ type ScheduleData = {
 const firebaseData = [
   {
     Employee: "Ari(F)",
+    Date: "2024/11/06",
+    Day: "Wednesday",
+    School: "M",
+    Shift: "12:00-21:00",
+  },
+  {
+    Employee: "Ari(F)",
+    Date: "2024/11/07",
+    Day: "Thursday",
+    School: "M",
+    Shift: "12:00-21:00",
+  },
+  {
+    Employee: "Ari(F)",
+    Date: "2024/11/08",
+    Day: "Friday",
+    School: "T",
+    Shift: "12:00-21:00",
+  },
+  {
+    Employee: "Ari(F)",
     Date: "2024/11/11",
     Day: "Monday",
     School: "M",
     Shift: "12:00-21:00",
   },
-  // ... (Other Firebase data as required)
+  {
+    Employee: "Ari(F)",
+    Date: "2024/11/12",
+    Day: "Tuesday",
+    School: "T",
+    Shift: "12:00-21:00",
+  },
 ];
 
 function Edit() {
-  // Convert fullMonthData to a state variable
-  const [fullMonthData, setFullMonthData] = useState<ScheduleData[]>(() => {
+  // Split the data by school
+  const schoolMData = firebaseData.filter((entry) => entry.School === "M");
+  const schoolTData = firebaseData.filter((entry) => entry.School === "T");
+
+  // Helper function to generate the full month data for a given school
+  const generateFullMonthData = (
+    schoolData: typeof firebaseData,
+  ): ScheduleData[] => {
     const fullData: ScheduleData[] = [];
     const daysOfWeek = [
       "日曜日",
@@ -64,7 +99,7 @@ function Edit() {
       const dayIndex = date.getDay();
 
       // Find matching Firebase data for the current date
-      const firebaseEntry = firebaseData.find(
+      const firebaseEntry = schoolData.find(
         (entry) => parseInt(entry.Date.split("/")[2]) === i,
       );
 
@@ -89,9 +124,10 @@ function Edit() {
 
         // Populate data for matching Firebase entries
         fullData.push({
+          Employee: firebaseEntry.Employee,
           Date: i.toString(),
           Day: daysOfWeek[dayIndex],
-          Employee: firebaseEntry.Employee,
+          School: firebaseEntry.School,
           StartTime: startTime,
           EndTime: endTime,
           Overtime: "", // Overtime should be empty by default
@@ -104,9 +140,10 @@ function Edit() {
       } else {
         // Populate empty data for dates without Firebase entries
         fullData.push({
+          Employee: "",
           Date: i.toString(),
           Day: daysOfWeek[dayIndex],
-          Employee: "",
+          School: "",
           StartTime: "",
           EndTime: "",
           Overtime: "",
@@ -120,19 +157,32 @@ function Edit() {
     }
 
     return fullData;
-  });
+  };
+
+  const [fullMonthDataM, setFullMonthDataM] = useState<ScheduleData[]>(
+    generateFullMonthData(schoolMData),
+  );
+  const [fullMonthDataT, setFullMonthDataT] = useState<ScheduleData[]>(
+    generateFullMonthData(schoolTData),
+  );
 
   // Define the EditableCell component with proper typing and local state
-  const EditableCell = (cellProps: CellContext<ScheduleData, string>) => {
-    const [value, setValue] = useState<string>(cellProps.getValue() ?? "");
+  const EditableCell = ({
+    cellProps,
+    updateData,
+  }: {
+    cellProps: CellContext<ScheduleData, string>;
+    updateData: React.Dispatch<React.SetStateAction<ScheduleData[]>>;
+  }) => {
+    const [value, setValue] = useState(cellProps.getValue() || "");
 
     const rowIndex = cellProps.row.index;
     const columnId = cellProps.column.id;
 
     const onBlur = () => {
       // Update the state in the parent component only when the value has changed
-      setFullMonthData((oldData) =>
-        oldData.map((row, index) =>
+      updateData((old) =>
+        old.map((row, index) =>
           index === rowIndex ? { ...row, [columnId]: value } : row,
         ),
       );
@@ -150,9 +200,11 @@ function Edit() {
     );
   };
 
-  // Define columns with correct typing
+  // Define columns with editable cells for specified columns
   const columnHelper = createColumnHelper<ScheduleData>();
-  const columns: ColumnDef<ScheduleData, string>[] = [
+  const createColumns = (
+    updateData: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
+  ): ColumnDef<ScheduleData, string>[] => [
     columnHelper.accessor("Date", {
       header: "日付",
       cell: (info) => info.getValue(),
@@ -163,31 +215,31 @@ function Edit() {
     }),
     columnHelper.accessor("StartTime", {
       header: "出社時間",
-      cell: EditableCell,
+      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
     }),
     columnHelper.accessor("EndTime", {
       header: "退社時間",
-      cell: EditableCell,
+      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
     }),
     columnHelper.accessor("Overtime", {
       header: "通常残業時間",
-      cell: EditableCell,
+      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
     }),
     columnHelper.accessor("BreakTime", {
       header: "休憩時間",
-      cell: EditableCell,
+      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
     }),
     columnHelper.accessor("WorkingHours", {
       header: "労働時間",
-      cell: EditableCell,
+      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
     }),
     columnHelper.accessor("LessonHours", {
       header: "レッスン時間",
-      cell: EditableCell,
+      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
     }),
     columnHelper.accessor("NonLessonHours", {
       header: "レッスン外",
-      cell: EditableCell,
+      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
     }),
     columnHelper.accessor("Approval", {
       header: "承認",
@@ -195,16 +247,26 @@ function Edit() {
     }),
   ];
 
-  // Create table instance
-  const table = useReactTable({
-    data: fullMonthData,
-    columns,
+  // Create table instances for both schools with proper typing
+  const columnsM = createColumns(setFullMonthDataM);
+  const columnsT = createColumns(setFullMonthDataT);
+
+  const tableM = useReactTable<ScheduleData>({
+    data: fullMonthDataM,
+    columns: columnsM,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  return (
+  const tableT = useReactTable<ScheduleData>({
+    data: fullMonthDataT,
+    columns: columnsT,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  // Updated renderTable function with proper typing for Table<ScheduleData>
+  const renderTable = (table: Table<ScheduleData>, title: string) => (
     <div className="p-4 bg-white">
-      <h1 className="text-2xl font-bold mb-4">Review & Edit</h1>
+      <h1 className="text-xl font-bold mb-4">{title}</h1>
       <table className="w-full border-collapse border border-black text-xs">
         <thead>
           {/* English Headers Row */}
@@ -277,6 +339,13 @@ function Edit() {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+
+  return (
+    <div>
+      {renderTable(tableM, "南草津校")}
+      {renderTable(tableT, "高槻校")}
     </div>
   );
 }
