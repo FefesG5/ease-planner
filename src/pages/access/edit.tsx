@@ -11,7 +11,7 @@ import { useMemo } from "react";
 // Define the data type
 type ScheduleData = {
   Employee: string;
-  Date: number; // Date as a simple day number
+  Date: string;
   Day: string;
   StartTime: string;
   EndTime: string;
@@ -23,96 +23,173 @@ type ScheduleData = {
   Approval: string;
 };
 
-function Edit() {
-  // Hardcoded Data
-  const hardcodedData: ScheduleData[] = [
-    { Date: 6, Day: "水曜日", Employee: "Ari(F)", StartTime: "12:00", EndTime: "21:00", Overtime: "1.0", BreakTime: "1.5", WorkingHours: "8.0", LessonHours: "6.5", NonLessonHours: "1.5", Approval: "" },
-    { Date: 7, Day: "木曜日", Employee: "Ari(F)", StartTime: "12:00", EndTime: "21:00", Overtime: "1.0", BreakTime: "1.5", WorkingHours: "8.0", LessonHours: "6.5", NonLessonHours: "1.5", Approval: "" },
-    { Date: 8, Day: "金曜日", Employee: "Ari(F)", StartTime: "12:00", EndTime: "21:00", Overtime: "1.0", BreakTime: "1.5", WorkingHours: "8.0", LessonHours: "6.5", NonLessonHours: "1.5", Approval: "" },
-    // Other hardcoded entries here...
-  ];
+// Mock data from Firebase
+const firebaseData = [
+  {
+    Employee: "Ari(F)",
+    Date: "2024/11/11",
+    Day: "Monday",
+    School: "M",
+    Shift: "12:00-21:00",
+  },
+  {
+    Employee: "Ari(F)",
+    Date: "2024/11/12",
+    Day: "Tuesday",
+    School: "T",
+    Shift: "12:00-21:00",
+  },
+  {
+    Employee: "Ari(F)",
+    Date: "2024/11/13",
+    Day: "Wednesday",
+    School: "M",
+    Shift: "12:00-21:00",
+  },
+  {
+    Employee: "Ari(F)",
+    Date: "2024/11/14",
+    Day: "Thursday",
+    School: "M",
+    Shift: "12:00-21:00",
+  },
+];
 
+function Edit() {
   // Generate full list of dates for November
   const fullMonthData = useMemo<ScheduleData[]>(() => {
     const fullData: ScheduleData[] = [];
-    const daysOfWeek = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
+    const daysOfWeek = [
+      "日曜日",
+      "月曜日",
+      "火曜日",
+      "水曜日",
+      "木曜日",
+      "金曜日",
+      "土曜日",
+    ];
 
+    // Helper function to calculate hours and return string format
+    const calculateHours = (start: string, end: string): string => {
+      const [startH, startM] = start.split(":").map(Number);
+      const [endH, endM] = end.split(":").map(Number);
+      const hours = endH + endM / 60 - (startH + startM / 60);
+      return hours.toFixed(1); // Convert back to string
+    };
+
+    // Fill in data for all days in November
     for (let i = 1; i <= 30; i++) {
       const date = new Date(2024, 10, i); // 10 = November, months are 0-indexed
       const dayIndex = date.getDay();
 
-      fullData.push({
-        Date: i,
-        Day: daysOfWeek[dayIndex],
-        Employee: "",
-        StartTime: "",
-        EndTime: "",
-        Overtime: "",
-        BreakTime: "",
-        WorkingHours: "",
-        LessonHours: "",
-        NonLessonHours: "",
-        Approval: ""
-      });
+      // Find matching Firebase data for the current date
+      const firebaseEntry = firebaseData.find(
+        (entry) => parseInt(entry.Date.split("/")[2]) === i,
+      );
+
+      if (firebaseEntry) {
+        // Extract shift details
+        const [startTime, endTime] = firebaseEntry.Shift.split("-");
+        const calculatedWorkingHours = calculateHours(startTime, endTime);
+
+        // Determine if break time should be applied (only if working hours > 5)
+        const breakTime =
+          parseFloat(calculatedWorkingHours) > 5 ? "1.0" : "0.0";
+        const workingHours = (
+          parseFloat(calculatedWorkingHours) - parseFloat(breakTime)
+        ).toFixed(1);
+
+        // Set lesson hours and non-lesson hours
+        const lessonHours = "6.5"; // Default lesson hours
+        const nonLessonHours = Math.max(
+          parseFloat(workingHours) - parseFloat(lessonHours),
+          0,
+        ).toFixed(1);
+
+        // Populate data for matching Firebase entries
+        fullData.push({
+          Date: i.toString(),
+          Day: daysOfWeek[dayIndex],
+          Employee: firebaseEntry.Employee,
+          StartTime: startTime,
+          EndTime: endTime,
+          Overtime: "", // Overtime should be empty by default
+          BreakTime: breakTime,
+          WorkingHours: workingHours,
+          LessonHours: lessonHours,
+          NonLessonHours: nonLessonHours,
+          Approval: "",
+        });
+      } else {
+        // Populate empty data for dates without Firebase entries
+        fullData.push({
+          Date: i.toString(),
+          Day: daysOfWeek[dayIndex],
+          Employee: "",
+          StartTime: "",
+          EndTime: "",
+          Overtime: "",
+          BreakTime: "",
+          WorkingHours: "",
+          LessonHours: "",
+          NonLessonHours: "",
+          Approval: "",
+        });
+      }
     }
 
-    // Overlay the hardcoded data
-    hardcodedData.forEach(hardcoded => {
-      const index = fullData.findIndex(entry => entry.Date === hardcoded.Date);
-      if (index > -1) {
-        fullData[index] = { ...fullData[index], ...hardcoded };
-      }
-    });
-
     return fullData;
-  }, [hardcodedData]);
+  }, []);
 
-  // Define columns
-  const columnHelper = createColumnHelper<ScheduleData>();
+  // Define columns with string types
+  const columns = useMemo<ColumnDef<ScheduleData, string>[]>(() => {
+    const columnHelper = createColumnHelper<ScheduleData>();
 
-  const columns = useMemo<ColumnDef<ScheduleData, any>[]>(() => [
-    columnHelper.accessor("Date", {
-      header: "日付",
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor("Day", {
-      header: "曜日",
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor("StartTime", {
-      header: "出社時間",
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor("EndTime", {
-      header: "退社時間",
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor("Overtime", {
-      header: "通常残業時間",
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor("BreakTime", {
-      header: "休憩時間",
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor("WorkingHours", {
-      header: "労働時間",
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor("LessonHours", {
-      header: "レッスン時間",
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor("NonLessonHours", {
-      header: "レッスン外",
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor("Approval", {
-      header: "承認",
-      cell: info => info.getValue(),
-    }),
-  ], []);
+    return [
+      columnHelper.accessor("Date", {
+        header: "日付",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("Day", {
+        header: "曜日",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("StartTime", {
+        header: "出社時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("EndTime", {
+        header: "退社時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("Overtime", {
+        header: "通常残業時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("BreakTime", {
+        header: "休憩時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("WorkingHours", {
+        header: "労働時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("LessonHours", {
+        header: "レッスン時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("NonLessonHours", {
+        header: "レッスン外",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("Approval", {
+        header: "承認",
+        cell: (info) => info.getValue(),
+      }),
+    ];
+  }, []);
 
+  // Create table instance
   const table = useReactTable({
     data: fullMonthData,
     columns,
@@ -128,30 +205,52 @@ function Edit() {
           <tr>
             <th className="border border-black px-2 py-1 font-normal">Date</th>
             <th className="border border-black px-2 py-1 font-normal">Day</th>
-            <th className="border border-black px-2 py-1 font-normal">Starting Time</th>
-            <th className="border border-black px-2 py-1 font-normal">Finishing Time</th>
-            <th className="border border-black px-2 py-1 font-normal">Overtime</th>
-            <th className="border border-black px-2 py-1 font-normal">Break Time</th>
-            <th className="border border-black px-2 py-1 font-normal">Working Hours</th>
-            <th className="border border-black px-2 py-1 font-normal">Lesson Hours</th>
-            <th className="border border-black px-2 py-1 font-normal">Non Lesson Hours</th>
-            <th className="border border-black px-2 py-1 font-normal">Approval</th>
+            <th className="border border-black px-2 py-1 font-normal">
+              Starting Time
+            </th>
+            <th className="border border-black px-2 py-1 font-normal">
+              Finishing Time
+            </th>
+            <th className="border border-black px-2 py-1 font-normal">
+              Overtime
+            </th>
+            <th className="border border-black px-2 py-1 font-normal">
+              Break Time
+            </th>
+            <th className="border border-black px-2 py-1 font-normal">
+              Working Hours
+            </th>
+            <th className="border border-black px-2 py-1 font-normal">
+              Lesson Hours
+            </th>
+            <th className="border border-black px-2 py-1 font-normal">
+              Non Lesson Hours
+            </th>
+            <th className="border border-black px-2 py-1 font-normal">
+              Approval
+            </th>
           </tr>
           {/* Japanese Headers Row */}
           <tr>
-            {table.getHeaderGroups()[0].headers.map(header => (
-              <th key={header.id} className="border border-black px-2 py-1 font-normal">
+            {table.getHeaderGroups()[0].headers.map((header) => (
+              <th
+                key={header.id}
+                className="border border-black px-2 py-1 font-normal"
+              >
                 {header.isPlaceholder
                   ? null
-                  : flexRender(header.column.columnDef.header, header.getContext())}
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {table.getRowModel().rows.map(row => (
+          {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
-              {row.getVisibleCells().map(cell => (
+              {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="border border-black px-2 py-1">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
