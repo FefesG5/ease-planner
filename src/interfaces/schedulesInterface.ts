@@ -17,3 +17,11 @@ export interface SchedulePDF {
   year: string;
   signedUrl: string;
 }
+
+// Interface for Attendance Header Props to dynamically render year, month, school name, and teacher name in the header component.
+export interface AttendanceHeaderProps {
+  year: number;
+  month: number;
+  schoolName: string;
+  teacherName: string;
+}
