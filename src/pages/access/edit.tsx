@@ -265,89 +265,105 @@ function Edit() {
   });
 
   // Updated renderTable function with proper typing for Table<ScheduleData>
-  const renderTable = (table: Table<ScheduleData>, title: string) => (
-    <div className="p-4 bg-white">
-      <AttendanceHeader />
-      <h1 className="text-xl font-bold mb-4">{title}</h1>
-      <table className="w-full border-collapse border border-black text-xs">
-        <thead>
-          {/* English Headers Row */}
-          <tr>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
-              Date
-            </th>
-            <th
-              className="border border-black px-0.5 py-0.5 font-normal"
-              style={{ width: "80px" }}
-            >
-              Day
-            </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
-              Starting Time
-            </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
-              Finishing Time
-            </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
-              Overtime
-            </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
-              Break Time
-            </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
-              Working Hours
-            </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
-              Lesson Hours
-            </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
-              Non Lesson Hours
-            </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
-              Approval
-            </th>
-          </tr>
-          {/* Japanese Headers Row */}
-          <tr>
-            {table.getHeaderGroups()[0].headers.map((header) => (
-              <th
-                key={header.id}
-                className="border border-black px-0.5 py-0.5 font-normal"
-                style={header.column.id === "Day" ? { width: "80px" } : {}}
-              >
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
+  const renderTable = (
+    table: Table<ScheduleData>,
+    schoolName: string,
+    teacherName: string,
+  ) => {
+    // Extracting year and month from the first entry, assuming all entries are in the same month
+    const [year, month] =
+      fullMonthDataM.length > 0
+        ? [2024, 11] // Replace with dynamic extraction if needed
+        : [2024, 11];
+
+    return (
+      <div className="p-4 bg-white">
+        <AttendanceHeader
+          year={year}
+          month={month}
+          schoolName={schoolName}
+          teacherName={teacherName}
+        />
+        <table className="w-full border-collapse border border-black text-xs mt-4">
+          <thead>
+            {/* English Headers Row */}
+            <tr>
+              <th className="border border-black px-0.5 py-0.5 font-normal">
+                Date
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="text-center">
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="border border-black px-0.5 py-0.5"
-                  style={cell.column.id === "Day" ? { width: "80px" } : {}}
+              <th
+                className="border border-black px-0.5 py-0.5 font-normal"
+                style={{ width: "80px" }}
+              >
+                Day
+              </th>
+              <th className="border border-black px-0.5 py-0.5 font-normal">
+                Starting Time
+              </th>
+              <th className="border border-black px-0.5 py-0.5 font-normal">
+                Finishing Time
+              </th>
+              <th className="border border-black px-0.5 py-0.5 font-normal">
+                Overtime
+              </th>
+              <th className="border border-black px-0.5 py-0.5 font-normal">
+                Break Time
+              </th>
+              <th className="border border-black px-0.5 py-0.5 font-normal">
+                Working Hours
+              </th>
+              <th className="border border-black px-0.5 py-0.5 font-normal">
+                Lesson Hours
+              </th>
+              <th className="border border-black px-0.5 py-0.5 font-normal">
+                Non Lesson Hours
+              </th>
+              <th className="border border-black px-0.5 py-0.5 font-normal">
+                Approval
+              </th>
+            </tr>
+            {/* Japanese Headers Row */}
+            <tr>
+              {table.getHeaderGroups()[0].headers.map((header) => (
+                <th
+                  key={header.id}
+                  className="border border-black px-0.5 py-0.5 font-normal"
+                  style={header.column.id === "Day" ? { width: "80px" } : {}}
                 >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr key={row.id} className="text-center">
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className="border border-black px-0.5 py-0.5"
+                    style={cell.column.id === "Day" ? { width: "80px" } : {}}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   return (
     <div>
-      {renderTable(tableM, "南草津校")}
-      {renderTable(tableT, "高槻校")}
+      {renderTable(tableM, "南草津校", "Ari(F)")}
+      {renderTable(tableT, "高槻校", "Ari(F)")}
     </div>
   );
 }
