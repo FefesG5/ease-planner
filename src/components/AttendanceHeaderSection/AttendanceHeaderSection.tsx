@@ -7,13 +7,11 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
   schoolName,
   teacherName,
 }) => {
-  const yearMonth = `${year}年${month}月度`;
-
   return (
     <div className="grid grid-cols-3 items-center bg-white">
       {/* Year Month */}
       <div className="flex items-center justify-start h-full pl-5 font-bold">
-        {yearMonth}
+        {year}年{month}月度
       </div>
 
       {/* Title */}
