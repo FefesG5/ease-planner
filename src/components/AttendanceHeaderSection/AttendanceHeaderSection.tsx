@@ -1,11 +1,19 @@
 import React from "react";
+import { AttendanceHeaderProps } from "@/interfaces/schedulesInterface";
 
-const AttendanceHeader = () => {
+const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
+  year,
+  month,
+  schoolName,
+  teacherName,
+}) => {
+  const yearMonth = `${year}年${month}月度`;
+
   return (
     <div className="grid grid-cols-3 items-center bg-white">
       {/* Year Month */}
       <div className="flex items-center justify-start h-full pl-5 font-bold">
-        2024年10月度
+        {yearMonth}
       </div>
 
       {/* Title */}
@@ -25,7 +33,7 @@ const AttendanceHeader = () => {
           </div>
           {/* School Name */}
           <div className="flex items-center h-full px-1.5">
-            TryAngle Kids 南草津校
+            TryAngle Kids {schoolName}
           </div>
         </div>
 
@@ -43,7 +51,7 @@ const AttendanceHeader = () => {
             </div>
           </div>
           {/* Name Box Area */}
-          <div className="flex items-center h-full px-1.5">Gee Chai</div>
+          <div className="flex items-center h-full px-1.5">{teacherName}</div>
         </div>
 
         {/* Signature Section */}
