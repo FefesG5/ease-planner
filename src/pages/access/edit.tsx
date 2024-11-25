@@ -8,6 +8,7 @@ import {
   CellContext,
   Table,
 } from "@tanstack/react-table";
+import AttendanceHeader from "@/components/AttendanceHeaderSection/AttendanceHeaderSection";
 import { useState } from "react";
 
 // Define the data type
@@ -266,6 +267,7 @@ function Edit() {
   // Updated renderTable function with proper typing for Table<ScheduleData>
   const renderTable = (table: Table<ScheduleData>, title: string) => (
     <div className="p-4 bg-white">
+      <AttendanceHeader />
       <h1 className="text-xl font-bold mb-4">{title}</h1>
       <table className="w-full border-collapse border border-black text-xs">
         <thead>
