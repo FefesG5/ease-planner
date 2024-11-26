@@ -17,7 +17,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
   const [year, month] = [2024, 11]; // Static values for November 2024, replace with dynamic extraction if necessary
 
   return (
-    <div className="p-4 bg-white">
+    <div className="p-4 bg-white w-full">
       <AttendanceHeader
         year={year}
         month={month}
