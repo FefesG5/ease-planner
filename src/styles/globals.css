@@ -57,3 +57,42 @@ body {
     text-wrap: balance;
   }
 }
+
+@media print {
+  @page {
+    size: A4 portrait; /* Set page size to A4 */
+    margin: 0; /* Remove any default browser margins */
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    width: 210mm; /* A4 width */
+    height: 297mm; /* A4 height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .a4-page {
+    width: 210mm;
+    height: 297mm;
+    margin: auto;
+    page-break-after: always; /* Each div with class .a4-page will start on a new page */
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+
+.a4-page {
+  width: 210mm; /* Set dimensions for on-screen view */
+  min-height: 297mm;
+  margin: 20px auto;
+  border: 1px solid black; /* To make sure the page is visible */
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add some shadow for visibility on screen */
+  background: white;
+}
