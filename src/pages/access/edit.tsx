@@ -249,8 +249,16 @@ function Edit() {
 
   return (
     <div>
-      <RenderTable table={tableM} schoolName="南草津校" teacherName="Ari(F)" />
-      <RenderTable table={tableT} schoolName="高槻校" teacherName="Ari(F)" />
+      <div className="a4-page">
+        <RenderTable
+          table={tableM}
+          schoolName="南草津校"
+          teacherName="Ari(F)"
+        />
+      </div>
+      <div className="a4-page">
+        <RenderTable table={tableT} schoolName="高槻校" teacherName="Ari(F)" />
+      </div>
     </div>
   );
 }
