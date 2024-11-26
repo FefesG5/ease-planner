@@ -8,7 +8,7 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
   teacherName,
 }) => {
   return (
-    <div className="grid grid-cols-3 items-center bg-white">
+    <div className="grid grid-cols-3 items-center bg-white w-full">
       {/* Year Month */}
       <div className="flex items-center justify-start h-full pl-5 font-bold">
         {year}年{month}月度
@@ -26,11 +26,11 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
         {/* Place Section */}
         <div className="grid grid-cols-[auto_1fr] items-stretch border border-black h-full">
           {/* School Title */}
-          <div className="border-r border-black flex items-center justify-center h-full px-1.5">
+          <div className="border-r border-black flex items-center justify-center h-full px-1 text-xs">
             所属
           </div>
           {/* School Name */}
-          <div className="flex items-center h-full px-1.5">
+          <div className="flex items-center h-full px-1.5 text-xs">
             TryAngle Kids {schoolName}
           </div>
         </div>
@@ -40,22 +40,24 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
           {/* Name Labels Container */}
           <div className="grid grid-rows-2 border-r border-black h-full">
             {/* Name Title English */}
-            <div className="border-b border-black flex items-center justify-center h-full px-1.5">
+            <div className="border-b border-black flex items-center justify-center h-full px-1.5 text-xs">
               Name
             </div>
             {/* Name Title Japanese */}
-            <div className="flex items-center justify-center h-full text-sm px-1.5">
+            <div className="flex items-center justify-center h-full text-xs px-1.5">
               氏名
             </div>
           </div>
           {/* Name Box Area */}
-          <div className="flex items-center h-full px-1.5">{teacherName}</div>
+          <div className="flex items-center h-full px-1.5 text-xs">
+            {teacherName}
+          </div>
         </div>
 
         {/* Signature Section */}
         <div className="grid grid-rows-2 border border-black ml-5 mr-5">
           {/* Signature Title */}
-          <div className="text-left border-b border-black px-1.5">
+          <div className="text-left border-b border-black px-1.5 text-xs">
             Signature
           </div>
           {/* Empty box area */}
