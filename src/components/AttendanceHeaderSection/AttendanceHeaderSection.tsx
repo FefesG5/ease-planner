@@ -10,12 +10,12 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
   return (
     <div className="grid grid-cols-3 items-center bg-white w-full">
       {/* Year Month */}
-      <div className="flex items-center justify-start h-full pl-5 font-bold">
+      <div className="flex items-center justify-start h-full pl-5 font-bold text-xl">
         {year}年{month}月度
       </div>
 
       {/* Title */}
-      <div className="flex items-center justify-center h-full text-xl font-bold">
+      <div className="flex items-center justify-center h-full text-3xl font-bold">
         出 勤 簿
       </div>
       {/* Empty Space to leave space on the right */}
