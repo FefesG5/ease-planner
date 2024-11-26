@@ -24,7 +24,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
         schoolName={schoolName}
         teacherName={teacherName}
       />
-      <table className="w-full border-collapse border border-black text-xs mt-4">
+      <table className="w-full border-collapse border border-black text-[9px] mt-4">
         <thead>
           {/* English Headers Row */}
           <tr>
@@ -55,7 +55,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
             <th className="border border-black px-0.5 py-0.5 font-normal">
               Lesson Hours
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
+            <th className="border border-black px-0.5 py-0.5 font-normal text-[6px]">
               Non Lesson Hours
             </th>
             <th className="border border-black px-0.5 py-0.5 font-normal">
