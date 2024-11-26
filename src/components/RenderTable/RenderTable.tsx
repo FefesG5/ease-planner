@@ -24,7 +24,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
         schoolName={schoolName}
         teacherName={teacherName}
       />
-      <table className="w-full border-collapse border border-black text-[9px] mt-4">
+      <table className="w-full border-collapse border border-black text-[10px] mt-4">
         <thead>
           {/* English Headers Row */}
           <tr>
@@ -32,8 +32,8 @@ const RenderTable: React.FC<RenderTableProps> = ({
               Date
             </th>
             <th
-              className="border border-black px-0.5 py-0.5 font-normal"
-              style={{ width: "80px" }}
+              className="border border-black px-0 py-0.5 font-normal" // Completely removed horizontal padding for "Day" column
+              style={{ width: "50px" }} // Reduced width for "Day" column to make it visibly narrower
             >
               Day
             </th>
@@ -67,8 +67,10 @@ const RenderTable: React.FC<RenderTableProps> = ({
             {table.getHeaderGroups()[0].headers.map((header) => (
               <th
                 key={header.id}
-                className="border border-black px-0.5 py-0.5 font-normal"
-                style={header.column.id === "Day" ? { width: "80px" } : {}}
+                className={`border border-black font-normal ${
+                  header.column.id === "Day" ? "px-0 py-0.5" : "px-0.5 py-0.5"
+                }`} // Removed horizontal padding for "Day" column
+                style={header.column.id === "Day" ? { width: "50px" } : {}} // Reduced width for "Day" column
               >
                 {header.isPlaceholder
                   ? null
@@ -86,8 +88,10 @@ const RenderTable: React.FC<RenderTableProps> = ({
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className="border border-black px-0.5 py-0.5"
-                  style={cell.column.id === "Day" ? { width: "80px" } : {}}
+                  className={`border border-black ${
+                    cell.column.id === "Day" ? "px-0 py-0.5" : "px-0.5 py-0.5"
+                  }`} // Removed horizontal padding for "Day" column
+                  style={cell.column.id === "Day" ? { width: "50px" } : {}} // Reduced width for "Day" column
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
