@@ -4,28 +4,11 @@ import {
   createColumnHelper,
   getCoreRowModel,
   ColumnDef,
-  flexRender,
   CellContext,
-  Table,
 } from "@tanstack/react-table";
-import AttendanceHeader from "@/components/AttendanceHeaderSection/AttendanceHeaderSection";
 import { useState } from "react";
-
-// Define the data type
-type ScheduleData = {
-  Employee: string;
-  Date: string;
-  Day: string;
-  School: string;
-  StartTime: string;
-  EndTime: string;
-  Overtime: string;
-  BreakTime: string;
-  WorkingHours: string;
-  LessonHours: string;
-  NonLessonHours: string;
-  Approval: string;
-};
+import RenderTable from "@/components/RenderTable/RenderTable";
+import { ScheduleData } from "@/interfaces/schedulesInterface";
 
 // Mock data from Firebase
 const firebaseData = [
@@ -167,7 +150,7 @@ function Edit() {
     generateFullMonthData(schoolTData),
   );
 
-  // Define the EditableCell component with proper typing and local state
+  // EditableCell component
   const EditableCell = ({
     cellProps,
     updateData,
@@ -264,106 +247,10 @@ function Edit() {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  // Updated renderTable function with proper typing for Table<ScheduleData>
-  const renderTable = (
-    table: Table<ScheduleData>,
-    schoolName: string,
-    teacherName: string,
-  ) => {
-    // Extracting year and month from the first entry, assuming all entries are in the same month
-    const [year, month] =
-      fullMonthDataM.length > 0
-        ? [2024, 11] // Replace with dynamic extraction if needed
-        : [2024, 11];
-
-    return (
-      <div className="p-4 bg-white">
-        <AttendanceHeader
-          year={year}
-          month={month}
-          schoolName={schoolName}
-          teacherName={teacherName}
-        />
-        <table className="w-full border-collapse border border-black text-xs mt-4">
-          <thead>
-            {/* English Headers Row */}
-            <tr>
-              <th className="border border-black px-0.5 py-0.5 font-normal">
-                Date
-              </th>
-              <th
-                className="border border-black px-0.5 py-0.5 font-normal"
-                style={{ width: "80px" }}
-              >
-                Day
-              </th>
-              <th className="border border-black px-0.5 py-0.5 font-normal">
-                Starting Time
-              </th>
-              <th className="border border-black px-0.5 py-0.5 font-normal">
-                Finishing Time
-              </th>
-              <th className="border border-black px-0.5 py-0.5 font-normal">
-                Overtime
-              </th>
-              <th className="border border-black px-0.5 py-0.5 font-normal">
-                Break Time
-              </th>
-              <th className="border border-black px-0.5 py-0.5 font-normal">
-                Working Hours
-              </th>
-              <th className="border border-black px-0.5 py-0.5 font-normal">
-                Lesson Hours
-              </th>
-              <th className="border border-black px-0.5 py-0.5 font-normal">
-                Non Lesson Hours
-              </th>
-              <th className="border border-black px-0.5 py-0.5 font-normal">
-                Approval
-              </th>
-            </tr>
-            {/* Japanese Headers Row */}
-            <tr>
-              {table.getHeaderGroups()[0].headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="border border-black px-0.5 py-0.5 font-normal"
-                  style={header.column.id === "Day" ? { width: "80px" } : {}}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="text-center">
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="border border-black px-0.5 py-0.5"
-                    style={cell.column.id === "Day" ? { width: "80px" } : {}}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
   return (
     <div>
-      {renderTable(tableM, "南草津校", "Ari(F)")}
-      {renderTable(tableT, "高槻校", "Ari(F)")}
+      <RenderTable table={tableM} schoolName="南草津校" teacherName="Ari(F)" />
+      <RenderTable table={tableT} schoolName="高槻校" teacherName="Ari(F)" />
     </div>
   );
 }
