@@ -29,37 +29,37 @@ const RenderTable: React.FC<RenderTableProps> = ({
           {/* English Headers Row */}
           <tr>
             <th className="border border-black px-0.5 py-0.5 font-normal">
-              Date
+              date
             </th>
             <th
               className="border border-black px-0 py-0.5 font-normal" // Completely removed horizontal padding for "Day" column
               style={{ width: "50px" }} // Reduced width for "Day" column to make it visibly narrower
             >
-              Day
+              day
             </th>
             <th className="border border-black px-0.5 py-0.5 font-normal">
-              Starting Time
+              starting time
             </th>
             <th className="border border-black px-0.5 py-0.5 font-normal">
-              Finishing Time
+              finishing time
             </th>
             <th className="border border-black px-0.5 py-0.5 font-normal">
-              Overtime
+              overtime
             </th>
             <th className="border border-black px-0.5 py-0.5 font-normal">
-              Break Time
+              break time
             </th>
             <th className="border border-black px-0.5 py-0.5 font-normal">
-              Working Hours
+              working hours
             </th>
             <th className="border border-black px-0.5 py-0.5 font-normal">
-              Lesson Hours
+              lesson hours
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal text-[6px]">
-              Non Lesson Hours
+            <th className="border border-black px-0.5 py-0.5 font-normal text-[7px]">
+              Non lesson hours
             </th>
             <th className="border border-black px-0.5 py-0.5 font-normal">
-              Approval
+              approval
             </th>
           </tr>
           {/* Japanese Headers Row */}
