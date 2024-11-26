@@ -22,7 +22,7 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
       <div />
 
       {/* Main Content Section */}
-      <div className="grid grid-cols-[3fr_5fr_2fr] col-span-3 gap-0 mt-0">
+      <div className="grid grid-cols-[4fr_3fr_2fr] col-span-3 gap-0 mt-0">
         {/* Place Section */}
         <div className="grid grid-cols-[auto_1fr] items-stretch border border-black h-full">
           {/* School Title */}
