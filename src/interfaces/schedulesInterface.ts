@@ -25,3 +25,19 @@ export interface AttendanceHeaderProps {
   schoolName: string;
   teacherName: string;
 }
+
+// ScheduleData interface for handling detailed schedule information, including working hours, lesson hours, etc.
+export interface ScheduleData {
+  Employee: string;
+  Date: string;
+  Day: string;
+  School: string;
+  StartTime: string;
+  EndTime: string;
+  Overtime: string;
+  BreakTime: string;
+  WorkingHours: string;
+  LessonHours: string;
+  NonLessonHours: string;
+  Approval: string;
+}
