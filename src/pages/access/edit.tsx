@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import RenderTable from "@/components/RenderTable/RenderTable";
+import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
 import { ScheduleData } from "@/interfaces/schedulesInterface";
 
 // Mock data from Firebase
@@ -248,16 +249,30 @@ function Edit() {
   });
 
   return (
-    <div>
-      <div className="a4-page">
-        <RenderTable
-          table={tableM}
-          schoolName="南草津校"
-          teacherName="Ari(F)"
-        />
+    <div className="relative flex xl:flex-row flex-col xl:flex-1 min-w-0">
+      {/* Left Section - Available Schedules */}
+      <div className="xl:w-[20%] w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
+        <ScheduleOverview />
       </div>
-      <div className="a4-page">
-        <RenderTable table={tableT} schoolName="高槻校" teacherName="Ari(F)" />
+
+      {/* Right Section - A4 Editable Tables */}
+      <div className="xl:w-[80%] w-full">
+        {/* First table */}
+        <div className="a4-page">
+          <RenderTable
+            table={tableM}
+            schoolName="南草津校"
+            teacherName="Ari(F)"
+          />
+        </div>
+        {/* Second table */}
+        <div className="a4-page">
+          <RenderTable
+            table={tableT}
+            schoolName="高槻校"
+            teacherName="Ari(F)"
+          />
+        </div>
       </div>
     </div>
   );
