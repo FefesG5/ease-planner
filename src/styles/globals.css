@@ -63,11 +63,10 @@ body {
   .a4-page {
     width: 210mm;
     min-height: 297mm;
-    margin: 20px auto;
     border: 1px solid black;
     padding: 15mm;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     background: white;
+    margin: auto;
   }
 }
 
