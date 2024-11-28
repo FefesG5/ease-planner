@@ -194,7 +194,7 @@ function Schedule() {
       {/* Left Section - Filters and File List */}
       <div className="xl:w-[30%] w-full flex flex-col justify-between min-h-[600px] p-4 xl:p-4 text-[color:var(--body-text-color)] xl:flex-shrink-0 bg-[var(--user-section-bg-color)] relative">
         <div className="space-y-1">
-          <h1 className="text-xl font-semibold mb-1 text-center xl:text-left">
+          <h1 className="text-base font-semibold mb-1 text-center xl:text-left tracking-wide uppercase">
             Available Schedules
           </h1>
           {/* Filters */}
