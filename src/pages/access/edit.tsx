@@ -6,6 +6,8 @@ import {
   ColumnDef,
   CellContext,
 } from "@tanstack/react-table";
+import { useQuery } from "@tanstack/react-query";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { useState } from "react";
 import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
@@ -51,6 +53,53 @@ const firebaseData = [
 ];
 
 function Edit() {
+  const { user } = useAuthContext();
+
+  // React Query to fetch filtered schedules
+  const {
+    data: filteredSchedules = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["filteredSchedules"], // Query key
+    queryFn: async () => {
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const token = await user.getIdToken();
+      const userId = user.uid;
+
+      // Corrected fetch call with the proper API route
+      const response = await fetch(
+        `/api/schedules/getFilteredSchedulesByUser?userId=${userId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch filtered schedules");
+      }
+
+      return response.json();
+    },
+    staleTime: 10 * 60 * 1000, // Cache the data for 10 minutes
+  });
+
+  // Log the fetched schedules to the console for debugging
+  if (!isLoading && !isError) {
+    console.log("Fetched Filtered Schedules:", filteredSchedules);
+  }
+
+  if (isError) {
+    console.error("Error fetching filtered schedules:", error);
+  }
+
   // Split the data by school
   const schoolMData = firebaseData.filter((entry) => entry.School === "M");
   const schoolTData = firebaseData.filter((entry) => entry.School === "T");
