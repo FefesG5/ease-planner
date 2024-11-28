@@ -40,15 +40,12 @@ function ScheduleOverview({
                     {schedule.month} {schedule.year} - {schedule.teacherName}
                   </p>
                   <p className="italic text-gray-500">
-                    Generated:{" "}
-                    {new Date(schedule.generatedAt).toLocaleDateString(
-                      "en-US",
-                      {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      },
-                    )}
+                    {new Date(schedule.generatedAt).toLocaleString("en-US", {
+                      timeZone: "Asia/Tokyo",
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
               </div>
