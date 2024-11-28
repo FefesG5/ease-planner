@@ -62,9 +62,11 @@ const generateFilteredSchedule = async (
     const saveResult = await userRef.collection("filteredSchedules").add({
       month: scheduleData.month,
       year: scheduleData.year,
+      teacherName,
       schedules: filteredSchedules,
       generatedAt: new Date().toISOString(),
     });
+    
 
     console.info("Filtered schedule saved successfully under user:", userId);
     res.status(200).json({
