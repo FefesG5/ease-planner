@@ -301,7 +301,11 @@ function Edit() {
     <div className="relative flex xl:flex-row flex-col xl:flex-1 min-w-0">
       {/* Left Section - Available Schedules */}
       <div className="xl:w-[20%] w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
-        <ScheduleOverview />
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <ScheduleOverview availableSchedules={filteredSchedules} />
+        )}
       </div>
 
       {/* Right Section - A4 Editable Tables */}
