@@ -9,6 +9,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useState } from "react";
+import Spinner from "@/components/Spinner/Spinner";
 import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
 import { ScheduleData } from "@/interfaces/schedulesInterface";
@@ -302,7 +303,7 @@ function Edit() {
       {/* Left Section - Available Schedules */}
       <div className="xl:w-[20%] w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
         {isLoading ? (
-          <p>Loading...</p>
+          <Spinner />
         ) : (
           <ScheduleOverview availableSchedules={filteredSchedules} />
         )}
