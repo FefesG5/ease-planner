@@ -13,52 +13,48 @@ const RenderTable: React.FC<RenderTableProps> = ({
   schoolName,
   teacherName,
 }) => {
-  // Extracting year and month from the first entry, assuming all entries are in the same month
-  const [year, month] = [2024, 11]; // Static values for November 2024, replace with dynamic extraction if necessary
+  const [year, month] = [2024, 11]; // Static values for November 2024
 
   return (
-    <div className="p-4 bg-white w-full">
+    <div className="p-2 sm:p-3 md:p-4 bg-white w-full overflow-x-auto lg:overflow-visible">
       <AttendanceHeader
         year={year}
         month={month}
         schoolName={schoolName}
         teacherName={teacherName}
       />
-      <table className="w-full border-collapse border border-black text-[10px] mt-4">
+      <table className="w-full border-collapse border border-black text-[6px] sm:text-[7px] md:text-[8px] lg:text-[9px] xl:text-[10px] mt-2 sm:mt-4">
         <thead>
           {/* English Headers Row */}
           <tr>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal">
               date
             </th>
-            <th
-              className="border border-black px-0 py-0.5 font-normal" // Completely removed horizontal padding for "Day" column
-              style={{ width: "50px" }} // Reduced width for "Day" column to make it visibly narrower
-            >
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal whitespace-nowrap">
               day
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal">
               starting time
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal">
               finishing time
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal">
               overtime
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal">
               break time
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal">
               working hours
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal">
               lesson hours
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal text-[7px]">
-              Non lesson hours
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal">
+              non lesson hours
             </th>
-            <th className="border border-black px-0.5 py-0.5 font-normal">
+            <th className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 font-normal">
               approval
             </th>
           </tr>
@@ -67,10 +63,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
             {table.getHeaderGroups()[0].headers.map((header) => (
               <th
                 key={header.id}
-                className={`border border-black font-normal ${
-                  header.column.id === "Day" ? "px-0 py-0.5" : "px-0.5 py-0.5"
-                }`} // Removed horizontal padding for "Day" column
-                style={header.column.id === "Day" ? { width: "50px" } : {}} // Reduced width for "Day" column
+                className="border border-black font-normal text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 whitespace-nowrap"
               >
                 {header.isPlaceholder
                   ? null
@@ -88,10 +81,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className={`border border-black ${
-                    cell.column.id === "Day" ? "px-0 py-0.5" : "px-0.5 py-0.5"
-                  }`} // Removed horizontal padding for "Day" column
-                  style={cell.column.id === "Day" ? { width: "50px" } : {}} // Reduced width for "Day" column
+                  className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 text-[5px] sm:text-[6px] md:text-[7px] lg:text-[8px] xl:text-[9px] whitespace-nowrap"
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
