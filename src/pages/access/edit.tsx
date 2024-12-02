@@ -89,10 +89,9 @@ function Edit() {
 
       return response.json();
     },
-    staleTime: 10 * 60 * 1000, // Cache the data for 10 minutes
+    staleTime: 10 * 60 * 1000,
   });
 
-  // Log the fetched schedules to the console for debugging
   if (!isLoading && !isError) {
     console.log("Fetched Filtered Schedules:", filteredSchedules);
   }
@@ -120,15 +119,6 @@ function Edit() {
       "土曜日",
     ];
 
-    // Helper function to calculate hours and return string format
-    const calculateHours = (start: string, end: string): string => {
-      const [startH, startM] = start.split(":").map(Number);
-      const [endH, endM] = end.split(":").map(Number);
-      const hours = endH + endM / 60 - (startH + startM / 60);
-      return hours.toFixed(1); // Convert back to string
-    };
-
-    // Fill in data for all days in November
     for (let i = 1; i <= 30; i++) {
       const date = new Date(2024, 10, i); // 10 = November, months are 0-indexed
       const dayIndex = date.getDay();
@@ -139,25 +129,8 @@ function Edit() {
       );
 
       if (firebaseEntry) {
-        // Extract shift details
         const [startTime, endTime] = firebaseEntry.Shift.split("-");
-        const calculatedWorkingHours = calculateHours(startTime, endTime);
-
-        // Determine if break time should be applied (only if working hours > 5)
-        const breakTime =
-          parseFloat(calculatedWorkingHours) > 5 ? "1.0" : "0.0";
-        const workingHours = (
-          parseFloat(calculatedWorkingHours) - parseFloat(breakTime)
-        ).toFixed(1);
-
-        // Set lesson hours and non-lesson hours
-        const lessonHours = "6.5"; // Default lesson hours
-        const nonLessonHours = Math.max(
-          parseFloat(workingHours) - parseFloat(lessonHours),
-          0,
-        ).toFixed(1);
-
-        // Populate data for matching Firebase entries
+        
         fullData.push({
           Employee: firebaseEntry.Employee,
           Date: i.toString(),
@@ -165,11 +138,11 @@ function Edit() {
           School: firebaseEntry.School,
           StartTime: startTime,
           EndTime: endTime,
-          Overtime: "", // Overtime should be empty by default
-          BreakTime: breakTime,
-          WorkingHours: workingHours,
-          LessonHours: lessonHours,
-          NonLessonHours: nonLessonHours,
+          Overtime: "", // Left blank for manual entry
+          BreakTime: "", // Left blank for manual entry
+          WorkingHours: "", // Left blank for manual entry
+          LessonHours: "", // Left blank for manual entry
+          NonLessonHours: "", // Left blank for manual entry
           Approval: "",
         });
       } else {
