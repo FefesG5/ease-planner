@@ -81,7 +81,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-2 lg:py-2 xl:px-2 xl:py-1 text-[5px] sm:text-[6px] md:text-[7px] lg:text-[8px] xl:text-[9px] whitespace-nowrap"
+                  className="border border-black text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-1 lg:py-1 xl:px-1 xl:py-1 text-[5px] sm:text-[6px] md:text-[7px] lg:text-[8px] xl:text-[9px] whitespace-nowrap"
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
