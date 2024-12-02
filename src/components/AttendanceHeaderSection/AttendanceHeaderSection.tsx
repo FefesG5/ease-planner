@@ -1,4 +1,3 @@
-import React from "react";
 import { AttendanceHeaderProps } from "@/interfaces/schedulesInterface";
 
 const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
@@ -10,12 +9,12 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
   return (
     <div className="grid grid-cols-3 items-center bg-white w-full">
       {/* Year Month */}
-      <div className="flex items-center justify-start h-full pl-5 font-bold text-xl">
+      <div className="flex items-center justify-start h-full pl-5 font-bold text-[12px] sm:text-[16px] md:text-[18px] lg:text-[20px] xl:text-[20px]">
         {year}年{month}月度
       </div>
 
       {/* Title */}
-      <div className="flex items-center justify-center h-full text-3xl font-bold">
+      <div className="flex items-center justify-center h-full text-[16px] sm:text-[20px] md:text-[24px] lg:text-[30px] xl:text-[30px] font-bold">
         出 勤 簿
       </div>
       {/* Empty Space to leave space on the right */}
@@ -26,11 +25,11 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
         {/* Place Section */}
         <div className="grid grid-cols-[auto_1fr] items-stretch border border-black h-full">
           {/* School Title */}
-          <div className="border-r border-black flex items-center justify-center h-full px-1 text-xs">
+          <div className="border-r border-black flex items-center justify-center h-full px-1 text-[10px] sm:text-[9px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
             所属
           </div>
           {/* School Name */}
-          <div className="flex items-center h-full px-1.5 text-xs">
+          <div className="flex items-center h-full px-1.5 text-[10px] sm:text-[9px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
             TryAngle Kids {schoolName}
           </div>
         </div>
@@ -40,16 +39,16 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
           {/* Name Labels Container */}
           <div className="grid grid-rows-2 border-r border-black h-full">
             {/* Name Title English */}
-            <div className="border-b border-black flex items-center justify-center h-full px-1.5 text-xs">
+            <div className="border-b border-black flex items-center justify-center h-full px-1.5 text-[10px] sm:text-[9px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
               Name
             </div>
             {/* Name Title Japanese */}
-            <div className="flex items-center justify-center h-full text-xs px-1.5">
+            <div className="flex items-center justify-center h-full text-[10px] sm:text-[9px] md:text-[12px] lg:text-[14px] xl:text-[16px] px-1.5">
               氏名
             </div>
           </div>
           {/* Name Box Area */}
-          <div className="flex items-center h-full px-1.5 text-xs">
+          <div className="flex items-center h-full px-1.5 text-[10px] sm:text-[9px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
             {teacherName}
           </div>
         </div>
@@ -57,7 +56,7 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
         {/* Signature Section */}
         <div className="grid grid-rows-2 border border-black ml-5 mr-5">
           {/* Signature Title */}
-          <div className="text-left border-b border-black px-1.5 text-xs">
+          <div className="text-left border-b border-black px-1.5 text-[10px] sm:text-[9px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
             Signature
           </div>
           {/* Empty box area */}
