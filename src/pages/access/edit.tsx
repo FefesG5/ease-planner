@@ -4,11 +4,9 @@ import {
   createColumnHelper,
   getCoreRowModel,
   ColumnDef,
-  CellContext,
 } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useState } from "react";
 import Spinner from "@/components/Spinner/Spinner";
 import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
@@ -72,7 +70,6 @@ function Edit() {
       const token = await user.getIdToken();
       const userId = user.uid;
 
-      // Corrected fetch call with the proper API route
       const response = await fetch(
         `/api/schedules/getFilteredSchedulesByUser?userId=${userId}`,
         {
@@ -130,7 +127,7 @@ function Edit() {
 
       if (firebaseEntry) {
         const [startTime, endTime] = firebaseEntry.Shift.split("-");
-        
+
         fullData.push({
           Employee: firebaseEntry.Employee,
           Date: i.toString(),
@@ -138,11 +135,11 @@ function Edit() {
           School: firebaseEntry.School,
           StartTime: startTime,
           EndTime: endTime,
-          Overtime: "", // Left blank for manual entry
-          BreakTime: "", // Left blank for manual entry
-          WorkingHours: "", // Left blank for manual entry
-          LessonHours: "", // Left blank for manual entry
-          NonLessonHours: "", // Left blank for manual entry
+          Overtime: "",
+          BreakTime: "",
+          WorkingHours: "",
+          LessonHours: "",
+          NonLessonHours: "",
           Approval: "",
         });
       } else {
@@ -167,52 +164,11 @@ function Edit() {
     return fullData;
   };
 
-  const [fullMonthDataM, setFullMonthDataM] = useState<ScheduleData[]>(
-    generateFullMonthData(schoolMData),
-  );
-  const [fullMonthDataT, setFullMonthDataT] = useState<ScheduleData[]>(
-    generateFullMonthData(schoolTData),
-  );
+  const fullMonthDataM = generateFullMonthData(schoolMData);
+  const fullMonthDataT = generateFullMonthData(schoolTData);
 
-  // EditableCell component
-  const EditableCell = ({
-    cellProps,
-    updateData,
-  }: {
-    cellProps: CellContext<ScheduleData, string>;
-    updateData: React.Dispatch<React.SetStateAction<ScheduleData[]>>;
-  }) => {
-    const [value, setValue] = useState(cellProps.getValue() || "");
-
-    const rowIndex = cellProps.row.index;
-    const columnId = cellProps.column.id;
-
-    const onBlur = () => {
-      // Update the state in the parent component only when the value has changed
-      updateData((old) =>
-        old.map((row, index) =>
-          index === rowIndex ? { ...row, [columnId]: value } : row,
-        ),
-      );
-    };
-
-    return (
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onBlur={onBlur}
-        className="w-full h-full bg-transparent border-none p-0 m-0 text-center focus:outline-none text-[9px] sm:text-[7.5px] md:text-[7px] lg:text-[8px] xl:text-[9px]"
-        style={{ lineHeight: "1.2" }}
-      />
-    );
-  };
-
-  // Define columns with editable cells for specified columns
   const columnHelper = createColumnHelper<ScheduleData>();
-  const createColumns = (
-    updateData: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
-  ): ColumnDef<ScheduleData, string>[] => [
+  const columns: ColumnDef<ScheduleData, string>[] = [
     columnHelper.accessor("Date", {
       header: "日付",
       cell: (info) => info.getValue(),
@@ -223,31 +179,31 @@ function Edit() {
     }),
     columnHelper.accessor("StartTime", {
       header: "出社時間",
-      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("EndTime", {
       header: "退社時間",
-      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("Overtime", {
       header: "通常残業時間",
-      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("BreakTime", {
       header: "休憩時間",
-      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("WorkingHours", {
       header: "労働時間",
-      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("LessonHours", {
       header: "レッスン時間",
-      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("NonLessonHours", {
       header: "レッスン外",
-      cell: (info) => <EditableCell cellProps={info} updateData={updateData} />,
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("Approval", {
       header: "承認",
@@ -255,19 +211,15 @@ function Edit() {
     }),
   ];
 
-  // Create table instances for both schools with proper typing
-  const columnsM = createColumns(setFullMonthDataM);
-  const columnsT = createColumns(setFullMonthDataT);
-
   const tableM = useReactTable<ScheduleData>({
     data: fullMonthDataM,
-    columns: columnsM,
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   const tableT = useReactTable<ScheduleData>({
     data: fullMonthDataT,
-    columns: columnsT,
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -282,7 +234,7 @@ function Edit() {
         )}
       </div>
 
-      {/* Right Section - A4 Editable Tables */}
+      {/* Right Section - A4 Page*/}
       <div className="xl:w-[80%] w-full">
         {/* First table */}
         <div className="a4-page">
