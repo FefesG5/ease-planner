@@ -229,7 +229,7 @@ function Edit() {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onBlur={onBlur}
-        className="w-full h-full text-xs bg-transparent border-none p-0 m-0 text-center focus:outline-none"
+        className="w-full h-full bg-transparent border-none p-0 m-0 text-center focus:outline-none text-[9px] sm:text-[7.5px] md:text-[7px] lg:text-[8px] xl:text-[9px]"
         style={{ lineHeight: "1.2" }}
       />
     );
