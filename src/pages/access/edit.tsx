@@ -32,7 +32,7 @@ interface FilteredSchedule {
   year: number;
   generatedAt: string;
   teacherName: string;
-  data: FirebaseDataEntry[];
+  schedules: FirebaseDataEntry[];
 }
 
 function Edit() {
@@ -67,9 +67,9 @@ function Edit() {
   // Get the selected schedule's data
   const firebaseData = useMemo<FirebaseDataEntry[]>(() => {
     const schedule = filteredSchedules.find(
-      (schedule) => schedule.id === selectedSchedule,
+      (schedule) => schedule.id === selectedSchedule
     );
-    return schedule?.data || [];
+    return schedule?.schedules || []; // Adjusted to fetch `schedules` field
   }, [selectedSchedule, filteredSchedules]);
 
   const teacherName = useMemo(() => {
