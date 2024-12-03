@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import {
   useReactTable,
@@ -11,6 +12,9 @@ import Spinner from "@/components/Spinner/Spinner";
 import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
 import { ScheduleData } from "@/interfaces/schedulesInterface";
+
+// Move columnHelper outside the component
+const columnHelper = createColumnHelper<ScheduleData>();
 
 // Mock data from Firebase
 const firebaseData = [
@@ -54,54 +58,42 @@ const firebaseData = [
 function Edit() {
   const { user } = useAuthContext();
 
-  // React Query to fetch filtered schedules
+  // Fetch filtered schedules using React Query
   const {
     data: filteredSchedules = [],
     isLoading,
     isError,
-    error,
   } = useQuery({
-    queryKey: ["filteredSchedules"], // Query key
+    queryKey: ["filteredSchedules"],
     queryFn: async () => {
-      if (!user) {
-        throw new Error("User not authenticated");
-      }
+      if (!user) throw new Error("User not authenticated");
 
       const token = await user.getIdToken();
-      const userId = user.uid;
-
       const response = await fetch(
-        `/api/schedules/getFilteredSchedulesByUser?userId=${userId}`,
+        `/api/schedules/getFilteredSchedulesByUser?userId=${user.uid}`,
         {
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         },
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch filtered schedules");
-      }
-
+      if (!response.ok) throw new Error("Failed to fetch filtered schedules");
       return response.json();
     },
     staleTime: 10 * 60 * 1000,
   });
 
-  if (!isLoading && !isError) {
-    console.log("Fetched Filtered Schedules:", filteredSchedules);
-  }
+  // Memoized filtering of school data
+  const schoolMData = useMemo(
+    () => firebaseData.filter((entry) => entry.School === "M"),
+    [],
+  );
+  const schoolTData = useMemo(
+    () => firebaseData.filter((entry) => entry.School === "T"),
+    [],
+  );
 
-  if (isError) {
-    console.error("Error fetching filtered schedules:", error);
-  }
-
-  // Split the data by school
-  const schoolMData = firebaseData.filter((entry) => entry.School === "M");
-  const schoolTData = firebaseData.filter((entry) => entry.School === "T");
-
-  // Helper function to generate the full month data for a given school
+  // Helper function for full month data
   const generateFullMonthData = (
     schoolData: typeof firebaseData,
   ): ScheduleData[] => {
@@ -117,17 +109,15 @@ function Edit() {
     ];
 
     for (let i = 1; i <= 30; i++) {
-      const date = new Date(2024, 10, i); // 10 = November, months are 0-indexed
+      const date = new Date(2024, 10, i); // 10 = November
       const dayIndex = date.getDay();
 
-      // Find matching Firebase data for the current date
       const firebaseEntry = schoolData.find(
         (entry) => parseInt(entry.Date.split("/")[2]) === i,
       );
 
       if (firebaseEntry) {
         const [startTime, endTime] = firebaseEntry.Shift.split("-");
-
         fullData.push({
           Employee: firebaseEntry.Employee,
           Date: i.toString(),
@@ -143,7 +133,6 @@ function Edit() {
           Approval: "",
         });
       } else {
-        // Populate empty data for dates without Firebase entries
         fullData.push({
           Employee: "",
           Date: i.toString(),
@@ -160,64 +149,74 @@ function Edit() {
         });
       }
     }
-
     return fullData;
   };
 
-  const fullMonthDataM = generateFullMonthData(schoolMData);
-  const fullMonthDataT = generateFullMonthData(schoolTData);
+  // Memoized processed data for tables
+  const fullMonthDataM = useMemo(
+    () => generateFullMonthData(schoolMData),
+    [schoolMData],
+  );
+  const fullMonthDataT = useMemo(
+    () => generateFullMonthData(schoolTData),
+    [schoolTData],
+  );
 
-  const columnHelper = createColumnHelper<ScheduleData>();
-  const columns: ColumnDef<ScheduleData, string>[] = [
-    columnHelper.accessor("Date", {
-      header: "日付",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("Day", {
-      header: "曜日",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("StartTime", {
-      header: "出社時間",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("EndTime", {
-      header: "退社時間",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("Overtime", {
-      header: "通常残業時間",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("BreakTime", {
-      header: "休憩時間",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("WorkingHours", {
-      header: "労働時間",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("LessonHours", {
-      header: "レッスン時間",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("NonLessonHours", {
-      header: "レッスン外",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("Approval", {
-      header: "承認",
-      cell: (info) => info.getValue(),
-    }),
-  ];
+  // Memoized column definitions
+  const columns = useMemo<ColumnDef<ScheduleData, string>[]>(
+    () => [
+      columnHelper.accessor("Date", {
+        header: "日付",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("Day", {
+        header: "曜日",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("StartTime", {
+        header: "出社時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("EndTime", {
+        header: "退社時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("Overtime", {
+        header: "通常残業時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("BreakTime", {
+        header: "休憩時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("WorkingHours", {
+        header: "労働時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("LessonHours", {
+        header: "レッスン時間",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("NonLessonHours", {
+        header: "レッスン外",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("Approval", {
+        header: "承認",
+        cell: (info) => info.getValue(),
+      }),
+    ],
+    [],
+  );
 
-  const tableM = useReactTable<ScheduleData>({
+  // Create React Tables
+  const tableM = useReactTable({
     data: fullMonthDataM,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const tableT = useReactTable<ScheduleData>({
+  const tableT = useReactTable({
     data: fullMonthDataT,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
@@ -225,7 +224,7 @@ function Edit() {
 
   return (
     <div className="relative flex xl:flex-row flex-col xl:flex-1 min-w-0">
-      {/* Left Section - Available Schedules */}
+      {/* Left Section */}
       <div className="xl:w-[20%] w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
         {isLoading ? (
           <Spinner />
@@ -234,9 +233,8 @@ function Edit() {
         )}
       </div>
 
-      {/* Right Section - A4 Page*/}
+      {/* Right Section */}
       <div className="xl:w-[80%] w-full">
-        {/* First table */}
         <div className="a4-page">
           <RenderTable
             table={tableM}
@@ -244,7 +242,6 @@ function Edit() {
             teacherName="Ari(F)"
           />
         </div>
-        {/* Second table */}
         <div className="a4-page">
           <RenderTable
             table={tableT}
