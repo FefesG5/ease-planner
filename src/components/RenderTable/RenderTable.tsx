@@ -6,15 +6,17 @@ interface RenderTableProps {
   table: Table<ScheduleData>;
   schoolName: string;
   teacherName: string;
+  year: number;
+  month: number;
 }
 
 const RenderTable: React.FC<RenderTableProps> = ({
   table,
   schoolName,
   teacherName,
+  year,
+  month,
 }) => {
-  const [year, month] = [2024, 11]; // Static values for November 2024
-
   return (
     <div className="p-2 sm:p-3 md:p-4 bg-white w-full overflow-x-auto lg:overflow-visible">
       <AttendanceHeader

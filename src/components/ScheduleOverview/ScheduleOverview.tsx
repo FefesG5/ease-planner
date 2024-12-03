@@ -1,22 +1,28 @@
+import React from "react";
+
+interface AvailableSchedule {
+  id: string;
+  month: string;
+  year: number;
+  generatedAt: string;
+  teacherName: string;
+}
+
+interface ScheduleOverviewProps {
+  availableSchedules: AvailableSchedule[];
+  selectedScheduleId: string | null;
+  onSelectSchedule: (id: string) => void;
+}
+
 function ScheduleOverview({
   availableSchedules,
-}: {
-  availableSchedules: Array<{
-    id: string;
-    month: string;
-    year: number;
-    generatedAt: string;
-    teacherName: string;
-  }>;
-}) {
-  const handleScheduleSelect = (scheduleId: string) => {
-    console.log("Selected Schedule ID:", scheduleId);
-  };
-
+  selectedScheduleId,
+  onSelectSchedule,
+}: ScheduleOverviewProps) {
   return (
-    <div className="w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)] rounded-md shadow-sm">
+    <div className="w-full bg-white border rounded-md shadow-sm">
       {/* Header */}
-      <h2 className="text-sm font-bold px-3 py-2 border-b-[1px] border-[var(--sidebar-border-color)] text-[color:var(--body-text-color)] tracking-wide uppercase">
+      <h2 className="text-sm font-bold px-3 py-2 border-b text-gray-800 tracking-wide uppercase">
         Available Schedules
       </h2>
 
@@ -26,17 +32,17 @@ function ScheduleOverview({
           availableSchedules.map((schedule) => (
             <li
               key={schedule.id}
-              className="p-3 border shadow-sm hover:shadow-md cursor-pointer flex justify-between items-center bg-[var(--schedule-list-bg-color)] border-[var(--sidebar-border-color)] hover:bg-[var(--schedule-item-hover-bg-color)] transition-all duration-200 ease-in-out"
+              className={`p-3 border cursor-pointer flex justify-between items-center rounded-md transition-all duration-200 ${
+                selectedScheduleId === schedule.id
+                  ? "bg-blue-100 border-blue-400"
+                  : "bg-white border-gray-300 hover:bg-gray-100"
+              }`}
+              onClick={() => onSelectSchedule(schedule.id)}
             >
-              <div
-                className="flex items-center space-x-2"
-                onClick={() => handleScheduleSelect(schedule.id)}
-              >
-                <span className="text-lg text-[color:var(--body-text-color)]">
-                  📅
-                </span>
+              <div className="flex items-center space-x-2">
+                <span className="text-lg text-gray-800">📅</span>
                 <div className="text-xs">
-                  <p className="font-semibold text-[color:var(--body-text-color)]">
+                  <p className="font-semibold text-gray-800">
                     {schedule.month} {schedule.year} - {schedule.teacherName}
                   </p>
                   <p className="italic text-gray-500">
@@ -49,9 +55,6 @@ function ScheduleOverview({
                   </p>
                 </div>
               </div>
-              <button className="text-xs font-semibold text-blue-500 hover:underline">
-                Select
-              </button>
             </li>
           ))
         ) : (

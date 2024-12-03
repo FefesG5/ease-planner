@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import {
   useReactTable,
@@ -17,54 +17,34 @@ import { generateFullMonthData } from "@/utils/generateFullMonthData";
 // Move columnHelper outside the component
 const columnHelper = createColumnHelper<ScheduleData>();
 
-// Mock data from Firebase
-const firebaseData = [
-  {
-    Employee: "Ari(F)",
-    Date: "2024/11/06",
-    Day: "Wednesday",
-    School: "M",
-    Shift: "12:00-21:00",
-  },
-  {
-    Employee: "Ari(F)",
-    Date: "2024/11/07",
-    Day: "Thursday",
-    School: "M",
-    Shift: "12:00-21:00",
-  },
-  {
-    Employee: "Ari(F)",
-    Date: "2024/11/08",
-    Day: "Friday",
-    School: "T",
-    Shift: "12:00-21:00",
-  },
-  {
-    Employee: "Ari(F)",
-    Date: "2024/11/11",
-    Day: "Monday",
-    School: "M",
-    Shift: "12:00-21:00",
-  },
-  {
-    Employee: "Ari(F)",
-    Date: "2024/11/12",
-    Day: "Tuesday",
-    School: "T",
-    Shift: "12:00-21:00",
-  },
-];
+// Define interfaces
+interface FirebaseDataEntry {
+  Employee: string;
+  Date: string;
+  Day: string;
+  School: string;
+  Shift: string;
+}
+
+interface FilteredSchedule {
+  id: string;
+  month: string;
+  year: number;
+  generatedAt: string;
+  teacherName: string;
+  data: FirebaseDataEntry[];
+}
 
 function Edit() {
   const { user } = useAuthContext();
+  const [selectedSchedule, setSelectedSchedule] = useState<string | null>(null);
 
   // Fetch filtered schedules using React Query
   const {
     data: filteredSchedules = [],
     isLoading,
     isError,
-  } = useQuery({
+  } = useQuery<FilteredSchedule[]>({
     queryKey: ["filteredSchedules"],
     queryFn: async () => {
       if (!user) throw new Error("User not authenticated");
@@ -84,14 +64,29 @@ function Edit() {
     staleTime: 10 * 60 * 1000,
   });
 
+  // Get the selected schedule's data
+  const firebaseData = useMemo<FirebaseDataEntry[]>(() => {
+    const schedule = filteredSchedules.find(
+      (schedule) => schedule.id === selectedSchedule,
+    );
+    return schedule?.data || [];
+  }, [selectedSchedule, filteredSchedules]);
+
+  const teacherName = useMemo(() => {
+    const schedule = filteredSchedules.find(
+      (schedule) => schedule.id === selectedSchedule,
+    );
+    return schedule?.teacherName || "N/A";
+  }, [selectedSchedule, filteredSchedules]);
+
   // Memoized filtering of school data
   const schoolMData = useMemo(
     () => firebaseData.filter((entry) => entry.School === "M"),
-    [],
+    [firebaseData],
   );
   const schoolTData = useMemo(
     () => firebaseData.filter((entry) => entry.School === "T"),
-    [],
+    [firebaseData],
   );
 
   // Memoized processed data for tables
@@ -167,30 +162,52 @@ function Edit() {
   return (
     <div className="relative flex xl:flex-row flex-col xl:flex-1 min-w-0">
       {/* Left Section */}
-      <div className="xl:w-[20%] w-full bg-[var(--user-section-bg-color)] border-[var(--sidebar-border-color)]">
+      <div className="xl:w-[20%] w-full bg-white border-gray-300">
         {isLoading ? (
           <Spinner />
         ) : (
-          <ScheduleOverview availableSchedules={filteredSchedules} />
+          <ScheduleOverview
+            availableSchedules={filteredSchedules} // Available schedules from API
+            selectedScheduleId={selectedSchedule} // Pass the selected schedule ID
+            onSelectSchedule={(scheduleId) => setSelectedSchedule(scheduleId)} // Update state on selection
+          />
         )}
       </div>
 
       {/* Right Section */}
       <div className="xl:w-[80%] w-full">
-        <div className="a4-page">
-          <RenderTable
-            table={tableM}
-            schoolName="南草津校"
-            teacherName="Ari(F)"
-          />
-        </div>
-        <div className="a4-page">
-          <RenderTable
-            table={tableT}
-            schoolName="高槻校"
-            teacherName="Ari(F)"
-          />
-        </div>
+        {selectedSchedule ? (
+          <>
+            <div className="a4-page">
+              <RenderTable
+                table={tableM}
+                schoolName="南草津校"
+                teacherName={
+                  filteredSchedules.find(
+                    (schedule) => schedule.id === selectedSchedule,
+                  )?.teacherName || ""
+                }
+                year={2024} // Replace with dynamic year if needed
+                month={11} // Replace with dynamic month if needed
+              />
+            </div>
+            <div className="a4-page">
+              <RenderTable
+                table={tableT}
+                schoolName="高槻校"
+                teacherName={
+                  filteredSchedules.find(
+                    (schedule) => schedule.id === selectedSchedule,
+                  )?.teacherName || ""
+                }
+                year={2024} // Replace with dynamic year if needed
+                month={11} // Replace with dynamic month if needed
+              />
+            </div>
+          </>
+        ) : (
+          <p className="text-center mt-10">Select a schedule to display.</p>
+        )}
       </div>
     </div>
   );
