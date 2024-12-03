@@ -12,6 +12,7 @@ import Spinner from "@/components/Spinner/Spinner";
 import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
 import { ScheduleData } from "@/interfaces/schedulesInterface";
+import { generateFullMonthData } from "@/utils/generateFullMonthData";
 
 // Move columnHelper outside the component
 const columnHelper = createColumnHelper<ScheduleData>();
@@ -93,72 +94,13 @@ function Edit() {
     [],
   );
 
-  // Helper function for full month data
-  const generateFullMonthData = (
-    schoolData: typeof firebaseData,
-  ): ScheduleData[] => {
-    const fullData: ScheduleData[] = [];
-    const daysOfWeek = [
-      "日曜日",
-      "月曜日",
-      "火曜日",
-      "水曜日",
-      "木曜日",
-      "金曜日",
-      "土曜日",
-    ];
-
-    for (let i = 1; i <= 30; i++) {
-      const date = new Date(2024, 10, i); // 10 = November
-      const dayIndex = date.getDay();
-
-      const firebaseEntry = schoolData.find(
-        (entry) => parseInt(entry.Date.split("/")[2]) === i,
-      );
-
-      if (firebaseEntry) {
-        const [startTime, endTime] = firebaseEntry.Shift.split("-");
-        fullData.push({
-          Employee: firebaseEntry.Employee,
-          Date: i.toString(),
-          Day: daysOfWeek[dayIndex],
-          School: firebaseEntry.School,
-          StartTime: startTime,
-          EndTime: endTime,
-          Overtime: "",
-          BreakTime: "",
-          WorkingHours: "",
-          LessonHours: "",
-          NonLessonHours: "",
-          Approval: "",
-        });
-      } else {
-        fullData.push({
-          Employee: "",
-          Date: i.toString(),
-          Day: daysOfWeek[dayIndex],
-          School: "",
-          StartTime: "",
-          EndTime: "",
-          Overtime: "",
-          BreakTime: "",
-          WorkingHours: "",
-          LessonHours: "",
-          NonLessonHours: "",
-          Approval: "",
-        });
-      }
-    }
-    return fullData;
-  };
-
   // Memoized processed data for tables
   const fullMonthDataM = useMemo(
-    () => generateFullMonthData(schoolMData),
+    () => generateFullMonthData(schoolMData, 2024, 11), // Adjust year and month as needed
     [schoolMData],
   );
   const fullMonthDataT = useMemo(
-    () => generateFullMonthData(schoolTData),
+    () => generateFullMonthData(schoolTData, 2024, 11), // Adjust year and month as needed
     [schoolTData],
   );
 
