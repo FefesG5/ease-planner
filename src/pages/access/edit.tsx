@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import {
   useReactTable,
@@ -38,6 +38,9 @@ interface FilteredSchedule {
 function Edit() {
   const { user } = useAuthContext();
   const [selectedSchedule, setSelectedSchedule] = useState<string | null>(null);
+  const [lessonHours, setLessonHours] = useState<string>("0"); // Changed to string to accept text input
+  const [tableDataM, setTableDataM] = useState<ScheduleData[]>([]);
+  const [tableDataT, setTableDataT] = useState<ScheduleData[]>([]);
 
   // Fetch filtered schedules using React Query
   const {
@@ -67,7 +70,7 @@ function Edit() {
   // Get the selected schedule's data
   const firebaseData = useMemo<FirebaseDataEntry[]>(() => {
     const schedule = filteredSchedules.find(
-      (schedule) => schedule.id === selectedSchedule
+      (schedule) => schedule.id === selectedSchedule,
     );
     return schedule?.schedules || []; // Adjusted to fetch `schedules` field
   }, [selectedSchedule, filteredSchedules]);
@@ -99,65 +102,153 @@ function Edit() {
     [schoolTData],
   );
 
-  // Memoized column definitions
-  const columns = useMemo<ColumnDef<ScheduleData, string>[]>(
-    () => [
-      columnHelper.accessor("Date", {
-        header: "日付",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("Day", {
-        header: "曜日",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("StartTime", {
-        header: "出社時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("EndTime", {
-        header: "退社時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("Overtime", {
-        header: "通常残業時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("BreakTime", {
-        header: "休憩時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("WorkingHours", {
-        header: "労働時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("LessonHours", {
-        header: "レッスン時間",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("NonLessonHours", {
-        header: "レッスン外",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("Approval", {
-        header: "承認",
-        cell: (info) => info.getValue(),
-      }),
-    ],
-    [],
-  );
+  // Update tableDataM and tableDataT when fullMonthDataM and fullMonthDataT change
+  useEffect(() => {
+    setTableDataM(fullMonthDataM);
+  }, [fullMonthDataM]);
+
+  useEffect(() => {
+    setTableDataT(fullMonthDataT);
+  }, [fullMonthDataT]);
+
+  // Function to generate columns with editable LessonHours
+  const getColumns = (
+    setTableData: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
+  ): ColumnDef<ScheduleData, any>[] => [
+    columnHelper.accessor("Date", {
+      header: "日付",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("Day", {
+      header: "曜日",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("StartTime", {
+      header: "出社時間",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("EndTime", {
+      header: "退社時間",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("Overtime", {
+      header: "通常残業時間",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("BreakTime", {
+      header: "休憩時間",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("WorkingHours", {
+      header: "労働時間",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("LessonHours", {
+      header: "レッスン時間",
+      cell: (info) => {
+        const value = info.getValue();
+        const rowIndex = info.row.index;
+        return (
+          <input
+            type="number"
+            value={value || ""}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              setTableData((prevData) => {
+                const newData = [...prevData];
+                const row = { ...newData[rowIndex] };
+                row.LessonHours = inputValue; // Store raw input
+                newData[rowIndex] = row;
+                return newData;
+              });
+            }}
+            onBlur={() => {
+              setTableData((prevData) => {
+                const newData = [...prevData];
+                const row = { ...newData[rowIndex] };
+                const lessonHoursNumber = parseFloat(row.LessonHours);
+                if (!isNaN(lessonHoursNumber)) {
+                  // Format to two decimal places
+                  row.LessonHours = lessonHoursNumber.toFixed(2);
+                  const workingHours = parseFloat(row.WorkingHours) || 0;
+                  row.NonLessonHours = (
+                    workingHours - lessonHoursNumber
+                  ).toFixed(2);
+                } else {
+                  row.LessonHours = "";
+                  row.NonLessonHours = "";
+                }
+                newData[rowIndex] = row;
+                return newData;
+              });
+            }}
+            className="text-center"
+            style={{ width: "60px" }}
+          />
+        );
+      },
+    }),
+    columnHelper.accessor("NonLessonHours", {
+      header: "レッスン外",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("Approval", {
+      header: "承認",
+      cell: (info) => info.getValue(),
+    }),
+  ];
+
+  const columnsM = useMemo(() => getColumns(setTableDataM), []);
+  const columnsT = useMemo(() => getColumns(setTableDataT), []);
 
   // Create React Tables
   const tableM = useReactTable({
-    data: fullMonthDataM,
-    columns: columns,
+    data: tableDataM,
+    columns: columnsM,
     getCoreRowModel: getCoreRowModel(),
   });
 
   const tableT = useReactTable({
-    data: fullMonthDataT,
-    columns: columns,
+    data: tableDataT,
+    columns: columnsT,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  // Handle Auto-Fill Teaching Hours
+  const handleAutoFill = () => {
+    const lessonHoursValue = parseFloat(lessonHours) || 0;
+    // For tableDataM
+    setTableDataM((prevData) =>
+      prevData.map((row) => {
+        const workingHours = parseFloat(row.WorkingHours) || 0;
+        if (workingHours > 0) {
+          const nonLessonHours = workingHours - lessonHoursValue;
+          return {
+            ...row,
+            LessonHours: lessonHoursValue.toFixed(2),
+            NonLessonHours: nonLessonHours.toFixed(2),
+          };
+        }
+        return row;
+      }),
+    );
+
+    // For tableDataT
+    setTableDataT((prevData) =>
+      prevData.map((row) => {
+        const workingHours = parseFloat(row.WorkingHours) || 0;
+        if (workingHours > 0) {
+          const nonLessonHours = workingHours - lessonHoursValue;
+          return {
+            ...row,
+            LessonHours: lessonHoursValue.toFixed(2),
+            NonLessonHours: nonLessonHours.toFixed(2),
+          };
+        }
+        return row;
+      }),
+    );
+  };
 
   return (
     <div className="relative flex xl:flex-row flex-col xl:flex-1 min-w-0">
@@ -178,15 +269,38 @@ function Edit() {
       <div className="xl:w-[80%] w-full">
         {selectedSchedule ? (
           <>
+            <div className="p-4">
+              <label className="block mb-2">
+                Enter teaching hours:
+                <input
+                  type="number"
+                  step="0.01" // Allow two decimal places
+                  value={lessonHours}
+                  onChange={(e) => setLessonHours(e.target.value)}
+                  onBlur={() => {
+                    const parsedValue = parseFloat(lessonHours);
+                    if (!isNaN(parsedValue)) {
+                      setLessonHours(parsedValue.toFixed(2));
+                    } else {
+                      setLessonHours("");
+                    }
+                  }}
+                  className="ml-2 border p-1"
+                  style={{ width: "60px" }}
+                />
+              </label>
+              <button
+                onClick={handleAutoFill}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Auto-Fill Teaching Hours
+              </button>
+            </div>
             <div className="a4-page">
               <RenderTable
                 table={tableM}
                 schoolName="南草津校"
-                teacherName={
-                  filteredSchedules.find(
-                    (schedule) => schedule.id === selectedSchedule,
-                  )?.teacherName || ""
-                }
+                teacherName={teacherName}
                 year={2024} // Replace with dynamic year if needed
                 month={11} // Replace with dynamic month if needed
               />
@@ -195,11 +309,7 @@ function Edit() {
               <RenderTable
                 table={tableT}
                 schoolName="高槻校"
-                teacherName={
-                  filteredSchedules.find(
-                    (schedule) => schedule.id === selectedSchedule,
-                  )?.teacherName || ""
-                }
+                teacherName={teacherName}
                 year={2024} // Replace with dynamic year if needed
                 month={11} // Replace with dynamic month if needed
               />
