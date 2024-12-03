@@ -16,7 +16,7 @@ export function generateFullMonthData(
     Shift: string;
   }[],
   year: number,
-  month: number,
+  month: number
 ): ScheduleData[] {
   const fullData: ScheduleData[] = [];
   const daysOfWeek = [
@@ -38,23 +38,29 @@ export function generateFullMonthData(
     const dayOfWeek = currentDate.getDay(); // 0 = Sunday, 6 = Saturday
 
     // Format date as "YYYY/MM/DD" for comparison
-    const formattedDate = `${year}/${String(month).padStart(2, "0")}/${String(day).padStart(2, "0")}`;
+    const formattedDate = `${year}/${String(month).padStart(2, "0")}/${String(
+      day
+    ).padStart(2, "0")}`;
 
     // Find matching entry in school data
     const firebaseEntry = schoolData.find(
-      (entry) => entry.Date === formattedDate,
+      (entry) => entry.Date === formattedDate
     );
 
     if (firebaseEntry) {
+      // Split shift time using either "~" or "-"
+      const [startTime, endTime] = firebaseEntry.Shift.includes("~")
+        ? firebaseEntry.Shift.split("~")
+        : firebaseEntry.Shift.split("-");
+
       // Populate with existing schedule data
-      const [startTime, endTime] = firebaseEntry.Shift.split("-");
       fullData.push({
         Employee: firebaseEntry.Employee,
         Date: day.toString(),
         Day: daysOfWeek[dayOfWeek],
         School: firebaseEntry.School,
-        StartTime: startTime,
-        EndTime: endTime,
+        StartTime: startTime.trim(),
+        EndTime: endTime.trim(),
         Overtime: "",
         BreakTime: "",
         WorkingHours: "",
