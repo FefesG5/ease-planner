@@ -168,7 +168,6 @@ function Edit() {
                 const row = { ...newData[rowIndex] };
                 const lessonHoursNumber = parseFloat(row.LessonHours);
                 if (!isNaN(lessonHoursNumber)) {
-                  // Format to two decimal places
                   row.LessonHours = lessonHoursNumber.toFixed(2);
                   const workingHours = parseFloat(row.WorkingHours) || 0;
                   row.NonLessonHours = (
@@ -182,8 +181,7 @@ function Edit() {
                 return newData;
               });
             }}
-            className="text-center"
-            style={{ width: "60px" }}
+            className="text-center w-full sm:w-[50px] md:w-[50px] lg:w-[50px] xl:w-[50px]"
           />
         );
       },
