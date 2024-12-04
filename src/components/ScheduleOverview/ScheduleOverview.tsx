@@ -2,7 +2,7 @@ import React from "react";
 
 interface AvailableSchedule {
   id: string;
-  month: string;
+  month: number;
   year: number;
   generatedAt: string;
   teacherName: string;
