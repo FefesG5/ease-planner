@@ -65,7 +65,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
             {table.getHeaderGroups()[0].headers.map((header) => (
               <th
                 key={header.id}
-                className="border border-black font-normal text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-1 lg:py-1 xl:px-2 xl:py-1 whitespace-nowrap"
+                className="border border-black font-normal text-center px-0.25 py-0.25 sm:px-0.5 sm:py-0.5 md:px-1 md:py-1 lg:px-1 lg:py-1 xl:px-1 xl:py-1 whitespace-nowrap"
               >
                 {header.isPlaceholder
                   ? null
