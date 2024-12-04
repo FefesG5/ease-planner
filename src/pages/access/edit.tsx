@@ -13,18 +13,10 @@ import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
 import { ScheduleData } from "@/interfaces/schedulesInterface";
 import { generateFullMonthData } from "@/utils/generateFullMonthData";
+import { TeachersShift } from "@/interfaces/teachersShift";
 
 // Move columnHelper outside the component
 const columnHelper = createColumnHelper<ScheduleData>();
-
-// Define interfaces
-interface FirebaseDataEntry {
-  Employee: string;
-  Date: string;
-  Day: string;
-  School: string;
-  Shift: string;
-}
 
 interface FilteredSchedule {
   id: string;
@@ -32,7 +24,7 @@ interface FilteredSchedule {
   year: number;
   generatedAt: string;
   teacherName: string;
-  schedules: FirebaseDataEntry[];
+  schedules: TeachersShift[];
 }
 
 function Edit() {
@@ -69,7 +61,7 @@ function Edit() {
   });
 
   // Get the selected schedule's data
-  const firebaseData = useMemo<FirebaseDataEntry[]>(() => {
+  const firebaseData = useMemo<TeachersShift[]>(() => {
     const schedule = filteredSchedules.find(
       (schedule) => schedule.id === selectedSchedule,
     );
