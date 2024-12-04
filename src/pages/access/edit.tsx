@@ -39,6 +39,7 @@ function Edit() {
   const { user } = useAuthContext();
   const [selectedSchedule, setSelectedSchedule] = useState<string | null>(null);
   const [lessonHours, setLessonHours] = useState<string>("0"); // Changed to string to accept text input
+  const [breakTimeDefault, setBreakTimeDefault] = useState<string>("1.0");
   const [tableDataM, setTableDataM] = useState<ScheduleData[]>([]);
   const [tableDataT, setTableDataT] = useState<ScheduleData[]>([]);
 
@@ -147,7 +148,42 @@ function Edit() {
     }),
     columnHelper.accessor("BreakTime", {
       header: "休憩時間",
-      cell: (info) => info.getValue(),
+      cell: (info) => {
+        const value = info.getValue();
+        const rowIndex = info.row.index;
+        return (
+          <input
+            type="number"
+            value={value || ""}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              setTableData((prevData) => {
+                const newData = [...prevData];
+                const row = { ...newData[rowIndex] };
+                row.BreakTime = inputValue; // Store raw input
+                newData[rowIndex] = row;
+                return newData;
+              });
+            }}
+            onBlur={() => {
+              setTableData((prevData) => {
+                const newData = [...prevData];
+                const row = { ...newData[rowIndex] };
+                const breakTimeNumber = parseFloat(row.BreakTime);
+                if (!isNaN(breakTimeNumber)) {
+                  // Format to one decimal place
+                  row.BreakTime = breakTimeNumber.toFixed(1);
+                } else {
+                  row.BreakTime = "";
+                }
+                newData[rowIndex] = row;
+                return newData;
+              });
+            }}
+            className="text-center w-full sm:w-[50px] md:w-[50px] lg:w-[50px] xl:w-[50px]"
+          />
+        );
+      },
     }),
     columnHelper.accessor("WorkingHours", {
       header: "労働時間",
@@ -258,6 +294,36 @@ function Edit() {
     );
   };
 
+  // Handle Auto-Fill Break Time
+  const handleAutoFillBreakTime = () => {
+    const breakTimeValue = parseFloat(breakTimeDefault) || 0; // Use the entered break time value
+    // For tableDataM
+    setTableDataM((prevData) =>
+      prevData.map((row) => {
+        if (row.StartTime && row.EndTime) {
+          return {
+            ...row,
+            BreakTime: breakTimeValue.toFixed(1), // Set break time based on the entered value
+          };
+        }
+        return row; // Leave other rows unchanged
+      }),
+    );
+
+    // For tableDataT
+    setTableDataT((prevData) =>
+      prevData.map((row) => {
+        if (row.StartTime && row.EndTime) {
+          return {
+            ...row,
+            BreakTime: breakTimeValue.toFixed(1), // Set break time based on the entered value
+          };
+        }
+        return row; // Leave other rows unchanged
+      }),
+    );
+  };
+
   return (
     <div className="relative flex xl:flex-row flex-col xl:flex-1 min-w-0">
       {/* Left Section */}
@@ -278,32 +344,68 @@ function Edit() {
         {selectedSchedule ? (
           <>
             <div className="p-4">
-              <label className="block mb-2">
-                Enter teaching hours:
-                <input
-                  type="number"
-                  step="0.01" // Allow two decimal places
-                  value={lessonHours}
-                  onChange={(e) => setLessonHours(e.target.value)}
-                  onBlur={() => {
-                    const parsedValue = parseFloat(lessonHours);
-                    if (!isNaN(parsedValue)) {
-                      setLessonHours(parsedValue.toFixed(2));
-                    } else {
-                      setLessonHours("");
-                    }
-                  }}
-                  className="ml-2 border p-1"
-                  style={{ width: "60px" }}
-                />
-              </label>
-              <button
-                onClick={handleAutoFill}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Auto-Fill Teaching Hours
-              </button>
+              {/* Flex container for teaching hours and break time */}
+              <div className="flex flex-wrap gap-4">
+                {/* Teaching Hours */}
+                <div className="flex items-center">
+                  <label className="block mr-2">
+                    Enter teaching hours:
+                    <input
+                      type="number"
+                      step="0.01" // Allow two decimal places
+                      value={lessonHours}
+                      onChange={(e) => setLessonHours(e.target.value)}
+                      onBlur={() => {
+                        const parsedValue = parseFloat(lessonHours);
+                        if (!isNaN(parsedValue)) {
+                          setLessonHours(parsedValue.toFixed(2));
+                        } else {
+                          setLessonHours("");
+                        }
+                      }}
+                      className="ml-2 border p-1"
+                      style={{ width: "60px" }}
+                    />
+                  </label>
+                  <button
+                    onClick={handleAutoFill}
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                  >
+                    Auto-Fill Teaching Hours
+                  </button>
+                </div>
+
+                {/* Break Time */}
+                <div className="flex items-center">
+                  <label className="block mr-2">
+                    Enter default break time:
+                    <input
+                      type="number"
+                      step="0.1" // Allow one decimal place
+                      value={breakTimeDefault}
+                      onChange={(e) => setBreakTimeDefault(e.target.value)}
+                      onBlur={() => {
+                        const parsedValue = parseFloat(breakTimeDefault);
+                        if (!isNaN(parsedValue)) {
+                          setBreakTimeDefault(parsedValue.toFixed(1));
+                        } else {
+                          setBreakTimeDefault("1.0"); // Reset to default if invalid input
+                        }
+                      }}
+                      className="ml-2 border p-1"
+                      style={{ width: "60px" }}
+                    />
+                  </label>
+                  <button
+                    onClick={handleAutoFillBreakTime}
+                    className="bg-green-500 text-white px-4 py-2 rounded"
+                  >
+                    Auto-Fill Break Time
+                  </button>
+                </div>
+              </div>
             </div>
+
             <div className="a4-page">
               <RenderTable
                 table={tableM}
