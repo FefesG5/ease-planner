@@ -28,7 +28,7 @@ interface FirebaseDataEntry {
 
 interface FilteredSchedule {
   id: string;
-  month: string;
+  month: number;
   year: number;
   generatedAt: string;
   teacherName: string;
@@ -105,12 +105,13 @@ function Edit() {
 
   // Memoized processed data for tables
   const fullMonthDataM = useMemo(
-    () => generateFullMonthData(schoolMData, 2024, 11), // Adjust year and month as needed
-    [schoolMData],
+    () => generateFullMonthData(schoolMData, year, month),
+    [schoolMData, year, month],
   );
+
   const fullMonthDataT = useMemo(
-    () => generateFullMonthData(schoolTData, 2024, 11), // Adjust year and month as needed
-    [schoolTData],
+    () => generateFullMonthData(schoolTData, year, month),
+    [schoolTData, year, month],
   );
 
   // Update tableDataM and tableDataT when fullMonthDataM and fullMonthDataT change
@@ -242,8 +243,8 @@ function Edit() {
     }),
   ];
 
-  const columnsM = useMemo(() => getColumns(setTableDataM), []);
-  const columnsT = useMemo(() => getColumns(setTableDataT), []);
+  const columnsM = useMemo(() => getColumns(setTableDataM), [setTableDataM]);
+  const columnsT = useMemo(() => getColumns(setTableDataT), [setTableDataT]);
 
   // Create React Tables
   const tableM = useReactTable({
