@@ -82,6 +82,16 @@ function Edit() {
     return schedule?.teacherName || "N/A";
   }, [selectedSchedule, filteredSchedules]);
 
+  const selectedScheduleData = useMemo(() => {
+    return (
+      filteredSchedules.find((schedule) => schedule.id === selectedSchedule) ||
+      null
+    );
+  }, [selectedSchedule, filteredSchedules]);
+
+  const year = selectedScheduleData?.year || new Date().getFullYear();
+  const month = selectedScheduleData?.month || new Date().getMonth() + 1;
+
   // Memoized filtering of school data
   const schoolMData = useMemo(
     () => firebaseData.filter((entry) => entry.School === "M"),
@@ -299,8 +309,8 @@ function Edit() {
                 table={tableM}
                 schoolName="南草津校"
                 teacherName={teacherName}
-                year={2024} // Replace with dynamic year if needed
-                month={11} // Replace with dynamic month if needed
+                year={year}
+                month={typeof month === "string" ? parseInt(month, 10) : month}
               />
             </div>
             <div className="a4-page">
@@ -308,8 +318,8 @@ function Edit() {
                 table={tableT}
                 schoolName="高槻校"
                 teacherName={teacherName}
-                year={2024} // Replace with dynamic year if needed
-                month={11} // Replace with dynamic month if needed
+                year={year}
+                month={typeof month === "string" ? parseInt(month, 10) : month}
               />
             </div>
           </>
