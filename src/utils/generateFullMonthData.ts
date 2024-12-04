@@ -1,5 +1,5 @@
 import { ScheduleData } from "@/interfaces/schedulesInterface";
-
+import { TeachersShift } from "@/interfaces/teachersShift";
 /**
  * Helper function to calculate time difference in hours.
  * @param startTime - Start time in "HH:mm" format.
@@ -47,13 +47,7 @@ function calculateWorkingHours(startTime: string, endTime: string): number {
  * @returns Array of schedule data for the entire month.
  */
 export function generateFullMonthData(
-  schoolData: {
-    Employee: string;
-    Date: string; // Format: "YYYY/MM/DD"
-    Day: string;
-    School: string;
-    Shift: string;
-  }[],
+  schoolData: TeachersShift[],
   year: number,
   month: number,
 ): ScheduleData[] {
