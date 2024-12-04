@@ -13,6 +13,7 @@ import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
 import { ScheduleData } from "@/interfaces/schedulesInterface";
 import { generateFullMonthData } from "@/utils/generateFullMonthData";
+import { autofillBreakTime } from "@/utils/tableUtils";
 import { TeachersShift } from "@/interfaces/teachersShift";
 
 // Move columnHelper outside the component
@@ -289,32 +290,8 @@ function Edit() {
 
   // Handle Auto-Fill Break Time
   const handleAutoFillBreakTime = () => {
-    const breakTimeValue = parseFloat(breakTimeDefault) || 0; // Use the entered break time value
-    // For tableDataM
-    setTableDataM((prevData) =>
-      prevData.map((row) => {
-        if (row.StartTime && row.EndTime) {
-          return {
-            ...row,
-            BreakTime: breakTimeValue.toFixed(1), // Set break time based on the entered value
-          };
-        }
-        return row; // Leave other rows unchanged
-      }),
-    );
-
-    // For tableDataT
-    setTableDataT((prevData) =>
-      prevData.map((row) => {
-        if (row.StartTime && row.EndTime) {
-          return {
-            ...row,
-            BreakTime: breakTimeValue.toFixed(1), // Set break time based on the entered value
-          };
-        }
-        return row; // Leave other rows unchanged
-      }),
-    );
+    setTableDataM((prevData) => autofillBreakTime(prevData, breakTimeDefault));
+    setTableDataT((prevData) => autofillBreakTime(prevData, breakTimeDefault));
   };
 
   return (
