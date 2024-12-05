@@ -275,7 +275,7 @@ function Edit() {
       <div className="xl:w-[80%] w-full">
         {selectedSchedule ? (
           <>
-            <div className="p-4">
+            <div className="p-0">
               <AutoFillControls
                 lessonHours={lessonHours}
                 breakTimeDefault={breakTimeDefault}
