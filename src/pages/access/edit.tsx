@@ -12,21 +12,12 @@ import Spinner from "@/components/Spinner/Spinner";
 import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
 import { ScheduleData } from "@/interfaces/schedulesInterface";
+import { TeachersShift, FilteredSchedule } from "@/interfaces/teachersShift";
 import { generateFullMonthData } from "@/utils/generateFullMonthData";
 import { autofillBreakTime, autofillLessonHours } from "@/utils/tableUtils";
-import { TeachersShift } from "@/interfaces/teachersShift";
 
 // Move columnHelper outside the component
 const columnHelper = createColumnHelper<ScheduleData>();
-
-interface FilteredSchedule {
-  id: string;
-  month: number;
-  year: number;
-  generatedAt: string;
-  teacherName: string;
-  schedules: TeachersShift[];
-}
 
 function Edit() {
   const { user } = useAuthContext();
