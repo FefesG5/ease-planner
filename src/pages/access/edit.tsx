@@ -11,6 +11,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import Spinner from "@/components/Spinner/Spinner";
 import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
+import AutoFillControls from "@/components/AutoFillControls/AutoFillControls";
 import { ScheduleData } from "@/interfaces/schedulesInterface";
 import { TeachersShift, FilteredSchedule } from "@/interfaces/teachersShift";
 import { generateFullMonthData } from "@/utils/generateFullMonthData";
@@ -263,9 +264,9 @@ function Edit() {
           <Spinner />
         ) : (
           <ScheduleOverview
-            availableSchedules={filteredSchedules} // Available schedules from API
-            selectedScheduleId={selectedSchedule} // Pass the selected schedule ID
-            onSelectSchedule={(scheduleId) => setSelectedSchedule(scheduleId)} // Update state on selection
+            availableSchedules={filteredSchedules}
+            selectedScheduleId={selectedSchedule}
+            onSelectSchedule={(scheduleId) => setSelectedSchedule(scheduleId)}
           />
         )}
       </div>
@@ -275,66 +276,14 @@ function Edit() {
         {selectedSchedule ? (
           <>
             <div className="p-4">
-              {/* Flex container for teaching hours and break time */}
-              <div className="flex flex-wrap gap-4">
-                {/* Teaching Hours */}
-                <div className="flex items-center">
-                  <label className="block mr-2">
-                    Enter teaching hours:
-                    <input
-                      type="number"
-                      step="0.01" // Allow two decimal places
-                      value={lessonHours}
-                      onChange={(e) => setLessonHours(e.target.value)}
-                      onBlur={() => {
-                        const parsedValue = parseFloat(lessonHours);
-                        if (!isNaN(parsedValue)) {
-                          setLessonHours(parsedValue.toFixed(2));
-                        } else {
-                          setLessonHours("");
-                        }
-                      }}
-                      className="ml-2 border p-1"
-                      style={{ width: "60px" }}
-                    />
-                  </label>
-                  <button
-                    onClick={handleAutoFill}
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                  >
-                    Auto-Fill Teaching Hours
-                  </button>
-                </div>
-
-                {/* Break Time */}
-                <div className="flex items-center">
-                  <label className="block mr-2">
-                    Enter default break time:
-                    <input
-                      type="number"
-                      step="0.1" // Allow one decimal place
-                      value={breakTimeDefault}
-                      onChange={(e) => setBreakTimeDefault(e.target.value)}
-                      onBlur={() => {
-                        const parsedValue = parseFloat(breakTimeDefault);
-                        if (!isNaN(parsedValue)) {
-                          setBreakTimeDefault(parsedValue.toFixed(1));
-                        } else {
-                          setBreakTimeDefault("1.0"); // Reset to default if invalid input
-                        }
-                      }}
-                      className="ml-2 border p-1"
-                      style={{ width: "60px" }}
-                    />
-                  </label>
-                  <button
-                    onClick={handleAutoFillBreakTime}
-                    className="bg-green-500 text-white px-4 py-2 rounded"
-                  >
-                    Auto-Fill Break Time
-                  </button>
-                </div>
-              </div>
+              <AutoFillControls
+                lessonHours={lessonHours}
+                breakTimeDefault={breakTimeDefault}
+                onLessonHoursChange={setLessonHours}
+                onBreakTimeDefaultChange={setBreakTimeDefault}
+                handleAutoFillLessonHours={handleAutoFill}
+                handleAutoFillBreakTime={handleAutoFillBreakTime}
+              />
             </div>
 
             <div className="a4-page">
