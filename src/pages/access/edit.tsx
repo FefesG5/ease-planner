@@ -13,7 +13,7 @@ import RenderTable from "@/components/RenderTable/RenderTable";
 import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
 import { ScheduleData } from "@/interfaces/schedulesInterface";
 import { generateFullMonthData } from "@/utils/generateFullMonthData";
-import { autofillBreakTime } from "@/utils/tableUtils";
+import { autofillBreakTime, autofillLessonHours } from "@/utils/tableUtils";
 import { TeachersShift } from "@/interfaces/teachersShift";
 
 // Move columnHelper outside the component
@@ -254,38 +254,8 @@ function Edit() {
 
   // Handle Auto-Fill Teaching Hours
   const handleAutoFill = () => {
-    const lessonHoursValue = parseFloat(lessonHours) || 0;
-    // For tableDataM
-    setTableDataM((prevData) =>
-      prevData.map((row) => {
-        const workingHours = parseFloat(row.WorkingHours) || 0;
-        if (workingHours > 0) {
-          const nonLessonHours = workingHours - lessonHoursValue;
-          return {
-            ...row,
-            LessonHours: lessonHoursValue.toFixed(2),
-            NonLessonHours: nonLessonHours.toFixed(2),
-          };
-        }
-        return row;
-      }),
-    );
-
-    // For tableDataT
-    setTableDataT((prevData) =>
-      prevData.map((row) => {
-        const workingHours = parseFloat(row.WorkingHours) || 0;
-        if (workingHours > 0) {
-          const nonLessonHours = workingHours - lessonHoursValue;
-          return {
-            ...row,
-            LessonHours: lessonHoursValue.toFixed(2),
-            NonLessonHours: nonLessonHours.toFixed(2),
-          };
-        }
-        return row;
-      }),
-    );
+    setTableDataM((prevData) => autofillLessonHours(prevData, lessonHours));
+    setTableDataT((prevData) => autofillLessonHours(prevData, lessonHours));
   };
 
   // Handle Auto-Fill Break Time
