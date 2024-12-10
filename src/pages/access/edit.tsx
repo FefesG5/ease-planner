@@ -50,11 +50,12 @@ function Edit() {
     staleTime: 10 * 60 * 1000,
   });
 
+  // Get the selected schedule's data
   const firebaseData = useMemo<TeachersShift[]>(() => {
     const schedule = filteredSchedules.find(
       (schedule) => schedule.id === selectedSchedule,
     );
-    return schedule?.schedules || [];
+    return schedule?.schedules || []; // Adjusted to fetch `schedules` field
   }, [selectedSchedule, filteredSchedules]);
 
   const teacherName = useMemo(() => {
@@ -74,6 +75,7 @@ function Edit() {
   const year = selectedScheduleData?.year || new Date().getFullYear();
   const month = selectedScheduleData?.month || new Date().getMonth() + 1;
 
+  // Memoized filtering of school data
   const schoolMData = useMemo(
     () => firebaseData.filter((entry) => entry.School === "M"),
     [firebaseData],
@@ -92,6 +94,7 @@ function Edit() {
     [schoolTData, year, month],
   );
 
+  // Update tableDataM and tableDataT when fullMonthDataM and fullMonthDataT change
   useEffect(() => {
     setTableDataM(fullMonthDataM);
   }, [fullMonthDataM]);
@@ -100,6 +103,7 @@ function Edit() {
     setTableDataT(fullMonthDataT);
   }, [fullMonthDataT]);
 
+  // Function to generate columns with editable LessonHours
   const getColumns = (
     setTableData: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
   ): ColumnDef<ScheduleData, any>[] => [
@@ -137,7 +141,7 @@ function Edit() {
               setTableData((prevData) => {
                 const newData = [...prevData];
                 const row = { ...newData[rowIndex] };
-                row.BreakTime = inputValue;
+                row.BreakTime = inputValue; // Store raw input
                 newData[rowIndex] = row;
                 return newData;
               });
@@ -148,6 +152,7 @@ function Edit() {
                 const row = { ...newData[rowIndex] };
                 const breakTimeNumber = parseFloat(row.BreakTime);
                 if (!isNaN(breakTimeNumber)) {
+                  // Format to one decimal place
                   row.BreakTime = breakTimeNumber.toFixed(1);
                 } else {
                   row.BreakTime = "";
@@ -221,6 +226,7 @@ function Edit() {
   const columnsM = useMemo(() => getColumns(setTableDataM), [setTableDataM]);
   const columnsT = useMemo(() => getColumns(setTableDataT), [setTableDataT]);
 
+  // Create React Tables
   const tableM = useReactTable({
     data: tableDataM,
     columns: columnsM,
@@ -233,27 +239,36 @@ function Edit() {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  // Handle Auto-Fill Teaching Hours
   const handleAutoFill = () => {
     setTableDataM((prevData) => autofillLessonHours(prevData, lessonHours));
     setTableDataT((prevData) => autofillLessonHours(prevData, lessonHours));
   };
 
+  // Handle Auto-Fill Break Time
   const handleAutoFillBreakTime = () => {
     setTableDataM((prevData) => autofillBreakTime(prevData, breakTimeDefault));
     setTableDataT((prevData) => autofillBreakTime(prevData, breakTimeDefault));
   };
 
   const finalizeTableForExport = () => {
+    // Select all inputs within the .a4-page
     const inputs =
       document.querySelectorAll<HTMLInputElement>(".a4-page input");
     inputs.forEach((input) => {
+      // Ensure the element is an HTMLInputElement
+      if (!(input instanceof HTMLInputElement)) return;
+
+      // Create a span element to hold the input's value
       const span = document.createElement("span");
-      span.textContent = input.value || "";
-      span.style.display = "inline-block";
-      span.style.width = input.offsetWidth + "px";
-      span.style.height = input.offsetHeight + "px";
-      span.style.textAlign = getComputedStyle(input).textAlign;
-      span.style.fontSize = getComputedStyle(input).fontSize;
+      span.textContent = input.value || ""; // Use the input's current value
+      span.style.display = "inline-block"; // Match input styling if needed
+      span.style.width = input.offsetWidth + "px"; // Ensure same width
+      span.style.height = input.offsetHeight + "px"; // Match height if needed
+      span.style.textAlign = getComputedStyle(input).textAlign; // Match text alignment
+      span.style.fontSize = getComputedStyle(input).fontSize; // Match font size
+
+      // Replace the input field with the span
       input.parentNode?.replaceChild(span, input);
     });
   };
@@ -267,15 +282,23 @@ function Edit() {
     }
 
     try {
+      // Dynamically add the export-specific class
       a4Element.classList.add("a4-export");
+
+      // Finalize the DOM (replace inputs with spans)
       finalizeTableForExport();
+
+      // Allow styles to apply
       await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Capture the styled DOM
       const canvas = await html2canvas(a4Element, { scale: 2 });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
       pdf.save("schedule.pdf");
     } finally {
+      // Clean up by removing the export-specific class
       a4Element.classList.remove("a4-export");
     }
   };
