@@ -17,6 +17,9 @@ import { TeachersShift, FilteredSchedule } from "@/interfaces/teachersShift";
 import { generateFullMonthData } from "@/utils/generateFullMonthData";
 import { autofillBreakTime, autofillLessonHours } from "@/utils/tableUtils";
 
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
 // Move columnHelper outside the component
 const columnHelper = createColumnHelper<ScheduleData>();
 
@@ -256,6 +259,59 @@ function Edit() {
     setTableDataT((prevData) => autofillBreakTime(prevData, breakTimeDefault));
   };
 
+  const finalizeTableForExport = () => {
+    // Select all inputs within the .a4-page
+    const inputs =
+      document.querySelectorAll<HTMLInputElement>(".a4-page input");
+
+    inputs.forEach((input) => {
+      // Ensure the element is an HTMLInputElement
+      if (!(input instanceof HTMLInputElement)) return;
+
+      // Create a span element to hold the input's value
+      const span = document.createElement("span");
+      span.textContent = input.value || ""; // Use the input's current value
+      span.style.display = "inline-block"; // Match input styling if needed
+      span.style.width = input.offsetWidth + "px"; // Ensure same width
+      span.style.height = input.offsetHeight + "px"; // Match height if needed
+      span.style.textAlign = getComputedStyle(input).textAlign; // Match text alignment
+      span.style.fontSize = getComputedStyle(input).fontSize; // Match font size
+
+      // Replace the input field with the span
+      input.parentNode?.replaceChild(span, input);
+    });
+  };
+
+  const exportToPDF = async () => {
+    const a4Element = document.querySelector(".a4-page") as HTMLElement | null;
+
+    if (!a4Element) {
+      console.error("A4 element not found!");
+      return;
+    }
+
+    try {
+      // Dynamically add the export-specific class
+      a4Element.classList.add("a4-export");
+
+      // Finalize the DOM (replace inputs with spans)
+      finalizeTableForExport();
+
+      // Allow styles to apply
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Capture the styled DOM
+      const canvas = await html2canvas(a4Element, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
+      pdf.save("schedule.pdf");
+    } finally {
+      // Clean up by removing the export-specific class
+      a4Element.classList.remove("a4-export");
+    }
+  };
+
   return (
     <div className="relative flex xl:flex-row flex-col xl:flex-1 min-w-0">
       {/* Left Section */}
@@ -270,6 +326,7 @@ function Edit() {
           />
         )}
       </div>
+      <button onClick={exportToPDF}>Export to PDF</button>
 
       {/* Right Section */}
       <div className="xl:w-[80%] w-full">
