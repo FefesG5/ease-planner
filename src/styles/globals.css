@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  /* Light theme variables*/
+  /* Light theme variables */
   --header-bg-color: #eee8d5;
   --footer-bg-color: #eee8d5;
   --body-text-color: #1a1a1a;
@@ -20,13 +20,13 @@
 
   --user-section-bg-color: #f2efe3;
   --error-message-text-color: #d32f2f;
-  --spinnner-border-left-color: #09f;
+  --spinner-border-left-color: #09f;
   --schedule-list-bg-color: #e0e7eb;
   --schedule-item-hover-bg-color: #d0e1e7;
 }
 
 [data-theme="dark"] {
-  /* Dark Theme Variables */
+  /* Dark theme variables */
   --header-bg-color: #1e293b;
   --footer-bg-color: #1e293b;
   --body-text-color: #ffffff;
@@ -68,7 +68,7 @@ input[type="number"] {
   }
 }
 
-/* Apply 'a4-page' styles only on desktop screens */
+/* Section 1: Current A4 page styles for desktop screens */
 @media screen and (min-width: 1024px) {
   .a4-page {
     width: 210mm;
@@ -80,7 +80,7 @@ input[type="number"] {
   }
 }
 
-/* For tablet and mobile screens, remove 'a4-page' styles */
+/* Section 2: Current styles for tablet and mobile screens */
 @media screen and (max-width: 1023px) {
   .a4-page {
     width: 100%;
@@ -90,5 +90,43 @@ input[type="number"] {
     padding: 0;
     box-shadow: none;
     background: transparent;
+  }
+}
+
+/* Section 3: Export-specific A4 styles (applies only during export) */
+.a4-page.a4-export {
+  width: 210mm;
+  min-height: 297mm;
+  border: 1px solid black;
+  padding: 15mm;
+  background: white;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+.a4-page.a4-export table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.a4-page.a4-export th,
+.a4-page.a4-export td {
+  border: 1px solid black;
+  text-align: center;
+  padding: 4px;
+  font-size: 10px;
+}
+
+/* Section 4: Print-specific styles */
+@media print {
+  .a4-page.a4-export {
+    margin: 0;
+    padding: 10mm;
+    border: none;
+    box-shadow: none;
+  }
+
+  .no-print {
+    display: none;
   }
 }
