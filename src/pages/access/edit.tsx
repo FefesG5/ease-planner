@@ -20,27 +20,22 @@ import { autofillBreakTime, autofillLessonHours } from "@/utils/tableUtils";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-// Move columnHelper outside the component
 const columnHelper = createColumnHelper<ScheduleData>();
 
 function Edit() {
   const { user } = useAuthContext();
   const [selectedSchedule, setSelectedSchedule] = useState<string | null>(null);
-  const [lessonHours, setLessonHours] = useState<string>("0"); // Changed to string to accept text input
+  const [lessonHours, setLessonHours] = useState<string>("0");
   const [breakTimeDefault, setBreakTimeDefault] = useState<string>("1.0");
   const [tableDataM, setTableDataM] = useState<ScheduleData[]>([]);
   const [tableDataT, setTableDataT] = useState<ScheduleData[]>([]);
 
-  // Fetch filtered schedules using React Query
-  const {
-    data: filteredSchedules = [],
-    isLoading,
-    isError,
-  } = useQuery<FilteredSchedule[]>({
+  const { data: filteredSchedules = [], isLoading } = useQuery<
+    FilteredSchedule[]
+  >({
     queryKey: ["filteredSchedules"],
     queryFn: async () => {
       if (!user) throw new Error("User not authenticated");
-
       const token = await user.getIdToken();
       const response = await fetch(
         `/api/schedules/getFilteredSchedulesByUser?userId=${user.uid}`,
@@ -49,19 +44,17 @@ function Edit() {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-
       if (!response.ok) throw new Error("Failed to fetch filtered schedules");
       return response.json();
     },
     staleTime: 10 * 60 * 1000,
   });
 
-  // Get the selected schedule's data
   const firebaseData = useMemo<TeachersShift[]>(() => {
     const schedule = filteredSchedules.find(
       (schedule) => schedule.id === selectedSchedule,
     );
-    return schedule?.schedules || []; // Adjusted to fetch `schedules` field
+    return schedule?.schedules || [];
   }, [selectedSchedule, filteredSchedules]);
 
   const teacherName = useMemo(() => {
@@ -81,7 +74,6 @@ function Edit() {
   const year = selectedScheduleData?.year || new Date().getFullYear();
   const month = selectedScheduleData?.month || new Date().getMonth() + 1;
 
-  // Memoized filtering of school data
   const schoolMData = useMemo(
     () => firebaseData.filter((entry) => entry.School === "M"),
     [firebaseData],
@@ -91,18 +83,15 @@ function Edit() {
     [firebaseData],
   );
 
-  // Memoized processed data for tables
   const fullMonthDataM = useMemo(
     () => generateFullMonthData(schoolMData, year, month),
     [schoolMData, year, month],
   );
-
   const fullMonthDataT = useMemo(
     () => generateFullMonthData(schoolTData, year, month),
     [schoolTData, year, month],
   );
 
-  // Update tableDataM and tableDataT when fullMonthDataM and fullMonthDataT change
   useEffect(() => {
     setTableDataM(fullMonthDataM);
   }, [fullMonthDataM]);
@@ -111,7 +100,6 @@ function Edit() {
     setTableDataT(fullMonthDataT);
   }, [fullMonthDataT]);
 
-  // Function to generate columns with editable LessonHours
   const getColumns = (
     setTableData: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
   ): ColumnDef<ScheduleData, any>[] => [
@@ -149,7 +137,7 @@ function Edit() {
               setTableData((prevData) => {
                 const newData = [...prevData];
                 const row = { ...newData[rowIndex] };
-                row.BreakTime = inputValue; // Store raw input
+                row.BreakTime = inputValue;
                 newData[rowIndex] = row;
                 return newData;
               });
@@ -160,7 +148,6 @@ function Edit() {
                 const row = { ...newData[rowIndex] };
                 const breakTimeNumber = parseFloat(row.BreakTime);
                 if (!isNaN(breakTimeNumber)) {
-                  // Format to one decimal place
                   row.BreakTime = breakTimeNumber.toFixed(1);
                 } else {
                   row.BreakTime = "";
@@ -169,7 +156,7 @@ function Edit() {
                 return newData;
               });
             }}
-            className="text-center w-full sm:w-[50px] md:w-[50px] lg:w-[50px] xl:w-[50px]"
+            className="text-center w-[50px] text-[7px] leading-none"
           />
         );
       },
@@ -192,7 +179,7 @@ function Edit() {
               setTableData((prevData) => {
                 const newData = [...prevData];
                 const row = { ...newData[rowIndex] };
-                row.LessonHours = inputValue; // Store raw input
+                row.LessonHours = inputValue;
                 newData[rowIndex] = row;
                 return newData;
               });
@@ -216,7 +203,7 @@ function Edit() {
                 return newData;
               });
             }}
-            className="text-center w-full sm:w-[50px] md:w-[50px] lg:w-[50px] xl:w-[50px]"
+            className="text-center w-[50px] text-[7px] leading-none"
           />
         );
       },
@@ -234,7 +221,6 @@ function Edit() {
   const columnsM = useMemo(() => getColumns(setTableDataM), [setTableDataM]);
   const columnsT = useMemo(() => getColumns(setTableDataT), [setTableDataT]);
 
-  // Create React Tables
   const tableM = useReactTable({
     data: tableDataM,
     columns: columnsM,
@@ -247,37 +233,27 @@ function Edit() {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  // Handle Auto-Fill Teaching Hours
   const handleAutoFill = () => {
     setTableDataM((prevData) => autofillLessonHours(prevData, lessonHours));
     setTableDataT((prevData) => autofillLessonHours(prevData, lessonHours));
   };
 
-  // Handle Auto-Fill Break Time
   const handleAutoFillBreakTime = () => {
     setTableDataM((prevData) => autofillBreakTime(prevData, breakTimeDefault));
     setTableDataT((prevData) => autofillBreakTime(prevData, breakTimeDefault));
   };
 
   const finalizeTableForExport = () => {
-    // Select all inputs within the .a4-page
     const inputs =
       document.querySelectorAll<HTMLInputElement>(".a4-page input");
-
     inputs.forEach((input) => {
-      // Ensure the element is an HTMLInputElement
-      if (!(input instanceof HTMLInputElement)) return;
-
-      // Create a span element to hold the input's value
       const span = document.createElement("span");
-      span.textContent = input.value || ""; // Use the input's current value
-      span.style.display = "inline-block"; // Match input styling if needed
-      span.style.width = input.offsetWidth + "px"; // Ensure same width
-      span.style.height = input.offsetHeight + "px"; // Match height if needed
-      span.style.textAlign = getComputedStyle(input).textAlign; // Match text alignment
-      span.style.fontSize = getComputedStyle(input).fontSize; // Match font size
-
-      // Replace the input field with the span
+      span.textContent = input.value || "";
+      span.style.display = "inline-block";
+      span.style.width = input.offsetWidth + "px";
+      span.style.height = input.offsetHeight + "px";
+      span.style.textAlign = getComputedStyle(input).textAlign;
+      span.style.fontSize = getComputedStyle(input).fontSize;
       input.parentNode?.replaceChild(span, input);
     });
   };
@@ -291,23 +267,15 @@ function Edit() {
     }
 
     try {
-      // Dynamically add the export-specific class
       a4Element.classList.add("a4-export");
-
-      // Finalize the DOM (replace inputs with spans)
       finalizeTableForExport();
-
-      // Allow styles to apply
       await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Capture the styled DOM
       const canvas = await html2canvas(a4Element, { scale: 2 });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
       pdf.save("schedule.pdf");
     } finally {
-      // Clean up by removing the export-specific class
       a4Element.classList.remove("a4-export");
     }
   };
@@ -343,6 +311,7 @@ function Edit() {
               />
             </div>
 
+            {/* School M table */}
             <div className="a4-page">
               <RenderTable
                 table={tableM}
@@ -352,6 +321,7 @@ function Edit() {
                 month={typeof month === "string" ? parseInt(month, 10) : month}
               />
             </div>
+            {/* School T table */}
             <div className="a4-page">
               <RenderTable
                 table={tableT}
