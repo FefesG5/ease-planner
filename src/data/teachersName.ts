@@ -2,7 +2,6 @@
 
 export const teacherNames = [
   "Ari(F)",
-  "Chai (F)",
   "Rachel",
   "Itxy",
   "Yuri",
@@ -18,5 +17,6 @@ export const teacherNames = [
   "Yuki",
   "Haruto",
   "Mamiko (F)",
+  "Naoto",
   "Test",
 ];
