@@ -57,11 +57,11 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
             {/* Name Labels Container */}
             <div className="grid grid-rows-2 border-r border-black h-full">
               {/* Name Title English */}
-              <div className="border-b border-black flex items-center justify-center h-full px-1.5 text-[9px] sm:text-[9px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+              <div className="border-b border-black flex items-center justify-center h-full text-[9px] sm:text-[9px] md:text-[12px] lg:text-[14px] xl:text-[14px] pb-1.5">
                 Name
               </div>
               {/* Name Title Japanese */}
-              <div className="flex items-center justify-center h-full text-[9px] sm:text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] px-1.5">
+              <div className="flex items-center justify-center h-full text-[9px] sm:text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] pb-1.5">
                 氏名
               </div>
             </div>
