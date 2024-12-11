@@ -330,7 +330,13 @@ function Edit() {
           />
         )}
       </div>
-      <button onClick={exportToPDF}>Export to PDF</button>
+      {/* Export Button */}
+      <button
+        onClick={exportToPDF}
+        className="fixed bottom-5 right-5 bg-blue-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-600 shadow-lg text-sm md:text-base xl:text-lg"
+      >
+        Export to PDF
+      </button>
 
       {/* Right Section */}
       <div className="xl:w-[80%] w-full">
