@@ -70,26 +70,22 @@ input[type="number"] {
 
 /* Normal responsive layout for .a4-page */
 .a4-page {
-  /* Mobile default layout (no min-width media query needed) */
   width: 100%;
   padding: 0;
   margin: 0;
   border: none;
   background: transparent;
-  /* other mobile-friendly settings */
 }
 
 @media screen and (min-width: 640px) {
-  /* Tablet layout adjustments */
   .a4-page {
-    /* adjust widths, padding as needed for tablet */
+    /* Tablet layout adjustments */
   }
 }
 
 @media screen and (min-width: 1024px) {
-  /* Desktop layout adjustments */
   .a4-page {
-    /* Perhaps a more spread-out layout, etc. */
+    /* Desktop layout adjustments */
   }
 }
 
@@ -103,7 +99,8 @@ input[type="number"] {
   padding: 15mm !important;
   box-sizing: border-box !important;
 
-  /* Override any responsive rules that might conflict */
+  font-size: 10px !important; /* Use a fixed font size */
+  line-height: 1.5 !important; /* Consistent line height */
 }
 
 .a4-page.a4-export table {
@@ -116,7 +113,59 @@ input[type="number"] {
   border: 1px solid black;
   text-align: center;
   padding: 4px;
-  font-size: 10px;
+  font-size: 10px; /* Fixed font size */
+  box-sizing: border-box;
+}
+
+/* Column-specific width settings */
+.a4-page.a4-export th:nth-child(1),
+.a4-page.a4-export td:nth-child(1) {
+  width: 25px; /* date column */
+}
+
+.a4-page.a4-export th:nth-child(2),
+.a4-page.a4-export td:nth-child(2) {
+  width: 30px; /* day column */
+}
+
+.a4-page.a4-export th:nth-child(3),
+.a4-page.a4-export td:nth-child(3) {
+  width: 60px; /* starting time */
+}
+
+.a4-page.a4-export th:nth-child(4),
+.a4-page.a4-export td:nth-child(4) {
+  width: 60px; /* finishing time */
+}
+
+.a4-page.a4-export th:nth-child(5),
+.a4-page.a4-export td:nth-child(5) {
+  width: 55px; /* overtime */
+}
+
+.a4-page.a4-export th:nth-child(6),
+.a4-page.a4-export td:nth-child(6) {
+  width: 50px; /* break time */
+}
+
+.a4-page.a4-export th:nth-child(7),
+.a4-page.a4-export td:nth-child(7) {
+  width: 60px; /* working hours */
+}
+
+.a4-page.a4-export th:nth-child(8),
+.a4-page.a4-export td:nth-child(8) {
+  width: 60px; /* lesson hours */
+}
+
+.a4-page.a4-export th:nth-child(9),
+.a4-page.a4-export td:nth-child(9) {
+  width: 75px; /* non lesson hours */
+}
+
+.a4-page.a4-export th:nth-child(10),
+.a4-page.a4-export td:nth-child(10) {
+  width: 40px; /* approval */
 }
 
 /* Print-specific styles to finalize PDF appearance */
