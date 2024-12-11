@@ -113,59 +113,151 @@ input[type="number"] {
   border: 1px solid black;
   text-align: center;
   padding: 4px;
-  font-size: 10px; /* Fixed font size */
   box-sizing: border-box;
 }
 
-/* Column-specific width settings */
-.a4-page.a4-export th:nth-child(1),
-.a4-page.a4-export td:nth-child(1) {
+/* Adjusting all text cells in the English Header Row (1st Row) */
+.a4-page.a4-export thead tr:nth-child(1) th,
+.a4-page.a4-export thead tr:nth-child(1) td {
+  height: 25px; /* Ensure consistent height */
+  line-height: 25px; /* Match line-height to height for vertical centering */
+  vertical-align: middle; /* Proper vertical alignment */
+  text-align: center; /* Horizontal centering */
+  padding: 0; /* Remove padding for more precise control */
+  font-size: 10px; /* Maintain consistent font size */
+}
+
+/* Adjusting all text cells in the Japanese Header Row (2nd Row) */
+.a4-page.a4-export thead tr:nth-child(2) th,
+.a4-page.a4-export thead tr:nth-child(2) td {
+  padding-top: 1px; /* Adjust as needed */
+  padding-bottom: 10px; /* Ensure consistent spacing */
+  line-height: 1.1; /* Fine-tune vertical positioning */
+  vertical-align: middle; /* Ensure proper centering */
+}
+
+/* English Header Row (1st Row) */
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(1),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(1) {
   width: 25px; /* date column */
+  font-size: 10px; /* English header text size */
 }
 
-.a4-page.a4-export th:nth-child(2),
-.a4-page.a4-export td:nth-child(2) {
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(2),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(2) {
   width: 30px; /* day column */
+  font-size: 10px; /* English header text size */
 }
 
-.a4-page.a4-export th:nth-child(3),
-.a4-page.a4-export td:nth-child(3) {
-  width: 60px; /* starting time */
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(3),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(3) {
+  width: 60px; /* starting time column */
+  font-size: 10px; /* English header text size */
 }
 
-.a4-page.a4-export th:nth-child(4),
-.a4-page.a4-export td:nth-child(4) {
-  width: 60px; /* finishing time */
+/* Repeat for other English header columns */
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(4),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(4) {
+  width: 60px; /* finishing time column */
+  font-size: 10px;
 }
 
-.a4-page.a4-export th:nth-child(5),
-.a4-page.a4-export td:nth-child(5) {
-  width: 55px; /* overtime */
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(5),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(5) {
+  width: 55px; /* overtime column */
+  font-size: 10px;
 }
 
-.a4-page.a4-export th:nth-child(6),
-.a4-page.a4-export td:nth-child(6) {
-  width: 50px; /* break time */
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(6),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(6) {
+  width: 50px; /* break time column */
+  font-size: 10px;
 }
 
-.a4-page.a4-export th:nth-child(7),
-.a4-page.a4-export td:nth-child(7) {
-  width: 60px; /* working hours */
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(7),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(7) {
+  width: 60px; /* working hours column */
+  font-size: 10px;
 }
 
-.a4-page.a4-export th:nth-child(8),
-.a4-page.a4-export td:nth-child(8) {
-  width: 60px; /* lesson hours */
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(8),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(8) {
+  width: 60px; /* lesson hours column */
+  font-size: 10px;
 }
 
-.a4-page.a4-export th:nth-child(9),
-.a4-page.a4-export td:nth-child(9) {
-  width: 75px; /* non lesson hours */
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(9),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(9) {
+  width: 75px; /* non lesson hours column */
+  font-size: 10px;
 }
 
-.a4-page.a4-export th:nth-child(10),
-.a4-page.a4-export td:nth-child(10) {
-  width: 40px; /* approval */
+.a4-page.a4-export thead tr:nth-child(1) th:nth-child(10),
+.a4-page.a4-export thead tr:nth-child(1) td:nth-child(10) {
+  width: 40px; /* approval column */
+  font-size: 10px;
+}
+
+/* Japanese Header Row (2nd Row) */
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(1),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(1) {
+  width: 25px; /* 日付 column */
+  font-size: 10.5px; /* Japanese header text size */
+}
+
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(2),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(2) {
+  width: 30px; /* 曜日 column */
+  font-size: 10.5px; /* Japanese header text size */
+}
+
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(3),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(3) {
+  width: 60px; /* 出社時間 column */
+  font-size: 10.5px; /* Japanese header text size */
+}
+
+/* Repeat for other Japanese header columns */
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(4),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(4) {
+  width: 60px; /* 退社時間 column */
+  font-size: 10.5px;
+}
+
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(5),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(5) {
+  width: 55px; /* 通常残業時間 column */
+  font-size: 10.5px;
+}
+
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(6),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(6) {
+  width: 50px; /* 休憩時間 column */
+  font-size: 10.5px;
+}
+
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(7),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(7) {
+  width: 60px; /* 労働時間 column */
+  font-size: 10.5px;
+}
+
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(8),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(8) {
+  width: 60px; /* レッスン時間 column */
+  font-size: 10.5px;
+}
+
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(9),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(9) {
+  width: 75px; /* レッスン外 column */
+  font-size: 10.5px;
+}
+
+.a4-page.a4-export thead tr:nth-child(2) th:nth-child(10),
+.a4-page.a4-export thead tr:nth-child(2) td:nth-child(10) {
+  width: 40px; /* 承認 column */
+  font-size: 10.5px;
 }
 
 /* Print-specific styles to finalize PDF appearance */
