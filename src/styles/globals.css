@@ -68,40 +68,42 @@ input[type="number"] {
   }
 }
 
-/* Section 1: Current A4 page styles for desktop screens */
+/* Normal responsive layout for .a4-page */
+.a4-page {
+  /* Mobile default layout (no min-width media query needed) */
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  /* other mobile-friendly settings */
+}
+
+@media screen and (min-width: 640px) {
+  /* Tablet layout adjustments */
+  .a4-page {
+    /* adjust widths, padding as needed for tablet */
+  }
+}
+
 @media screen and (min-width: 1024px) {
+  /* Desktop layout adjustments */
   .a4-page {
-    width: 210mm;
-    min-height: 297mm;
-    border: 1px solid black;
-    padding: 15mm;
-    background: white;
-    margin: auto;
+    /* Perhaps a more spread-out layout, etc. */
   }
 }
 
-/* Section 2: Current styles for tablet and mobile screens */
-@media screen and (max-width: 1023px) {
-  .a4-page {
-    width: 100%;
-    min-height: auto;
-    margin: 0;
-    border: none;
-    padding: 0;
-    box-shadow: none;
-    background: transparent;
-  }
-}
-
-/* Section 3: Export-specific A4 styles (applies only during export) */
+/* The A4 export class overrides everything when added */
 .a4-page.a4-export {
-  width: 210mm;
-  min-height: 297mm;
-  border: 1px solid black;
-  padding: 15mm;
-  background: white;
-  margin: auto;
-  box-sizing: border-box;
+  width: 210mm !important;
+  min-height: 297mm !important;
+  background: white !important;
+  border: 1px solid black !important;
+  margin: auto !important;
+  padding: 15mm !important;
+  box-sizing: border-box !important;
+
+  /* Override any responsive rules that might conflict */
 }
 
 .a4-page.a4-export table {
@@ -117,7 +119,7 @@ input[type="number"] {
   font-size: 10px;
 }
 
-/* Section 4: Print-specific styles */
+/* Print-specific styles to finalize PDF appearance */
 @media print {
   .a4-page.a4-export {
     margin: 0;
