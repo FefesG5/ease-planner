@@ -251,56 +251,69 @@ function Edit() {
     setTableDataT((prevData) => autofillBreakTime(prevData, breakTimeDefault));
   };
 
-  const finalizeTableForExport = () => {
-    // Select all inputs within the .a4-page
-    const inputs =
-      document.querySelectorAll<HTMLInputElement>(".a4-page input");
+  const finalizeTableForExport = (container: HTMLElement): void => {
+    // Select all input elements within the container
+    const inputs = container.querySelectorAll<HTMLInputElement>("input");
+
     inputs.forEach((input) => {
-      // Ensure the element is an HTMLInputElement
-      if (!(input instanceof HTMLInputElement)) return;
-
-      // Create a span element to hold the input's value
       const span = document.createElement("span");
-      span.textContent = input.value || ""; // Use the input's current value
-      span.style.display = "inline-block"; // Match input styling if needed
-      span.style.width = input.offsetWidth + "px"; // Ensure same width
-      span.style.height = input.offsetHeight + "px"; // Match height if needed
-      span.style.textAlign = getComputedStyle(input).textAlign; // Match text alignment
-      span.style.fontSize = getComputedStyle(input).fontSize; // Match font size
+      // Transfer the input's value to the span's text content
+      span.textContent = input.value || "";
+      // Match the span's style with the input's appearance
+      const computedStyle = getComputedStyle(input);
+      span.style.display = "inline-block";
+      span.style.width = `${input.offsetWidth}px`;
+      span.style.height = `${input.offsetHeight}px`;
+      span.style.textAlign = computedStyle.textAlign;
+      span.style.fontSize = computedStyle.fontSize;
+      span.style.lineHeight = computedStyle.lineHeight;
 
-      // Replace the input field with the span
+      // Replace the input with the span
       input.parentNode?.replaceChild(span, input);
     });
   };
 
-  const exportToPDF = async () => {
-    const a4Element = document.querySelector(".a4-page") as HTMLElement | null;
+  // Export to PDF function
+  const exportToPDF = async (): Promise<void> => {
+    const a4Elements = document.querySelectorAll(".a4-page");
 
-    if (!a4Element) {
-      console.error("A4 element not found!");
+    if (!a4Elements.length) {
+      console.warn("No elements found with the class .a4-page");
       return;
     }
 
-    try {
-      // Dynamically add the export-specific class
-      a4Element.classList.add("a4-export");
+    // Add the .a4-export class to each .a4-page element
+    a4Elements.forEach((el) => el.classList.add("a4-export"));
 
-      // Finalize the DOM (replace inputs with spans)
-      finalizeTableForExport();
+    // Finalize inputs for all .a4-page elements
+    a4Elements.forEach((page) => {
+      if (page instanceof HTMLElement) {
+        finalizeTableForExport(page);
+      }
+    });
 
-      // Allow styles to apply
-      await new Promise((resolve) => setTimeout(resolve, 100));
+    // Small delay to allow styles to apply
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // Capture the styled DOM
-      const canvas = await html2canvas(a4Element, { scale: 2 });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
-      pdf.save("schedule.pdf");
-    } finally {
-      // Clean up by removing the export-specific class
-      a4Element.classList.remove("a4-export");
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    for (const page of a4Elements) {
+      if (page instanceof HTMLElement) {
+        try {
+          const canvas = await html2canvas(page, { scale: 2 });
+          const imgData = canvas.toDataURL("image/png");
+          if (a4Elements[0] !== page) pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, 0, 210, 297); // A4 dimensions in mm
+        } catch (error) {
+          console.error("Error generating canvas for page:", page, error);
+        }
+      }
     }
+
+    pdf.save("schedule.pdf");
+
+    // Remove the .a4-export class after export
+    a4Elements.forEach((el) => el.classList.remove("a4-export"));
   };
 
   return (
