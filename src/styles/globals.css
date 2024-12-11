@@ -145,7 +145,7 @@ input[type="number"] {
 
 .a4-page.a4-export thead tr:nth-child(1) th:nth-child(2),
 .a4-page.a4-export thead tr:nth-child(1) td:nth-child(2) {
-  width: 30px; /* day column */
+  width: 35px; /* day column */
   font-size: 10px; /* English header text size */
 }
 
@@ -155,7 +155,6 @@ input[type="number"] {
   font-size: 10px; /* English header text size */
 }
 
-/* Repeat for other English header columns */
 .a4-page.a4-export thead tr:nth-child(1) th:nth-child(4),
 .a4-page.a4-export thead tr:nth-child(1) td:nth-child(4) {
   width: 60px; /* finishing time column */
@@ -217,7 +216,6 @@ input[type="number"] {
   font-size: 10.5px; /* Japanese header text size */
 }
 
-/* Repeat for other Japanese header columns */
 .a4-page.a4-export thead tr:nth-child(2) th:nth-child(4),
 .a4-page.a4-export thead tr:nth-child(2) td:nth-child(4) {
   width: 60px; /* 退社時間 column */
@@ -258,6 +256,16 @@ input[type="number"] {
 .a4-page.a4-export thead tr:nth-child(2) td:nth-child(10) {
   width: 40px; /* 承認 column */
   font-size: 10.5px;
+}
+
+/* Body rows in the table */
+.a4-page.a4-export tbody tr td {
+  font-size: 10px !important; /* Ensure consistent size for numbers */
+  line-height: 1.2 !important; /* Maintain readability */
+  padding-bottom: 10px;
+  text-align: center !important; /* Center-align numbers */
+  vertical-align: middle !important; /* Proper alignment */
+  box-sizing: border-box !important; /* Consistent box-sizing */
 }
 
 /* Print-specific styles to finalize PDF appearance */
