@@ -88,20 +88,20 @@ const RenderTable: React.FC<RenderTableProps> = ({
               <th className="border border-black text-center px-1 py-1 font-normal w-[20px]">
                 date
               </th>
-              <th className="border border-black text-center px-1 py-1 font-normal w-[30px]">
+              <th className="border border-black text-center px-1 py-1 font-normal w-[24px]">
                 day
               </th>
-              <th className="border border-black text-center px-1 py-1 font-normal w-[40px]">
+              <th className="border border-black text-center px-1 py-1 font-normal w-[35px]">
                 starting time
               </th>
-              <th className="border border-black text-center px-1 py-1 font-normal w-[40px]">
+              <th className="border border-black text-center px-1 py-1 font-normal w-[35px]">
                 finishing time
               </th>
               {extraColumnsPairs.flat().map((colId) => (
                 <th
                   key={colId}
                   className={
-                    "border border-black text-center px-1 py-1 font-normal w-[50px] whitespace-nowrap " +
+                    "border border-black text-center px-1 py-1 font-normal w-[55px] whitespace-nowrap " +
                     (!isColumnVisibleOnMobile(colId)
                       ? "hidden sm:table-cell"
                       : "")
