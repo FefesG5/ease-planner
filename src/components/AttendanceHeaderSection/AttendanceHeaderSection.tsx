@@ -25,21 +25,21 @@ const AttendanceHeader: React.FC<AttendanceHeaderProps> = ({
       </div>
 
       {/* Desktop/Tablet (original layout) */}
-      <div className="hidden sm:grid grid-cols-3 items-center w-full bg-white">
-        {/* Year Month */}
-        <div className="flex items-center justify-start h-full pl-5 font-bold text-[12px] sm:text-[16px] md:text-[18px] lg:text-[20px] xl:text-[20px]">
+      <div className="hidden sm:grid grid-cols-3 items-start w-full bg-white">
+        {/* Year and Month */}
+        <div className="flex items-center justify-start h-full pl-5 font-bold text-[12px] sm:text-[16px] md:text-[18px] lg:text-[20px] xl:text-[20px] mb-2">
           {year}年{month}月度
         </div>
 
         {/* Title */}
-        <div className="flex items-center justify-center h-full text-[16px] sm:text-[20px] md:text-[24px] lg:text-[30px] xl:text-[30px] font-bold">
+        <div className="flex items-center justify-center h-full text-[16px] sm:text-[20px] md:text-[24px] lg:text-[20px] xl:text-[20px] font-bold mb-4">
           出 勤 簿
         </div>
         {/* Empty Space */}
         <div />
 
         {/* Main Content Section */}
-        <div className="grid grid-cols-[4fr_3fr_2fr] col-span-3 gap-0 mt-0">
+        <div className="grid grid-cols-[4fr_3fr_2fr] col-span-3 gap-0 mt-2">
           {/* Place Section */}
           <div className="grid grid-cols-[auto_1fr] items-stretch border border-black h-full">
             {/* School Title */}
