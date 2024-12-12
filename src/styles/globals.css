@@ -260,12 +260,12 @@ input[type="number"] {
 
 /* Body rows in the table */
 .a4-page.a4-export tbody tr td {
-  font-size: 10px !important; /* Ensure consistent size for numbers */
-  line-height: 1.2 !important; /* Maintain readability */
-  padding-bottom: 10px;
-  text-align: center !important; /* Center-align numbers */
-  vertical-align: middle !important; /* Proper alignment */
-  box-sizing: border-box !important; /* Consistent box-sizing */
+  font-size: 10px !important; /* Reduce font size slightly for compactness */
+  line-height: 1.1 !important; /* Decrease line height for tighter rows */
+  padding-top: 1px !important; /* Reduce padding to minimize vertical spacing */
+  text-align: center !important; /* Keep text centered */
+  vertical-align: middle !important; /* Proper vertical alignment */
+  box-sizing: border-box !important; /* Ensure consistent sizing */
 }
 
 /* Print-specific styles to finalize PDF appearance */
