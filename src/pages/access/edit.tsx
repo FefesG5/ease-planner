@@ -264,7 +264,7 @@ function Edit() {
       span.style.display = "inline-block";
       span.style.width = `${input.offsetWidth}px`;
       span.style.height = `${input.offsetHeight}px`;
-      span.style.textAlign = computedStyle.textAlign;
+      span.style.textAlign = "center";
       span.style.fontSize = computedStyle.fontSize;
       span.style.lineHeight = computedStyle.lineHeight;
 
