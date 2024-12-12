@@ -16,6 +16,7 @@ import { ScheduleData } from "@/interfaces/schedulesInterface";
 import { TeachersShift, FilteredSchedule } from "@/interfaces/teachersShift";
 import { generateFullMonthData } from "@/utils/generateFullMonthData";
 import { autofillBreakTime, autofillLessonHours } from "@/utils/tableUtils";
+import { calculateWorkingHours } from "@/utils/generateFullMonthData";
 
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -117,11 +118,85 @@ function Edit() {
     }),
     columnHelper.accessor("StartTime", {
       header: "出社時間",
-      cell: (info) => info.getValue(),
+      cell: (info) => {
+        const value = info.getValue();
+        const rowIndex = info.row.index;
+        return (
+          <input
+            type="text"
+            placeholder="--:--"
+            value={value || ""}
+            onChange={(e) => {
+              const newStartTime = e.target.value;
+              setTableData((prevData) => {
+                const newData = [...prevData];
+                const row = { ...newData[rowIndex] };
+                row.StartTime = newStartTime;
+
+                // Recalculate WorkingHours and NonLessonHours
+                if (row.EndTime) {
+                  const workingHours = calculateWorkingHours(
+                    newStartTime,
+                    row.EndTime,
+                  );
+                  row.WorkingHours =
+                    workingHours > 0 ? workingHours.toFixed(2) : "";
+                  const lessonHours = parseFloat(row.LessonHours) || 0;
+                  row.NonLessonHours =
+                    workingHours > 0
+                      ? (workingHours - lessonHours).toFixed(2)
+                      : "";
+                }
+
+                newData[rowIndex] = row;
+                return newData;
+              });
+            }}
+            className="text-center w-[50px] text-[10px] leading-none"
+          />
+        );
+      },
     }),
     columnHelper.accessor("EndTime", {
       header: "退社時間",
-      cell: (info) => info.getValue(),
+      cell: (info) => {
+        const value = info.getValue();
+        const rowIndex = info.row.index;
+        return (
+          <input
+            type="text"
+            placeholder="--:--"
+            value={value || ""}
+            onChange={(e) => {
+              const newEndTime = e.target.value;
+              setTableData((prevData) => {
+                const newData = [...prevData];
+                const row = { ...newData[rowIndex] };
+                row.EndTime = newEndTime;
+
+                // Recalculate WorkingHours and NonLessonHours
+                if (row.StartTime) {
+                  const workingHours = calculateWorkingHours(
+                    row.StartTime,
+                    newEndTime,
+                  );
+                  row.WorkingHours =
+                    workingHours > 0 ? workingHours.toFixed(2) : "";
+                  const lessonHours = parseFloat(row.LessonHours) || 0;
+                  row.NonLessonHours =
+                    workingHours > 0
+                      ? (workingHours - lessonHours).toFixed(2)
+                      : "";
+                }
+
+                newData[rowIndex] = row;
+                return newData;
+              });
+            }}
+            className="text-center w-[50px] text-[10px] leading-none"
+          />
+        );
+      },
     }),
     columnHelper.accessor("Overtime", {
       header: "通常残業時間",
@@ -185,25 +260,15 @@ function Edit() {
                 const newData = [...prevData];
                 const row = { ...newData[rowIndex] };
                 row.LessonHours = inputValue;
-                newData[rowIndex] = row;
-                return newData;
-              });
-            }}
-            onBlur={() => {
-              setTableData((prevData) => {
-                const newData = [...prevData];
-                const row = { ...newData[rowIndex] };
-                const lessonHoursNumber = parseFloat(row.LessonHours);
-                if (!isNaN(lessonHoursNumber)) {
-                  row.LessonHours = lessonHoursNumber.toFixed(2);
-                  const workingHours = parseFloat(row.WorkingHours) || 0;
-                  row.NonLessonHours = (
-                    workingHours - lessonHoursNumber
-                  ).toFixed(2);
-                } else {
-                  row.LessonHours = "";
-                  row.NonLessonHours = "";
-                }
+
+                // Recalculate NonLessonHours
+                const lessonHoursNumber = parseFloat(inputValue) || 0;
+                const workingHours = parseFloat(row.WorkingHours) || 0;
+                row.NonLessonHours =
+                  workingHours > 0
+                    ? (workingHours - lessonHoursNumber).toFixed(2)
+                    : "";
+
                 newData[rowIndex] = row;
                 return newData;
               });
