@@ -6,7 +6,10 @@ import { TeachersShift } from "@/interfaces/teachersShift";
  * @param endTime - End time in "HH:mm" format.
  * @returns Number of hours between start and end times, accounting for breaks.
  */
-function calculateWorkingHours(startTime: string, endTime: string): number {
+export function calculateWorkingHours(
+  startTime: string,
+  endTime: string,
+): number {
   if (!startTime || !endTime) return 0;
 
   const [startHour, startMinute] = startTime.split(":").map(Number);
