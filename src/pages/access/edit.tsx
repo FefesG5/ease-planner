@@ -161,7 +161,7 @@ function Edit() {
                 return newData;
               });
             }}
-            className="text-center w-[50px] text-[7px] leading-none"
+            className="text-center w-[50px] text-[10px] leading-none"
           />
         );
       },
@@ -208,7 +208,7 @@ function Edit() {
                 return newData;
               });
             }}
-            className="text-center w-[50px] text-[7px] leading-none"
+            className="text-center w-[50px] text-[10px] leading-none"
           />
         );
       },
