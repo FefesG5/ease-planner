@@ -107,20 +107,23 @@ function Edit() {
   // Function to generate columns with editable LessonHours
   const getColumns = (
     setTableData: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
-  ): ColumnDef<ScheduleData, any>[] => [
-    columnHelper.accessor("Date", {
+  ): ColumnDef<ScheduleData, string | number>[] => [
+    {
+      accessorKey: "Date",
       header: "日付",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("Day", {
+      cell: (info) => info.getValue(), // Date is string
+    },
+    {
+      accessorKey: "Day",
       header: "曜日",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("StartTime", {
+      cell: (info) => info.getValue(), // Day is string
+    },
+    {
+      accessorKey: "StartTime",
       header: "出社時間",
-      cell: (info) => {
-        const value = info.getValue();
-        const rowIndex = info.row.index;
+      cell: ({ getValue, row }) => {
+        const value = getValue(); // StartTime is string
+        const rowIndex = row.index;
         return (
           <input
             type="text"
@@ -141,7 +144,7 @@ function Edit() {
                   );
                   row.WorkingHours =
                     workingHours > 0 ? workingHours.toFixed(2) : "";
-                  const lessonHours = parseFloat(row.LessonHours) || 0;
+                  const lessonHours = parseFloat(row.LessonHours || "0");
                   row.NonLessonHours =
                     workingHours > 0
                       ? (workingHours - lessonHours).toFixed(2)
@@ -156,12 +159,13 @@ function Edit() {
           />
         );
       },
-    }),
-    columnHelper.accessor("EndTime", {
+    },
+    {
+      accessorKey: "EndTime",
       header: "退社時間",
-      cell: (info) => {
-        const value = info.getValue();
-        const rowIndex = info.row.index;
+      cell: ({ getValue, row }) => {
+        const value = getValue(); // EndTime is string
+        const rowIndex = row.index;
         return (
           <input
             type="text"
@@ -182,7 +186,7 @@ function Edit() {
                   );
                   row.WorkingHours =
                     workingHours > 0 ? workingHours.toFixed(2) : "";
-                  const lessonHours = parseFloat(row.LessonHours) || 0;
+                  const lessonHours = parseFloat(row.LessonHours || "0");
                   row.NonLessonHours =
                     workingHours > 0
                       ? (workingHours - lessonHours).toFixed(2)
@@ -197,16 +201,18 @@ function Edit() {
           />
         );
       },
-    }),
-    columnHelper.accessor("Overtime", {
+    },
+    {
+      accessorKey: "Overtime",
       header: "通常残業時間",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("BreakTime", {
+      cell: (info) => info.getValue(), // Overtime is string
+    },
+    {
+      accessorKey: "BreakTime",
       header: "休憩時間",
-      cell: (info) => {
-        const value = info.getValue();
-        const rowIndex = info.row.index;
+      cell: ({ getValue, row }) => {
+        const value = getValue(); // BreakTime is string
+        const rowIndex = row.index;
         return (
           <input
             type="number"
@@ -216,7 +222,7 @@ function Edit() {
               setTableData((prevData) => {
                 const newData = [...prevData];
                 const row = { ...newData[rowIndex] };
-                row.BreakTime = inputValue; // Store raw input
+                row.BreakTime = inputValue;
                 newData[rowIndex] = row;
                 return newData;
               });
@@ -225,13 +231,10 @@ function Edit() {
               setTableData((prevData) => {
                 const newData = [...prevData];
                 const row = { ...newData[rowIndex] };
-                const breakTimeNumber = parseFloat(row.BreakTime);
-                if (!isNaN(breakTimeNumber)) {
-                  // Format to one decimal place
-                  row.BreakTime = breakTimeNumber.toFixed(1);
-                } else {
-                  row.BreakTime = "";
-                }
+                const breakTimeNumber = parseFloat(row.BreakTime || "0");
+                row.BreakTime = !isNaN(breakTimeNumber)
+                  ? breakTimeNumber.toFixed(1)
+                  : "";
                 newData[rowIndex] = row;
                 return newData;
               });
@@ -240,16 +243,18 @@ function Edit() {
           />
         );
       },
-    }),
-    columnHelper.accessor("WorkingHours", {
+    },
+    {
+      accessorKey: "WorkingHours",
       header: "労働時間",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("LessonHours", {
+      cell: (info) => info.getValue(), // WorkingHours is number
+    },
+    {
+      accessorKey: "LessonHours",
       header: "レッスン時間",
-      cell: (info) => {
-        const value = info.getValue();
-        const rowIndex = info.row.index;
+      cell: ({ getValue, row }) => {
+        const value = getValue(); // LessonHours is number
+        const rowIndex = row.index;
         return (
           <input
             type="number"
@@ -262,8 +267,8 @@ function Edit() {
                 row.LessonHours = inputValue;
 
                 // Recalculate NonLessonHours
-                const lessonHoursNumber = parseFloat(inputValue) || 0;
-                const workingHours = parseFloat(row.WorkingHours) || 0;
+                const lessonHoursNumber = parseFloat(inputValue || "0");
+                const workingHours = parseFloat(row.WorkingHours || "0");
                 row.NonLessonHours =
                   workingHours > 0
                     ? (workingHours - lessonHoursNumber).toFixed(2)
@@ -277,15 +282,17 @@ function Edit() {
           />
         );
       },
-    }),
-    columnHelper.accessor("NonLessonHours", {
+    },
+    {
+      accessorKey: "NonLessonHours",
       header: "レッスン外",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("Approval", {
+      cell: (info) => info.getValue(), // NonLessonHours is number
+    },
+    {
+      accessorKey: "Approval",
       header: "承認",
-      cell: (info) => info.getValue(),
-    }),
+      cell: (info) => info.getValue(), // Approval is string
+    },
   ];
 
   const columnsM = useMemo(() => getColumns(setTableDataM), [setTableDataM]);
