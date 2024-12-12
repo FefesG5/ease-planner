@@ -365,17 +365,21 @@ function Edit() {
     });
 
     // Small delay to allow styles to apply
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise<void>((resolve) => setTimeout(resolve, 100));
 
     const pdf = new jsPDF("p", "mm", "a4");
 
     for (const page of a4Elements) {
       if (page instanceof HTMLElement) {
         try {
-          const canvas = await html2canvas(page, { scale: 2 });
-          const imgData = canvas.toDataURL("image/png");
+          // Render the page as a canvas at a high scale
+          const canvas = await html2canvas(page, { scale: 2.5 });
+
+          // Convert the canvas directly to JPEG for jsPDF
+          const jpegData = canvas.toDataURL("image/jpeg", 0.9); // JPEG quality
+
           if (a4Elements[0] !== page) pdf.addPage();
-          pdf.addImage(imgData, "PNG", 0, 0, 210, 297); // A4 dimensions in mm
+          pdf.addImage(jpegData, "JPEG", 0, 0, 210, 297); // Add to PDF
         } catch (error) {
           console.error("Error generating canvas for page:", page, error);
         }
