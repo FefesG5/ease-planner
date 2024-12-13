@@ -386,7 +386,13 @@ function Edit() {
       }
     }
 
-    pdf.save("schedule.pdf");
+    // Build the dynamic file name
+    const formattedMonth = month < 10 ? `0${month}` : month; // Ensure two-digit month
+    const teacherOrScheduleName = teacherName || "Schedule"; // Fallback to 'Schedule' if teacherName is unavailable
+    const fileName = `${year}-${formattedMonth}_${teacherOrScheduleName}_出勤簿_Attendance_Record.pdf`;
+
+    // Save the PDF with the new file name
+    pdf.save(fileName);
 
     // Remove the .a4-export class after export
     a4Elements.forEach((el) => el.classList.remove("a4-export"));
