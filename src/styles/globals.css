@@ -197,17 +197,3 @@ input[type="number"] {
   vertical-align: middle !important; /* Proper vertical alignment */
   box-sizing: border-box !important; /* Ensure consistent sizing */
 }
-
-/* Print-specific styles to finalize PDF appearance */
-@media print {
-  .a4-page.a4-export {
-    margin: 0;
-    padding: 10mm;
-    border: none;
-    box-shadow: none;
-  }
-
-  .no-print {
-    display: none;
-  }
-}
