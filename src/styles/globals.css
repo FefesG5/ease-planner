@@ -134,128 +134,58 @@ input[type="number"] {
   padding-bottom: 10px; /* Ensure consistent spacing */
   line-height: 1.1; /* Fine-tune vertical positioning */
   vertical-align: middle; /* Ensure proper centering */
-}
-
-/* English Header Row (1st Row) */
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(1),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(1) {
-  width: 25px; /* date column */
-  font-size: 10px; /* English header text size */
-}
-
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(2),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(2) {
-  width: 35px; /* day column */
-  font-size: 10px; /* English header text size */
-}
-
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(3),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(3) {
-  width: 60px; /* starting time column */
-  font-size: 10px; /* English header text size */
-}
-
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(4),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(4) {
-  width: 60px; /* finishing time column */
-  font-size: 10px;
-}
-
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(5),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(5) {
-  width: 55px; /* overtime column */
-  font-size: 10px;
-}
-
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(6),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(6) {
-  width: 50px; /* break time column */
-  font-size: 10px;
-}
-
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(7),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(7) {
-  width: 60px; /* working hours column */
-  font-size: 10px;
-}
-
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(8),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(8) {
-  width: 60px; /* lesson hours column */
-  font-size: 10px;
-}
-
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(9),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(9) {
-  width: 75px; /* non lesson hours column */
-  font-size: 10px;
-}
-
-.a4-page.a4-export thead tr:nth-child(1) th:nth-child(10),
-.a4-page.a4-export thead tr:nth-child(1) td:nth-child(10) {
-  width: 40px; /* approval column */
-  font-size: 10px;
-}
-
-/* Japanese Header Row (2nd Row) */
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(1),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(1) {
-  width: 25px; /* 日付 column */
   font-size: 10.5px; /* Japanese header text size */
 }
 
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(2),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(2) {
-  width: 30px; /* 曜日 column */
-  font-size: 10.5px; /* Japanese header text size */
+/* Column-specific adjustments */
+.a4-page.a4-export thead tr th:nth-child(1),
+.a4-page.a4-export thead tr td:nth-child(1) {
+  width: 25px; /* Date column */
 }
 
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(3),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(3) {
-  width: 60px; /* 出社時間 column */
-  font-size: 10.5px; /* Japanese header text size */
+.a4-page.a4-export thead tr th:nth-child(2),
+.a4-page.a4-export thead tr td:nth-child(2) {
+  width: 35px; /* Day column */
 }
 
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(4),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(4) {
-  width: 60px; /* 退社時間 column */
-  font-size: 10.5px;
+.a4-page.a4-export thead tr th:nth-child(3),
+.a4-page.a4-export thead tr td:nth-child(3) {
+  width: 60px; /* Starting time column */
 }
 
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(5),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(5) {
-  width: 55px; /* 通常残業時間 column */
-  font-size: 10.5px;
+.a4-page.a4-export thead tr th:nth-child(4),
+.a4-page.a4-export thead tr td:nth-child(4) {
+  width: 60px; /* Finishing time column */
 }
 
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(6),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(6) {
-  width: 50px; /* 休憩時間 column */
-  font-size: 10.5px;
+.a4-page.a4-export thead tr th:nth-child(5),
+.a4-page.a4-export thead tr td:nth-child(5) {
+  width: 55px; /* Overtime column */
 }
 
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(7),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(7) {
-  width: 60px; /* 労働時間 column */
-  font-size: 10.5px;
+.a4-page.a4-export thead tr th:nth-child(6),
+.a4-page.a4-export thead tr td:nth-child(6) {
+  width: 50px; /* Break time column */
 }
 
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(8),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(8) {
-  width: 60px; /* レッスン時間 column */
-  font-size: 10.5px;
+.a4-page.a4-export thead tr th:nth-child(7),
+.a4-page.a4-export thead tr td:nth-child(7) {
+  width: 60px; /* Working hours column */
 }
 
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(9),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(9) {
-  width: 75px; /* レッスン外 column */
-  font-size: 10.5px;
+.a4-page.a4-export thead tr th:nth-child(8),
+.a4-page.a4-export thead tr td:nth-child(8) {
+  width: 60px; /* Lesson hours column */
 }
 
-.a4-page.a4-export thead tr:nth-child(2) th:nth-child(10),
-.a4-page.a4-export thead tr:nth-child(2) td:nth-child(10) {
-  width: 40px; /* 承認 column */
-  font-size: 10.5px;
+.a4-page.a4-export thead tr th:nth-child(9),
+.a4-page.a4-export thead tr td:nth-child(9) {
+  width: 75px; /* Non-lesson hours column */
+}
+
+.a4-page.a4-export thead tr th:nth-child(10),
+.a4-page.a4-export thead tr td:nth-child(10) {
+  width: 40px; /* Approval column */
 }
 
 /* Body rows in the table */
