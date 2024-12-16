@@ -248,7 +248,9 @@ function Edit() {
     {
       accessorKey: "WorkingHours",
       header: "労働時間",
-      cell: (info) => info.getValue(), // WorkingHours is number
+      cell: (info) => (
+        <span className="text-[10px] leading-none">{info.getValue()}</span>
+      ),
     },
     {
       accessorKey: "LessonHours",
@@ -287,7 +289,9 @@ function Edit() {
     {
       accessorKey: "NonLessonHours",
       header: "レッスン外",
-      cell: (info) => info.getValue(), // NonLessonHours is number
+      cell: (info) => (
+        <span className="text-[10px] leading-none">{info.getValue()}</span>
+      ),
     },
     {
       accessorKey: "Approval",
