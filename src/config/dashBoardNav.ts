@@ -11,16 +11,6 @@ export const dashboardNav: NavItem[] = [
     icon: "/dashboard-icon.svg",
   },
   {
-    href: "/access/parse-schedule",
-    label: "Parse Schedule",
-    icon: "/parse-schedule-icon.svg",
-  },
-  {
-    href: "/access/upload",
-    label: "Upload File",
-    icon: "/upload-file-icon.svg",
-  },
-  {
     href: "/access/schedule",
     label: "Generate Schedule",
     icon: "/create-schedule-icon.svg",
@@ -29,6 +19,16 @@ export const dashboardNav: NavItem[] = [
     href: "/access/edit",
     label: "Review & Edit",
     icon: "/edit-schedule-icon.svg",
+  },
+  {
+    href: "/access/parse-schedule",
+    label: "Parse Schedule",
+    icon: "/parse-schedule-icon.svg",
+  },
+  {
+    href: "/access/upload",
+    label: "Upload File",
+    icon: "/upload-file-icon.svg",
   },
   {
     href: "/access/help",
