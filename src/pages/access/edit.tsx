@@ -2,7 +2,6 @@ import { useMemo, useState, useEffect } from "react";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import {
   useReactTable,
-  createColumnHelper,
   getCoreRowModel,
   ColumnDef,
 } from "@tanstack/react-table";
@@ -21,8 +20,6 @@ import { calculateWorkingHours } from "@/utils/generateFullMonthData";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { finalizeTableForExport } from "@/utils/finalizeTableForExportPDF";
-
-const columnHelper = createColumnHelper<ScheduleData>();
 
 function Edit() {
   const { user } = useAuthContext();
