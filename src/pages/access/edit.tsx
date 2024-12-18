@@ -15,7 +15,7 @@ import { ScheduleData } from "@/interfaces/schedulesInterface";
 import { TeachersShift, FilteredSchedule } from "@/interfaces/teachersShift";
 import { generateFullMonthData } from "@/utils/generateFullMonthData";
 import { autofillBreakTime, autofillLessonHours } from "@/utils/tableUtils";
-import { calculateWorkingHours } from "@/utils/generateFullMonthData";
+import { updateRowCalculations } from "@/utils/tableRowUtils";
 
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -120,8 +120,9 @@ function Edit() {
       accessorKey: "StartTime",
       header: "出社時間",
       cell: ({ getValue, row }) => {
-        const value = getValue(); // StartTime is string
+        const value = getValue();
         const rowIndex = row.index;
+
         return (
           <input
             type="text"
@@ -131,25 +132,10 @@ function Edit() {
               const newStartTime = e.target.value;
               setTableData((prevData) => {
                 const newData = [...prevData];
-                const row = { ...newData[rowIndex] };
-                row.StartTime = newStartTime;
-
-                // Recalculate WorkingHours and NonLessonHours
-                if (row.EndTime) {
-                  const workingHours = calculateWorkingHours(
-                    newStartTime,
-                    row.EndTime,
-                  );
-                  row.WorkingHours =
-                    workingHours > 0 ? workingHours.toFixed(2) : "";
-                  const lessonHours = parseFloat(row.LessonHours || "0");
-                  row.NonLessonHours =
-                    workingHours > 0
-                      ? (workingHours - lessonHours).toFixed(2)
-                      : "";
-                }
-
-                newData[rowIndex] = row;
+                newData[rowIndex] = updateRowCalculations(
+                  newData[rowIndex],
+                  newStartTime,
+                );
                 return newData;
               });
             }}
@@ -162,8 +148,9 @@ function Edit() {
       accessorKey: "EndTime",
       header: "退社時間",
       cell: ({ getValue, row }) => {
-        const value = getValue(); // EndTime is string
+        const value = getValue();
         const rowIndex = row.index;
+
         return (
           <input
             type="text"
@@ -173,25 +160,11 @@ function Edit() {
               const newEndTime = e.target.value;
               setTableData((prevData) => {
                 const newData = [...prevData];
-                const row = { ...newData[rowIndex] };
-                row.EndTime = newEndTime;
-
-                // Recalculate WorkingHours and NonLessonHours
-                if (row.StartTime) {
-                  const workingHours = calculateWorkingHours(
-                    row.StartTime,
-                    newEndTime,
-                  );
-                  row.WorkingHours =
-                    workingHours > 0 ? workingHours.toFixed(2) : "";
-                  const lessonHours = parseFloat(row.LessonHours || "0");
-                  row.NonLessonHours =
-                    workingHours > 0
-                      ? (workingHours - lessonHours).toFixed(2)
-                      : "";
-                }
-
-                newData[rowIndex] = row;
+                newData[rowIndex] = updateRowCalculations(
+                  newData[rowIndex],
+                  undefined,
+                  newEndTime,
+                );
                 return newData;
               });
             }}
@@ -229,7 +202,7 @@ function Edit() {
               setTableData((prevData) => {
                 const newData = [...prevData];
                 const row = { ...newData[rowIndex] };
-                const breakTimeNumber = parseFloat(row.BreakTime || "0");
+                const breakTimeNumber = parseFloat(row.BreakTime);
                 row.BreakTime = !isNaN(breakTimeNumber)
                   ? breakTimeNumber.toFixed(1)
                   : "";
