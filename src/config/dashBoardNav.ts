@@ -35,4 +35,9 @@ export const dashboardNav: NavItem[] = [
     label: "Help",
     icon: "/help-icon.svg",
   },
+  {
+    href: "/access/testing",
+    label: "Testing",
+    icon: "/testing-icon.svg",
+  },
 ];
