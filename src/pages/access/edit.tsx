@@ -95,11 +95,19 @@ function Edit() {
 
   // Update tableDataM and tableDataT when fullMonthDataM and fullMonthDataT change
   useEffect(() => {
-    setTableDataM(fullMonthDataM);
+    setTableDataM((prevData) =>
+      JSON.stringify(prevData) !== JSON.stringify(fullMonthDataM)
+        ? fullMonthDataM
+        : prevData,
+    );
   }, [fullMonthDataM]);
 
   useEffect(() => {
-    setTableDataT(fullMonthDataT);
+    setTableDataT((prevData) =>
+      JSON.stringify(prevData) !== JSON.stringify(fullMonthDataT)
+        ? fullMonthDataT
+        : prevData,
+    );
   }, [fullMonthDataT]);
 
   // Function to generate columns with editable LessonHours
