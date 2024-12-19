@@ -66,18 +66,26 @@ function TestingPage() {
   const generateTableData = (school: string) => {
     if (!filteredSchedules.length) return [];
 
-    const selectedSchedule = filteredSchedules[0]; // Use the first schedule
+    const selectedSchedule = filteredSchedules[0];
     const year = selectedSchedule.year;
     const month = selectedSchedule.month;
 
     const daysInMonth = new Date(year, month, 0).getDate();
     const existingData = selectedSchedule.schedules.filter(
       (schedule) => schedule.School === school,
-    ); // Filter by school
-
-    const dateToScheduleMap = new Map(
-      existingData.map((row) => [row.Date, row]),
     );
+
+    console.log("Filtered schedules for school:", school, existingData);
+
+    // Normalize dates in the fetched data to use dashes
+    const dateToScheduleMap = new Map(
+      existingData.map((row) => [
+        row.Date.replace(/\//g, "-"), // Replace slashes with dashes
+        row,
+      ]),
+    );
+
+    console.log("Normalized date-to-schedule map:", dateToScheduleMap);
 
     return Array.from({ length: daysInMonth }, (_, i) => {
       const date = i + 1;
@@ -87,6 +95,8 @@ function TestingPage() {
         date,
       ).padStart(2, "0")}`;
 
+      console.log("Checking date:", formattedDate);
+
       const existingRow = dateToScheduleMap.get(formattedDate);
 
       const parsedShift = existingRow
@@ -94,13 +104,13 @@ function TestingPage() {
             StartTime: existingRow.Shift.split("-")[0],
             EndTime: existingRow.Shift.split("-")[1],
           }
-        : { StartTime: "", EndTime: "" };
+        : { StartTime: "--:--", EndTime: "--:--" };
 
       return {
         Date: date,
         Day: dayKanji,
-        StartTime: parsedShift.StartTime || "--:--",
-        EndTime: parsedShift.EndTime || "--:--",
+        StartTime: parsedShift.StartTime,
+        EndTime: parsedShift.EndTime,
       };
     });
   };
@@ -163,12 +173,8 @@ function TestingPage() {
                   <tr key={index} className="text-center">
                     <td className="border px-2 py-1">{row.Date}</td>
                     <td className="border px-2 py-1">{row.Day}</td>
-                    <td className="border px-2 py-1">
-                      {row.StartTime || "--:--"}
-                    </td>
-                    <td className="border px-2 py-1">
-                      {row.EndTime || "--:--"}
-                    </td>
+                    <td className="border px-2 py-1">{row.StartTime}</td>
+                    <td className="border px-2 py-1">{row.EndTime}</td>
                   </tr>
                 ))}
               </tbody>
