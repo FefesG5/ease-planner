@@ -157,15 +157,15 @@ function TestingPage() {
                   <th className="border px-0.5 py-0.5 font-normal">
                     レッスン外時間
                   </th>
-                  <th className="border px-1 py-1 font-normal">承認</th>
+                  <th className="border px-0.5 py-0.5 font-normal">承認</th>
                 </tr>
               </thead>
               <tbody>
                 {(localEdits[school] || []).map((row, index) => (
                   <tr key={index} className="text-center">
-                    <td className="border px-1 py-1">{row.Date}</td>
-                    <td className="border px-1 py-1">{row.Day}</td>
-                    <td className="border px-1 py-1">
+                    <td className="border px-0.5 py-0.5">{row.Date}</td>
+                    <td className="border px-0.5 py-0.5">{row.Day}</td>
+                    <td className="border px-0.5 py-0.5">
                       <input
                         type="text"
                         value={row.StartTime}
@@ -181,7 +181,7 @@ function TestingPage() {
                         className="w-full text-center border text-xs"
                       />
                     </td>
-                    <td className="border px-1 py-1">
+                    <td className="border px-0.5 py-0.5">
                       <input
                         type="text"
                         value={row.EndTime}
@@ -197,8 +197,8 @@ function TestingPage() {
                         className="w-full text-center border text-xs"
                       />
                     </td>
-                    <td className="border px-1 py-1">{row.Overtime}</td>
-                    <td className="border px-1 py-1">
+                    <td className="border px-0.5 py-0.5">{row.Overtime}</td>
+                    <td className="border px-0.5 py-0.5">
                       <input
                         type="text"
                         value={row.BreakTime}
@@ -214,14 +214,14 @@ function TestingPage() {
                         className="w-full text-center border text-xs"
                       />
                     </td>
-                    <td className="border px-1 py-1">
+                    <td className="border px-0.5 py-0.5">
                       {calculateTotalWorkingHours(
                         row.StartTime,
                         row.EndTime,
                         row.BreakTime,
                       )}
                     </td>
-                    <td className="border px-1 py-1">
+                    <td className="border px-0.5 py-0.5">
                       <input
                         type="text"
                         value={row.LessonHours}
@@ -237,7 +237,7 @@ function TestingPage() {
                         className="w-full text-center border text-xs"
                       />
                     </td>
-                    <td className="border px-1 py-1">
+                    <td className="border px-0.5 py-0.5">
                       {calculateNonLessonHours(
                         calculateTotalWorkingHours(
                           row.StartTime,
@@ -247,7 +247,7 @@ function TestingPage() {
                         row.LessonHours,
                       )}
                     </td>
-                    <td className="border px-1 py-1">{row.Approval}</td>
+                    <td className="border px-0.5 py-0.5">{row.Approval}</td>
                   </tr>
                 ))}
               </tbody>
