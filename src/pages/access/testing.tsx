@@ -13,6 +13,8 @@ interface ScheduleRow {
   WorkingHours: string;
   LessonHours: string;
   NonLessonHours: string;
+  Overtime: string; // New field for Overtime
+  Approval: string; // New field for Approval
 }
 
 interface FilteredSchedule {
@@ -81,7 +83,7 @@ function TestingPage() {
       !startTime.includes(":") ||
       !endTime.includes(":")
     )
-      return "--";
+      return "";
     const [startH, startM] = startTime.split(":".trim()).map(Number);
     const [endH, endM] = endTime.split(":".trim()).map(Number);
     const [breakH, breakM] =
@@ -108,7 +110,7 @@ function TestingPage() {
       !workingHours.includes(".") ||
       !lessonHours.includes(".")
     )
-      return "--";
+      return "";
     const [workH, workM] = workingHours.split(".".trim()).map(Number);
     const [lessonH, lessonM] = lessonHours.split(".".trim()).map(Number);
 
@@ -159,10 +161,12 @@ function TestingPage() {
         Day: dayKanji,
         StartTime: parsedShift.StartTime || "--:--",
         EndTime: parsedShift.EndTime || "--:--",
-        BreakTime: "--", // Default placeholders
-        WorkingHours: "--",
-        LessonHours: "--",
-        NonLessonHours: "--",
+        BreakTime: "", // Default placeholders
+        WorkingHours: "",
+        LessonHours: "",
+        NonLessonHours: "",
+        Overtime: "", // Default placeholder for Overtime
+        Approval: "", // Default placeholder for Approval
       };
     });
   };
@@ -221,7 +225,7 @@ function TestingPage() {
               <thead>
                 <tr className="bg-gray-200">
                   <th
-                    colSpan={8}
+                    colSpan={10}
                     className="border px-2 py-1 text-center text-lg font-bold"
                   >
                     Schedule Table (出勤簿) - School {school}
@@ -232,20 +236,24 @@ function TestingPage() {
                   <th className="border px-2 py-1">Day</th>
                   <th className="border px-2 py-1">Start Time</th>
                   <th className="border px-2 py-1">End Time</th>
+                  <th className="border px-2 py-1">Overtime</th>
                   <th className="border px-2 py-1">Break Time</th>
                   <th className="border px-2 py-1">Working Hours</th>
                   <th className="border px-2 py-1">Lesson Hours</th>
                   <th className="border px-2 py-1">Non-Lesson Hours</th>
+                  <th className="border px-2 py-1">Approval</th>
                 </tr>
                 <tr className="bg-gray-50">
                   <th className="border px-2 py-1">日付</th>
                   <th className="border px-2 py-1">曜日</th>
                   <th className="border px-2 py-1">出社時間</th>
                   <th className="border px-2 py-1">退社時間</th>
+                  <th className="border px-2 py-1">残業時間</th>
                   <th className="border px-2 py-1">休憩時間</th>
                   <th className="border px-2 py-1">労働時間</th>
                   <th className="border px-2 py-1">レッスン時間</th>
                   <th className="border px-2 py-1">レッスン外時間</th>
+                  <th className="border px-2 py-1">承認</th>
                 </tr>
               </thead>
               <tbody>
@@ -285,6 +293,7 @@ function TestingPage() {
                         className="w-full text-center border"
                       />
                     </td>
+                    <td className="border px-2 py-1">{row.Overtime}</td>
                     <td className="border px-2 py-1">
                       <input
                         type="text"
@@ -334,6 +343,7 @@ function TestingPage() {
                         row.LessonHours,
                       )}
                     </td>
+                    <td className="border px-2 py-1">{row.Approval}</td>
                   </tr>
                 ))}
               </tbody>
