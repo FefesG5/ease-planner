@@ -88,7 +88,7 @@ function TestingPage() {
 
   return (
     <div className="">
-      <h1 className="text-base font-bold mb-2">Schedule Table</h1>
+      <h1 className="text-base font-bold mb-2">Available Schedule List</h1>
 
       {/* Collapsible Tables */}
       {Object.keys(schoolStates).map((school) => (
@@ -116,34 +116,40 @@ function TestingPage() {
                 <tr className="bg-gray-200">
                   <th
                     colSpan={10}
-                    className="border px-1 py-1 text-center text-sm font-bold"
+                    className="border px-1 py-1 text-center text-sm font-normal"
                   >
                     Schedule Table (出勤簿) - School {school}
                   </th>
                 </tr>
                 <tr className="bg-gray-100">
-                  <th className="border px-1 py-1">Date</th>
-                  <th className="border px-1 py-1">Day</th>
-                  <th className="border px-1 py-1">Start Time</th>
-                  <th className="border px-1 py-1">End Time</th>
-                  <th className="border px-1 py-1">Overtime</th>
-                  <th className="border px-1 py-1">Break Time</th>
-                  <th className="border px-1 py-1">Working Hours</th>
-                  <th className="border px-1 py-1">Lesson Hours</th>
-                  <th className="border px-1 py-1">Non-Lesson Hours</th>
-                  <th className="border px-1 py-1">Approval</th>
+                  <th className="border px-1 py-1 font-normal">Date</th>
+                  <th className="border px-1 py-1 font-normal">Day</th>
+                  <th className="border px-1 py-1 font-normal">Start Time</th>
+                  <th className="border px-1 py-1 font-normal">End Time</th>
+                  <th className="border px-1 py-1 font-normal">Overtime</th>
+                  <th className="border px-1 py-1 font-normal">Break Time</th>
+                  <th className="border px-1 py-1 font-normal">
+                    Working Hours
+                  </th>
+                  <th className="border px-1 py-1 font-normal">Lesson Hours</th>
+                  <th className="border px-1 py-1 font-normal">
+                    Non-Lesson Hours
+                  </th>
+                  <th className="border px-1 py-1 font-normal">Approval</th>
                 </tr>
                 <tr className="bg-gray-50">
-                  <th className="border px-1 py-1">日付</th>
-                  <th className="border px-1 py-1">曜日</th>
-                  <th className="border px-1 py-1">出社時間</th>
-                  <th className="border px-1 py-1">退社時間</th>
-                  <th className="border px-1 py-1">残業時間</th>
-                  <th className="border px-1 py-1">休憩時間</th>
-                  <th className="border px-1 py-1">労働時間</th>
-                  <th className="border px-1 py-1">レッスン時間</th>
-                  <th className="border px-1 py-1">レッスン外時間</th>
-                  <th className="border px-1 py-1">承認</th>
+                  <th className="border px-1 py-1 font-normal">日付</th>
+                  <th className="border px-1 py-1 font-normal">曜日</th>
+                  <th className="border px-1 py-1 font-normal">出社時間</th>
+                  <th className="border px-1 py-1 font-normal">退社時間</th>
+                  <th className="border px-1 py-1 font-normal">残業時間</th>
+                  <th className="border px-1 py-1 font-normal">休憩時間</th>
+                  <th className="border px-1 py-1 font-normal">労働時間</th>
+                  <th className="border px-1 py-1 font-normal">レッスン時間</th>
+                  <th className="border px-1 py-1 font-normal">
+                    レッスン外時間
+                  </th>
+                  <th className="border px-1 py-1 font-normal">承認</th>
                 </tr>
               </thead>
               <tbody>
