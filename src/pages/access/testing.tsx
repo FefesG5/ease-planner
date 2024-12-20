@@ -29,6 +29,9 @@ function TestingPage() {
     T: false,
     Future: false,
   }); // Track collapsed state for each school
+  const [localEdits, setLocalEdits] = useState<Record<string, ScheduleRow[]>>(
+    {}, // Local state for editable rows
+  );
 
   const {
     data: filteredSchedules = [],
@@ -63,10 +66,10 @@ function TestingPage() {
     "土曜日",
   ];
 
-  const generateTableData = (school: string) => {
-    if (!filteredSchedules.length) return [];
+  const generateTableData = (school: string, schedules: FilteredSchedule[]) => {
+    if (!schedules.length) return [];
 
-    const selectedSchedule = filteredSchedules[0];
+    const selectedSchedule = schedules[0];
     const year = selectedSchedule.year;
     const month = selectedSchedule.month;
 
@@ -75,27 +78,18 @@ function TestingPage() {
       (schedule) => schedule.School === school,
     );
 
-    console.log("Filtered schedules for school:", school, existingData);
-
-    // Normalize dates in the fetched data to use dashes
     const dateToScheduleMap = new Map(
-      existingData.map((row) => [
-        row.Date.replace(/\//g, "-"), // Replace slashes with dashes
-        row,
-      ]),
+      existingData.map((row) => [row.Date.replace(/\//g, "-"), row]),
     );
-
-    console.log("Normalized date-to-schedule map:", dateToScheduleMap);
 
     return Array.from({ length: daysInMonth }, (_, i) => {
       const date = i + 1;
       const dayKanji =
         fullKanjiDayMap[new Date(year, month - 1, date).getDay()];
-      const formattedDate = `${year}-${String(month).padStart(2, "0")}-${String(
-        date,
-      ).padStart(2, "0")}`;
-
-      console.log("Checking date:", formattedDate);
+      const formattedDate = `${year}-${String(month).padStart(
+        2,
+        "0",
+      )}-${String(date).padStart(2, "0")}`;
 
       const existingRow = dateToScheduleMap.get(formattedDate);
 
@@ -104,21 +98,41 @@ function TestingPage() {
             StartTime: existingRow.Shift.split("-")[0],
             EndTime: existingRow.Shift.split("-")[1],
           }
-        : { StartTime: "--:--", EndTime: "--:--" };
+        : { StartTime: "", EndTime: "" };
 
       return {
         Date: date,
         Day: dayKanji,
-        StartTime: parsedShift.StartTime,
-        EndTime: parsedShift.EndTime,
+        StartTime: parsedShift.StartTime || "--:--",
+        EndTime: parsedShift.EndTime || "--:--",
       };
     });
   };
 
+  const handleInputChange = (
+    school: string,
+    rowIndex: number,
+    field: keyof ScheduleRow,
+    value: string,
+  ) => {
+    setLocalEdits((prev) => {
+      const updatedRows = [...(prev[school] || [])];
+      updatedRows[rowIndex] = { ...updatedRows[rowIndex], [field]: value };
+      return { ...prev, [school]: updatedRows };
+    });
+  };
+
+  // Initialize local edits when data is fetched
+  if (!Object.keys(localEdits).length && filteredSchedules.length) {
+    const initialEdits: Record<string, ScheduleRow[]> = {};
+    Object.keys(schoolStates).forEach((school) => {
+      initialEdits[school] = generateTableData(school, filteredSchedules);
+    });
+    setLocalEdits(initialEdits);
+  }
+
   if (isLoading) return <Spinner />;
   if (isError) return <p>Error: {error?.message}</p>;
-
-  console.log("Fetched Schedules:", filteredSchedules); // Inspect fetched data
 
   return (
     <div className="p-4">
@@ -169,12 +183,42 @@ function TestingPage() {
                 </tr>
               </thead>
               <tbody>
-                {generateTableData(school).map((row, index) => (
+                {(localEdits[school] || []).map((row, index) => (
                   <tr key={index} className="text-center">
                     <td className="border px-2 py-1">{row.Date}</td>
                     <td className="border px-2 py-1">{row.Day}</td>
-                    <td className="border px-2 py-1">{row.StartTime}</td>
-                    <td className="border px-2 py-1">{row.EndTime}</td>
+                    <td className="border px-2 py-1">
+                      <input
+                        type="text"
+                        value={row.StartTime}
+                        onChange={(e) =>
+                          handleInputChange(
+                            school,
+                            index,
+                            "StartTime",
+                            e.target.value,
+                          )
+                        }
+                        placeholder="--:--"
+                        className="w-full text-center border"
+                      />
+                    </td>
+                    <td className="border px-2 py-1">
+                      <input
+                        type="text"
+                        value={row.EndTime}
+                        onChange={(e) =>
+                          handleInputChange(
+                            school,
+                            index,
+                            "EndTime",
+                            e.target.value,
+                          )
+                        }
+                        placeholder="--:--"
+                        className="w-full text-center border"
+                      />
+                    </td>
                   </tr>
                 ))}
               </tbody>
