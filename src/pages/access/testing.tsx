@@ -9,6 +9,10 @@ interface ScheduleRow {
   Day: string; // Day in Kanji (日曜日, 月曜日, etc.)
   StartTime: string;
   EndTime: string;
+  BreakTime: string;
+  WorkingHours: string;
+  LessonHours: string;
+  NonLessonHours: string;
 }
 
 interface FilteredSchedule {
@@ -66,6 +70,56 @@ function TestingPage() {
     "土曜日",
   ];
 
+  const calculateWorkingHours = (
+    startTime: string,
+    endTime: string,
+    breakTime: string,
+  ) => {
+    if (
+      !startTime ||
+      !endTime ||
+      !startTime.includes(":") ||
+      !endTime.includes(":")
+    )
+      return "--";
+    const [startH, startM] = startTime.split(":".trim()).map(Number);
+    const [endH, endM] = endTime.split(":".trim()).map(Number);
+    const [breakH, breakM] =
+      breakTime && breakTime.includes(":")
+        ? breakTime.split(":".trim()).map(Number)
+        : [0, 0];
+
+    let workingMinutes =
+      endH * 60 + endM - (startH * 60 + startM) - (breakH * 60 + breakM);
+    if (workingMinutes <= 0 || isNaN(workingMinutes)) return ""; // Handle invalid time ranges
+
+    const hours = Math.floor(workingMinutes / 60);
+    const minutes = workingMinutes % 60;
+    return `${hours}.${minutes.toString().padStart(2, "0")}`;
+  };
+
+  const calculateNonLessonHours = (
+    workingHours: string,
+    lessonHours: string,
+  ) => {
+    if (
+      !workingHours ||
+      !lessonHours ||
+      !workingHours.includes(".") ||
+      !lessonHours.includes(".")
+    )
+      return "--";
+    const [workH, workM] = workingHours.split(".".trim()).map(Number);
+    const [lessonH, lessonM] = lessonHours.split(".".trim()).map(Number);
+
+    let nonLessonMinutes = workH * 60 + workM - (lessonH * 60 + lessonM);
+    if (nonLessonMinutes < 0 || isNaN(nonLessonMinutes)) return "--";
+
+    const hours = Math.floor(nonLessonMinutes / 60);
+    const minutes = nonLessonMinutes % 60;
+    return `${hours}.${minutes.toString().padStart(2, "0")}`;
+  };
+
   const generateTableData = (school: string, schedules: FilteredSchedule[]) => {
     if (!schedules.length) return [];
 
@@ -105,6 +159,10 @@ function TestingPage() {
         Day: dayKanji,
         StartTime: parsedShift.StartTime || "--:--",
         EndTime: parsedShift.EndTime || "--:--",
+        BreakTime: "--", // Default placeholders
+        WorkingHours: "--",
+        LessonHours: "--",
+        NonLessonHours: "--",
       };
     });
   };
@@ -163,7 +221,7 @@ function TestingPage() {
               <thead>
                 <tr className="bg-gray-200">
                   <th
-                    colSpan={4}
+                    colSpan={8}
                     className="border px-2 py-1 text-center text-lg font-bold"
                   >
                     Schedule Table (出勤簿) - School {school}
@@ -174,12 +232,20 @@ function TestingPage() {
                   <th className="border px-2 py-1">Day</th>
                   <th className="border px-2 py-1">Start Time</th>
                   <th className="border px-2 py-1">End Time</th>
+                  <th className="border px-2 py-1">Break Time</th>
+                  <th className="border px-2 py-1">Working Hours</th>
+                  <th className="border px-2 py-1">Lesson Hours</th>
+                  <th className="border px-2 py-1">Non-Lesson Hours</th>
                 </tr>
                 <tr className="bg-gray-50">
                   <th className="border px-2 py-1">日付</th>
                   <th className="border px-2 py-1">曜日</th>
                   <th className="border px-2 py-1">出社時間</th>
                   <th className="border px-2 py-1">退社時間</th>
+                  <th className="border px-2 py-1">休憩時間</th>
+                  <th className="border px-2 py-1">労働時間</th>
+                  <th className="border px-2 py-1">レッスン時間</th>
+                  <th className="border px-2 py-1">レッスン外時間</th>
                 </tr>
               </thead>
               <tbody>
@@ -218,6 +284,55 @@ function TestingPage() {
                         placeholder="--:--"
                         className="w-full text-center border"
                       />
+                    </td>
+                    <td className="border px-2 py-1">
+                      <input
+                        type="text"
+                        value={row.BreakTime}
+                        onChange={(e) =>
+                          handleInputChange(
+                            school,
+                            index,
+                            "BreakTime",
+                            e.target.value,
+                          )
+                        }
+                        placeholder="--"
+                        className="w-full text-center border"
+                      />
+                    </td>
+                    <td className="border px-2 py-1">
+                      {calculateWorkingHours(
+                        row.StartTime,
+                        row.EndTime,
+                        row.BreakTime,
+                      )}
+                    </td>
+                    <td className="border px-2 py-1">
+                      <input
+                        type="text"
+                        value={row.LessonHours}
+                        onChange={(e) =>
+                          handleInputChange(
+                            school,
+                            index,
+                            "LessonHours",
+                            e.target.value,
+                          )
+                        }
+                        placeholder="--"
+                        className="w-full text-center border"
+                      />
+                    </td>
+                    <td className="border px-2 py-1">
+                      {calculateNonLessonHours(
+                        calculateWorkingHours(
+                          row.StartTime,
+                          row.EndTime,
+                          row.BreakTime,
+                        ),
+                        row.LessonHours,
+                      )}
                     </td>
                   </tr>
                 ))}
