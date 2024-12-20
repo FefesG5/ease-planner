@@ -122,31 +122,39 @@ function TestingPage() {
                   </th>
                 </tr>
                 <tr className="bg-gray-100">
-                  <th className="border px-1 py-1 font-normal">Date</th>
-                  <th className="border px-1 py-1 font-normal">Day</th>
-                  <th className="border px-1 py-1 font-normal">Start Time</th>
-                  <th className="border px-1 py-1 font-normal">End Time</th>
-                  <th className="border px-1 py-1 font-normal">Overtime</th>
-                  <th className="border px-1 py-1 font-normal">Break Time</th>
-                  <th className="border px-1 py-1 font-normal">
+                  <th className="border px-0.5 py-0.5 font-normal">Date</th>
+                  <th className="border px-0.5 py-0.5 font-normal">Day</th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    Start Time
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">End Time</th>
+                  <th className="border px-0.5 py-0.5 font-normal">Overtime</th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    Break Time
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">
                     Working Hours
                   </th>
-                  <th className="border px-1 py-1 font-normal">Lesson Hours</th>
-                  <th className="border px-1 py-1 font-normal">
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    Lesson Hours
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">
                     Non-Lesson Hours
                   </th>
-                  <th className="border px-1 py-1 font-normal">Approval</th>
+                  <th className="border px-0.5 py-1 font-normal">Approval</th>
                 </tr>
                 <tr className="bg-gray-50">
-                  <th className="border px-1 py-1 font-normal">日付</th>
-                  <th className="border px-1 py-1 font-normal">曜日</th>
-                  <th className="border px-1 py-1 font-normal">出社時間</th>
-                  <th className="border px-1 py-1 font-normal">退社時間</th>
-                  <th className="border px-1 py-1 font-normal">残業時間</th>
-                  <th className="border px-1 py-1 font-normal">休憩時間</th>
-                  <th className="border px-1 py-1 font-normal">労働時間</th>
-                  <th className="border px-1 py-1 font-normal">レッスン時間</th>
-                  <th className="border px-1 py-1 font-normal">
+                  <th className="border px-0.5 py-0.5 font-normal">日付</th>
+                  <th className="border px-0.5 py-0.5 font-normal">曜日</th>
+                  <th className="border px-0.5 py-0.5 font-normal">出社時間</th>
+                  <th className="border px-0.5 py-0.5 font-normal">退社時間</th>
+                  <th className="border px-0.5 py-0.5 font-normal">残業時間</th>
+                  <th className="border px-0.5 py-0.5 font-normal">休憩時間</th>
+                  <th className="border px-0.5 py-0.5 font-normal">労働時間</th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    レッスン時間
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">
                     レッスン外時間
                   </th>
                   <th className="border px-1 py-1 font-normal">承認</th>
