@@ -3,30 +3,15 @@ import Spinner from "@/components/Spinner/Spinner";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useState } from "react";
-
-interface ScheduleRow {
-  Date: number; // Date (1, 2, 3...)
-  Day: string; // Day in Kanji (日曜日, 月曜日, etc.)
-  StartTime: string;
-  EndTime: string;
-  BreakTime: string;
-  WorkingHours: string;
-  LessonHours: string;
-  NonLessonHours: string;
-  Overtime: string; // New field for Overtime
-  Approval: string; // New field for Approval
-}
-
-interface FilteredSchedule {
-  id: string;
-  year: number;
-  month: number;
-  schedules: {
-    Date: string; // e.g., "2024-12-01"
-    Shift: string; // e.g., "09:00-17:00"
-    School: string; // e.g., "M" or "T"
-  }[];
-}
+import {
+  FilteredSchedule,
+  ScheduleRow,
+} from "@/utils/helpfulFunctions/tableDataUtils";
+import { generateTableData } from "@/utils/helpfulFunctions/tableDataUtils";
+import {
+  calculateTotalWorkingHours,
+  calculateNonLessonHours,
+} from "@/utils/helpfulFunctions/timeCalculations";
 
 function TestingPage() {
   const { user } = useAuthContext();
@@ -36,7 +21,7 @@ function TestingPage() {
     Future: false,
   }); // Track collapsed state for each school
   const [localEdits, setLocalEdits] = useState<Record<string, ScheduleRow[]>>(
-    {}, // Local state for editable rows
+    {},
   );
 
   const {
@@ -72,104 +57,18 @@ function TestingPage() {
     "土曜日",
   ];
 
-  const calculateWorkingHours = (
-    startTime: string,
-    endTime: string,
-    breakTime: string,
-  ) => {
-    if (
-      !startTime ||
-      !endTime ||
-      !startTime.includes(":") ||
-      !endTime.includes(":")
-    )
-      return "";
-    const [startH, startM] = startTime.split(":".trim()).map(Number);
-    const [endH, endM] = endTime.split(":".trim()).map(Number);
-    const [breakH, breakM] =
-      breakTime && breakTime.includes(":")
-        ? breakTime.split(":".trim()).map(Number)
-        : [0, 0];
-
-    let workingMinutes =
-      endH * 60 + endM - (startH * 60 + startM) - (breakH * 60 + breakM);
-    if (workingMinutes <= 0 || isNaN(workingMinutes)) return ""; // Handle invalid time ranges
-
-    const hours = Math.floor(workingMinutes / 60);
-    const minutes = workingMinutes % 60;
-    return `${hours}.${minutes.toString().padStart(2, "0")}`;
-  };
-
-  const calculateNonLessonHours = (
-    workingHours: string,
-    lessonHours: string,
-  ) => {
-    if (
-      !workingHours ||
-      !lessonHours ||
-      !workingHours.includes(".") ||
-      !lessonHours.includes(".")
-    )
-      return "";
-    const [workH, workM] = workingHours.split(".".trim()).map(Number);
-    const [lessonH, lessonM] = lessonHours.split(".".trim()).map(Number);
-
-    let nonLessonMinutes = workH * 60 + workM - (lessonH * 60 + lessonM);
-    if (nonLessonMinutes < 0 || isNaN(nonLessonMinutes)) return "--";
-
-    const hours = Math.floor(nonLessonMinutes / 60);
-    const minutes = nonLessonMinutes % 60;
-    return `${hours}.${minutes.toString().padStart(2, "0")}`;
-  };
-
-  const generateTableData = (school: string, schedules: FilteredSchedule[]) => {
-    if (!schedules.length) return [];
-
-    const selectedSchedule = schedules[0];
-    const year = selectedSchedule.year;
-    const month = selectedSchedule.month;
-
-    const daysInMonth = new Date(year, month, 0).getDate();
-    const existingData = selectedSchedule.schedules.filter(
-      (schedule) => schedule.School === school,
-    );
-
-    const dateToScheduleMap = new Map(
-      existingData.map((row) => [row.Date.replace(/\//g, "-"), row]),
-    );
-
-    return Array.from({ length: daysInMonth }, (_, i) => {
-      const date = i + 1;
-      const dayKanji =
-        fullKanjiDayMap[new Date(year, month - 1, date).getDay()];
-      const formattedDate = `${year}-${String(month).padStart(
-        2,
-        "0",
-      )}-${String(date).padStart(2, "0")}`;
-
-      const existingRow = dateToScheduleMap.get(formattedDate);
-
-      const parsedShift = existingRow
-        ? {
-            StartTime: existingRow.Shift.split("-")[0],
-            EndTime: existingRow.Shift.split("-")[1],
-          }
-        : { StartTime: "", EndTime: "" };
-
-      return {
-        Date: date,
-        Day: dayKanji,
-        StartTime: parsedShift.StartTime || "--:--",
-        EndTime: parsedShift.EndTime || "--:--",
-        BreakTime: "", // Default placeholders
-        WorkingHours: "",
-        LessonHours: "",
-        NonLessonHours: "",
-        Overtime: "", // Default placeholder for Overtime
-        Approval: "", // Default placeholder for Approval
-      };
+  // Initialize local edits when data is fetched
+  if (!Object.keys(localEdits).length && filteredSchedules.length) {
+    const initialEdits: Record<string, ScheduleRow[]> = {};
+    Object.keys(schoolStates).forEach((school) => {
+      initialEdits[school] = generateTableData(
+        school,
+        filteredSchedules,
+        fullKanjiDayMap,
+      );
     });
-  };
+    setLocalEdits(initialEdits);
+  }
 
   const handleInputChange = (
     school: string,
@@ -183,15 +82,6 @@ function TestingPage() {
       return { ...prev, [school]: updatedRows };
     });
   };
-
-  // Initialize local edits when data is fetched
-  if (!Object.keys(localEdits).length && filteredSchedules.length) {
-    const initialEdits: Record<string, ScheduleRow[]> = {};
-    Object.keys(schoolStates).forEach((school) => {
-      initialEdits[school] = generateTableData(school, filteredSchedules);
-    });
-    setLocalEdits(initialEdits);
-  }
 
   if (isLoading) return <Spinner />;
   if (isError) return <p>Error: {error?.message}</p>;
@@ -311,7 +201,7 @@ function TestingPage() {
                       />
                     </td>
                     <td className="border px-2 py-1">
-                      {calculateWorkingHours(
+                      {calculateTotalWorkingHours(
                         row.StartTime,
                         row.EndTime,
                         row.BreakTime,
@@ -335,7 +225,7 @@ function TestingPage() {
                     </td>
                     <td className="border px-2 py-1">
                       {calculateNonLessonHours(
-                        calculateWorkingHours(
+                        calculateTotalWorkingHours(
                           row.StartTime,
                           row.EndTime,
                           row.BreakTime,
