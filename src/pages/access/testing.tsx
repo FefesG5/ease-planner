@@ -84,15 +84,15 @@ function TestingPage() {
   };
 
   if (isLoading) return <Spinner />;
-  if (isError) return <p>Error: {error?.message}</p>;
+  if (isError) return <p className="text-sm text-red-600">{error?.message}</p>;
 
   return (
-    <div className="p-4">
-      <h1 className="text-lg font-bold mb-4">Schedule Table</h1>
+    <div className="">
+      <h1 className="text-base font-bold mb-2">Schedule Table</h1>
 
       {/* Collapsible Tables */}
       {Object.keys(schoolStates).map((school) => (
-        <div key={school} className="mb-4">
+        <div key={school} className="mb-2">
           <button
             onClick={() =>
               setSchoolStates((prev) => ({
@@ -100,13 +100,13 @@ function TestingPage() {
                 [school]: !prev[school],
               }))
             }
-            className="w-full text-left bg-gray-300 px-4 py-2 font-bold border-b"
+            className="w-full text-left bg-gray-300 px-2 py-1 font-medium border-b text-sm"
           >
             {schoolStates[school] ? "▼" : "►"} School {school}
           </button>
           {schoolStates[school] && (
             <table
-              className="w-full border-collapse border text-sm"
+              className="w-full border-collapse border text-xs"
               style={{
                 fontFamily:
                   '"Noto Sans JP", "Hiragino Kaku Gothic Pro", "Meiryo", sans-serif',
@@ -116,42 +116,42 @@ function TestingPage() {
                 <tr className="bg-gray-200">
                   <th
                     colSpan={10}
-                    className="border px-2 py-1 text-center text-lg font-bold"
+                    className="border px-1 py-1 text-center text-sm font-bold"
                   >
                     Schedule Table (出勤簿) - School {school}
                   </th>
                 </tr>
                 <tr className="bg-gray-100">
-                  <th className="border px-2 py-1">Date</th>
-                  <th className="border px-2 py-1">Day</th>
-                  <th className="border px-2 py-1">Start Time</th>
-                  <th className="border px-2 py-1">End Time</th>
-                  <th className="border px-2 py-1">Overtime</th>
-                  <th className="border px-2 py-1">Break Time</th>
-                  <th className="border px-2 py-1">Working Hours</th>
-                  <th className="border px-2 py-1">Lesson Hours</th>
-                  <th className="border px-2 py-1">Non-Lesson Hours</th>
-                  <th className="border px-2 py-1">Approval</th>
+                  <th className="border px-1 py-1">Date</th>
+                  <th className="border px-1 py-1">Day</th>
+                  <th className="border px-1 py-1">Start Time</th>
+                  <th className="border px-1 py-1">End Time</th>
+                  <th className="border px-1 py-1">Overtime</th>
+                  <th className="border px-1 py-1">Break Time</th>
+                  <th className="border px-1 py-1">Working Hours</th>
+                  <th className="border px-1 py-1">Lesson Hours</th>
+                  <th className="border px-1 py-1">Non-Lesson Hours</th>
+                  <th className="border px-1 py-1">Approval</th>
                 </tr>
                 <tr className="bg-gray-50">
-                  <th className="border px-2 py-1">日付</th>
-                  <th className="border px-2 py-1">曜日</th>
-                  <th className="border px-2 py-1">出社時間</th>
-                  <th className="border px-2 py-1">退社時間</th>
-                  <th className="border px-2 py-1">残業時間</th>
-                  <th className="border px-2 py-1">休憩時間</th>
-                  <th className="border px-2 py-1">労働時間</th>
-                  <th className="border px-2 py-1">レッスン時間</th>
-                  <th className="border px-2 py-1">レッスン外時間</th>
-                  <th className="border px-2 py-1">承認</th>
+                  <th className="border px-1 py-1">日付</th>
+                  <th className="border px-1 py-1">曜日</th>
+                  <th className="border px-1 py-1">出社時間</th>
+                  <th className="border px-1 py-1">退社時間</th>
+                  <th className="border px-1 py-1">残業時間</th>
+                  <th className="border px-1 py-1">休憩時間</th>
+                  <th className="border px-1 py-1">労働時間</th>
+                  <th className="border px-1 py-1">レッスン時間</th>
+                  <th className="border px-1 py-1">レッスン外時間</th>
+                  <th className="border px-1 py-1">承認</th>
                 </tr>
               </thead>
               <tbody>
                 {(localEdits[school] || []).map((row, index) => (
                   <tr key={index} className="text-center">
-                    <td className="border px-2 py-1">{row.Date}</td>
-                    <td className="border px-2 py-1">{row.Day}</td>
-                    <td className="border px-2 py-1">
+                    <td className="border px-1 py-1">{row.Date}</td>
+                    <td className="border px-1 py-1">{row.Day}</td>
+                    <td className="border px-1 py-1">
                       <input
                         type="text"
                         value={row.StartTime}
@@ -164,10 +164,10 @@ function TestingPage() {
                           )
                         }
                         placeholder="--:--"
-                        className="w-full text-center border"
+                        className="w-full text-center border text-xs"
                       />
                     </td>
-                    <td className="border px-2 py-1">
+                    <td className="border px-1 py-1">
                       <input
                         type="text"
                         value={row.EndTime}
@@ -180,11 +180,11 @@ function TestingPage() {
                           )
                         }
                         placeholder="--:--"
-                        className="w-full text-center border"
+                        className="w-full text-center border text-xs"
                       />
                     </td>
-                    <td className="border px-2 py-1">{row.Overtime}</td>
-                    <td className="border px-2 py-1">
+                    <td className="border px-1 py-1">{row.Overtime}</td>
+                    <td className="border px-1 py-1">
                       <input
                         type="text"
                         value={row.BreakTime}
@@ -197,17 +197,17 @@ function TestingPage() {
                           )
                         }
                         placeholder="--"
-                        className="w-full text-center border"
+                        className="w-full text-center border text-xs"
                       />
                     </td>
-                    <td className="border px-2 py-1">
+                    <td className="border px-1 py-1">
                       {calculateTotalWorkingHours(
                         row.StartTime,
                         row.EndTime,
                         row.BreakTime,
                       )}
                     </td>
-                    <td className="border px-2 py-1">
+                    <td className="border px-1 py-1">
                       <input
                         type="text"
                         value={row.LessonHours}
@@ -220,10 +220,10 @@ function TestingPage() {
                           )
                         }
                         placeholder="--"
-                        className="w-full text-center border"
+                        className="w-full text-center border text-xs"
                       />
                     </td>
-                    <td className="border px-2 py-1">
+                    <td className="border px-1 py-1">
                       {calculateNonLessonHours(
                         calculateTotalWorkingHours(
                           row.StartTime,
@@ -233,7 +233,7 @@ function TestingPage() {
                         row.LessonHours,
                       )}
                     </td>
-                    <td className="border px-2 py-1">{row.Approval}</td>
+                    <td className="border px-1 py-1">{row.Approval}</td>
                   </tr>
                 ))}
               </tbody>
