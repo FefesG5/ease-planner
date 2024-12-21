@@ -235,7 +235,7 @@ function TestingPage() {
                     </div>
                   </th>
                 </tr>
-                <tr className="bg-gray-50">
+                <tr className="bg-gray-50 sm:table-row hidden">
                   <th className="border px-0.5 py-0.5 font-normal">日付</th>
                   <th className="border px-0.5 py-0.5 font-normal">曜日</th>
                   <th className="border px-0.5 py-0.5 font-normal">出社時間</th>
