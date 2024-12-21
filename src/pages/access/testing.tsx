@@ -136,6 +136,7 @@ function TestingPage() {
                   </th>
                   <th className="border px-0.5 py-0.5 font-normal">
                     <span className="hidden sm:inline">Day</span>
+
                     <div className="sm:hidden mx-auto h-5 w-5 relative">
                       <Image
                         src="/day-icon.svg"
@@ -260,7 +261,10 @@ function TestingPage() {
                 {(localEdits[school] || []).map((row, index) => (
                   <tr key={index} className="text-center">
                     <td className="border px-0.5 py-0.5">{row.Date}</td>
-                    <td className="border px-0.5 py-0.5">{row.Day}</td>
+                    <td className="border px-0.5 py-0.5">
+                      <span className="hidden sm:inline">{row.Day}</span>
+                      <span className="sm:hidden">{row.Day.charAt(0)}</span>
+                    </td>
                     <td className="border px-0.5 py-0.5">
                       <input
                         type="text"
