@@ -167,7 +167,7 @@ function TestingPage() {
                       />
                     </div>
                   </th>
-                  <th className="border px-0.5 py-0.5 font-normal">
+                  <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
                     <span className="hidden sm:inline">Overtime</span>
                     <div className="sm:hidden mx-auto h-5 w-5 relative">
                       <Image
@@ -222,7 +222,7 @@ function TestingPage() {
                       />
                     </div>
                   </th>
-                  <th className="border px-0.5 py-0.5 font-normal">
+                  <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
                     <span className="hidden sm:inline">Approval</span>
 
                     <div className="sm:hidden mx-auto h-5 w-5 relative">
@@ -240,7 +240,9 @@ function TestingPage() {
                   <th className="border px-0.5 py-0.5 font-normal">曜日</th>
                   <th className="border px-0.5 py-0.5 font-normal">出社時間</th>
                   <th className="border px-0.5 py-0.5 font-normal">退社時間</th>
-                  <th className="border px-0.5 py-0.5 font-normal">残業時間</th>
+                  <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
+                    残業時間
+                  </th>
                   <th className="border px-0.5 py-0.5 font-normal">休憩時間</th>
                   <th className="border px-0.5 py-0.5 font-normal">労働時間</th>
                   <th className="border px-0.5 py-0.5 font-normal">
@@ -249,7 +251,9 @@ function TestingPage() {
                   <th className="border px-0.5 py-0.5 font-normal">
                     レッスン外時間
                   </th>
-                  <th className="border px-0.5 py-0.5 font-normal">承認</th>
+                  <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
+                    承認
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -289,7 +293,9 @@ function TestingPage() {
                         className="w-full text-center border text-xs"
                       />
                     </td>
-                    <td className="border px-0.5 py-0.5">{row.Overtime}</td>
+                    <td className="border px-0.5 py-0.5 hidden sm:table-cell">
+                      {row.Overtime}
+                    </td>
                     <td className="border px-0.5 py-0.5">
                       <input
                         type="text"
@@ -339,7 +345,9 @@ function TestingPage() {
                         row.LessonHours,
                       )}
                     </td>
-                    <td className="border px-0.5 py-0.5">{row.Approval}</td>
+                    <td className="border px-0.5 py-0.5 hidden sm:table-cell">
+                      {row.Approval}
+                    </td>
                   </tr>
                 ))}
               </tbody>
