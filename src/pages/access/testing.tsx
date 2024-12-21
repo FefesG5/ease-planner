@@ -278,7 +278,7 @@ function TestingPage() {
                           )
                         }
                         placeholder="--:--"
-                        className="w-full text-center border text-xs"
+                        className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                       />
                     </td>
                     <td className="border px-0.5 py-0.5">
@@ -294,7 +294,7 @@ function TestingPage() {
                           )
                         }
                         placeholder="--:--"
-                        className="w-full text-center border text-xs"
+                        className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                       />
                     </td>
                     <td className="border px-0.5 py-0.5 hidden sm:table-cell">
@@ -313,7 +313,7 @@ function TestingPage() {
                           )
                         }
                         placeholder="--"
-                        className="w-full text-center border text-xs"
+                        className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                       />
                     </td>
                     <td className="border px-0.5 py-0.5">
@@ -336,7 +336,7 @@ function TestingPage() {
                           )
                         }
                         placeholder="--"
-                        className="w-full text-center border text-xs"
+                        className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                       />
                     </td>
                     <td className="border px-0.5 py-0.5">
