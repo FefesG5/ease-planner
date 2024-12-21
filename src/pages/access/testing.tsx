@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import Spinner from "@/components/Spinner/Spinner";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
@@ -122,26 +123,117 @@ function TestingPage() {
                   </th>
                 </tr>
                 <tr className="bg-gray-100">
-                  <th className="border px-0.5 py-0.5 font-normal">Date</th>
-                  <th className="border px-0.5 py-0.5 font-normal">Day</th>
                   <th className="border px-0.5 py-0.5 font-normal">
-                    Start Time
-                  </th>
-                  <th className="border px-0.5 py-0.5 font-normal">End Time</th>
-                  <th className="border px-0.5 py-0.5 font-normal">Overtime</th>
-                  <th className="border px-0.5 py-0.5 font-normal">
-                    Break Time
-                  </th>
-                  <th className="border px-0.5 py-0.5 font-normal">
-                    Working Hours
+                    <span className="hidden sm:inline">Date</span>
+                    <div className="sm:hidden mx-auto h-5 w-5 relative">
+                      <Image
+                        src="/date-icon.svg"
+                        alt="date Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
                   </th>
                   <th className="border px-0.5 py-0.5 font-normal">
-                    Lesson Hours
+                    <span className="hidden sm:inline">Day</span>
+                    <div className="sm:hidden mx-auto h-5 w-5 relative">
+                      <Image
+                        src="/day-icon.svg"
+                        alt="Day Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
                   </th>
                   <th className="border px-0.5 py-0.5 font-normal">
-                    Non-Lesson Hours
+                    <span className="hidden sm:inline">Start Time</span>
+                    <div className="sm:hidden mx-auto h-5 w-5 relative">
+                      <Image
+                        src="/starting-time-icon.svg"
+                        alt="Starting Time Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
                   </th>
-                  <th className="border px-0.5 py-1 font-normal">Approval</th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    <span className="hidden sm:inline">End Time</span>
+                    <div className="sm:hidden mx-auto h-5 w-5 relative">
+                      <Image
+                        src="/finishing-time-icon.svg"
+                        alt="Finishing Time Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    <span className="hidden sm:inline">Overtime</span>
+                    <div className="sm:hidden mx-auto h-5 w-5 relative">
+                      <Image
+                        src="/overtime-icon.svg"
+                        alt="Overtime Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    <span className="hidden sm:inline">Break Time</span>
+                    <div className="sm:hidden mx-auto h-5 w-5 relative">
+                      <Image
+                        src="/break-time-icon.svg"
+                        alt="Breaktime Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    <span className="hidden sm:inline">Working Hours</span>
+                    <div className="sm:hidden mx-auto h-5 w-5 relative">
+                      <Image
+                        src="/working-hours-icon.svg"
+                        alt="Working Hours Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    <span className="hidden sm:inline">Lesson Hours</span>
+                    <div className="sm:hidden mx-auto h-5 w-5 relative">
+                      <Image
+                        src="/lesson-hours-icon.svg"
+                        alt="Lesson Hours Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    <span className="hidden sm:inline">Non-Lesson Hours</span>
+                    <div className="sm:hidden mx-auto h-5 w-6 relative">
+                      <Image
+                        src="/non-lesson-hours-icon.svg"
+                        alt="Non Lesson Hours Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                  </th>
+                  <th className="border px-0.5 py-0.5 font-normal">
+                    <span className="hidden sm:inline">Approval</span>
+
+                    <div className="sm:hidden mx-auto h-5 w-5 relative">
+                      <Image
+                        src="/approved-icon.svg"
+                        alt="Approved Icon"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                  </th>
                 </tr>
                 <tr className="bg-gray-50">
                   <th className="border px-0.5 py-0.5 font-normal">日付</th>
