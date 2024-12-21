@@ -107,7 +107,7 @@ function TestingPage() {
           </button>
           {schoolStates[school] && (
             <table
-              className="w-full border-collapse border text-xs"
+              className="w-full border-collapse border text-xs bg-white"
               style={{
                 fontFamily:
                   '"Noto Sans JP", "Hiragino Kaku Gothic Pro", "Meiryo", sans-serif',
