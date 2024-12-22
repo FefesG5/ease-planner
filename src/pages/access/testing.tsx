@@ -312,7 +312,7 @@ function TestingPage() {
                             e.target.value,
                           )
                         }
-                        placeholder="--"
+                        placeholder=""
                         className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                       />
                     </td>
@@ -335,7 +335,7 @@ function TestingPage() {
                             e.target.value,
                           )
                         }
-                        placeholder="--"
+                        placeholder=""
                         className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                       />
                     </td>
