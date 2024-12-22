@@ -9,22 +9,26 @@ export const calculateTotalWorkingHours = (
     !startTime.includes(":") ||
     !endTime.includes(":")
   ) {
-    return "";
+    return ""; // Invalid input returns empty string
   }
 
   const [startH, startM] = startTime.split(":").map(Number);
   const [endH, endM] = endTime.split(":").map(Number);
+
   const [breakH, breakM] =
     breakTime && breakTime.includes(":")
       ? breakTime.split(":").map(Number)
-      : [0, 0];
+      : [0, 0]; // Default to 0 if break time is empty
 
   let workingMinutes =
     endH * 60 + endM - (startH * 60 + startM) - (breakH * 60 + breakM);
 
   if (workingMinutes <= 0 || isNaN(workingMinutes)) {
-    return "";
+    return ""; // Invalid or negative time returns empty
   }
+
+  const maxWorkingMinutes = 8 * 60; // 8 hours max
+  workingMinutes = Math.min(workingMinutes, maxWorkingMinutes);
 
   const hours = Math.floor(workingMinutes / 60);
   const minutes = workingMinutes % 60;
@@ -41,7 +45,7 @@ export const calculateNonLessonHours = (
     !workingHours.includes(".") ||
     !lessonHours.includes(".")
   ) {
-    return "";
+    return ""; // Placeholder if values are missing
   }
 
   const [workH, workM] = workingHours.split(".").map(Number);
@@ -50,7 +54,7 @@ export const calculateNonLessonHours = (
   let nonLessonMinutes = workH * 60 + workM - (lessonH * 60 + lessonM);
 
   if (nonLessonMinutes < 0 || isNaN(nonLessonMinutes)) {
-    return "--";
+    return ""; // Handle invalid or negative values
   }
 
   const hours = Math.floor(nonLessonMinutes / 60);
