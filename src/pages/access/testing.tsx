@@ -140,7 +140,7 @@ function TestingPage() {
           {schoolStates[school] && (
             <>
               {/* Autofill Controls */}
-              <div className="bg-gray-300 p-4 shadow-sm">
+              <div className="bg-gray-300 p-2 shadow-sm">
                 <div className="flex flex-wrap items-center justify-end gap-4">
                   <div className="flex items-center gap-2">
                     <label className="text-sm font-medium">Break Time:</label>
