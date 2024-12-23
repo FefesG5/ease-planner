@@ -264,23 +264,23 @@ function TestingPage() {
                       </th>
                       <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                         <span className="hidden sm:inline">Start Time</span>
-                        <div className="sm:hidden mx-auto h-5 w-5 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/starting-time-icon.svg"
                             alt="Starting Time Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
                       <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                         <span className="hidden sm:inline">End Time</span>
-                        <div className="sm:hidden mx-auto h-5 w-5 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/finishing-time-icon.svg"
                             alt="Finishing Time Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
@@ -297,34 +297,34 @@ function TestingPage() {
                       </th>
                       <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                         <span className="hidden sm:inline">Break Time</span>
-                        <div className="sm:hidden mx-auto h-5 w-5 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/break-time-icon.svg"
                             alt="Breaktime Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
                       <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                         <span className="hidden sm:inline">Working Hours</span>
-                        <div className="sm:hidden mx-auto h-5 w-5 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/working-hours-icon.svg"
                             alt="Working Hours Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
                       <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                         <span className="hidden sm:inline">Lesson Hours</span>
-                        <div className="sm:hidden mx-auto h-5 w-5 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/lesson-hours-icon.svg"
                             alt="Lesson Hours Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
@@ -332,12 +332,12 @@ function TestingPage() {
                         <span className="hidden sm:inline">
                           Non-Lesson Hours
                         </span>
-                        <div className="sm:hidden mx-auto h-5 w-6 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/non-lesson-hours-icon.svg"
                             alt="Non Lesson Hours Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
