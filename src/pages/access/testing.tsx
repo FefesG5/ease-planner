@@ -196,7 +196,7 @@ function TestingPage() {
                     </th>
                   </tr>
                   <tr className="bg-gray-100">
-                    <th className="border px-0.5 py-0.5 font-normal">
+                    <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                       <span className="hidden sm:inline">Date</span>
                       <div className="sm:hidden mx-auto h-5 w-5 relative">
                         <Image
@@ -207,9 +207,8 @@ function TestingPage() {
                         />
                       </div>
                     </th>
-                    <th className="border px-0.5 py-0.5 font-normal">
+                    <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                       <span className="hidden sm:inline">Day</span>
-
                       <div className="sm:hidden mx-auto h-5 w-5 relative">
                         <Image
                           src="/day-icon.svg"
@@ -219,7 +218,7 @@ function TestingPage() {
                         />
                       </div>
                     </th>
-                    <th className="border px-0.5 py-0.5 font-normal">
+                    <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                       <span className="hidden sm:inline">Start Time</span>
                       <div className="sm:hidden mx-auto h-5 w-5 relative">
                         <Image
@@ -230,7 +229,7 @@ function TestingPage() {
                         />
                       </div>
                     </th>
-                    <th className="border px-0.5 py-0.5 font-normal">
+                    <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                       <span className="hidden sm:inline">End Time</span>
                       <div className="sm:hidden mx-auto h-5 w-5 relative">
                         <Image
@@ -241,7 +240,7 @@ function TestingPage() {
                         />
                       </div>
                     </th>
-                    <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
+                    <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell w-auto sm:w-auto">
                       <span className="hidden sm:inline">Overtime</span>
                       <div className="sm:hidden mx-auto h-5 w-5 relative">
                         <Image
@@ -252,7 +251,7 @@ function TestingPage() {
                         />
                       </div>
                     </th>
-                    <th className="border px-0.5 py-0.5 font-normal">
+                    <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                       <span className="hidden sm:inline">Break Time</span>
                       <div className="sm:hidden mx-auto h-5 w-5 relative">
                         <Image
@@ -263,7 +262,7 @@ function TestingPage() {
                         />
                       </div>
                     </th>
-                    <th className="border px-0.5 py-0.5 font-normal">
+                    <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                       <span className="hidden sm:inline">Working Hours</span>
                       <div className="sm:hidden mx-auto h-5 w-5 relative">
                         <Image
@@ -274,7 +273,7 @@ function TestingPage() {
                         />
                       </div>
                     </th>
-                    <th className="border px-0.5 py-0.5 font-normal">
+                    <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                       <span className="hidden sm:inline">Lesson Hours</span>
                       <div className="sm:hidden mx-auto h-5 w-5 relative">
                         <Image
@@ -285,7 +284,7 @@ function TestingPage() {
                         />
                       </div>
                     </th>
-                    <th className="border px-0.5 py-0.5 font-normal">
+                    <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                       <span className="hidden sm:inline">Non-Lesson Hours</span>
                       <div className="sm:hidden mx-auto h-5 w-6 relative">
                         <Image
@@ -296,9 +295,8 @@ function TestingPage() {
                         />
                       </div>
                     </th>
-                    <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
+                    <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell w-auto sm:w-auto">
                       <span className="hidden sm:inline">Approval</span>
-
                       <div className="sm:hidden mx-auto h-5 w-5 relative">
                         <Image
                           src="/approved-icon.svg"
@@ -381,7 +379,7 @@ function TestingPage() {
                       <td className="border px-0.5 py-0.5 hidden sm:table-cell">
                         {row.Overtime}
                       </td>
-                      <td className="border px-0.5 py-0.5">
+                      <td className="border px-0.5 py-0.5 w-[42px]">
                         <input
                           type="text"
                           value={row.BreakTime}
@@ -397,14 +395,14 @@ function TestingPage() {
                           className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                         />
                       </td>
-                      <td className="border px-0.5 py-0.5">
+                      <td className="border px-0.5 py-0.5 w-[42px]">
                         {calculateTotalWorkingHours(
                           row.StartTime,
                           row.EndTime,
                           row.BreakTime,
                         )}
                       </td>
-                      <td className="border px-0.5 py-0.5">
+                      <td className="border px-0.5 py-0.5 w-[42px]">
                         <input
                           type="text"
                           value={row.LessonHours}
@@ -420,16 +418,19 @@ function TestingPage() {
                           className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                         />
                       </td>
-                      <td className="border px-0.5 py-0.5">
-                        {calculateNonLessonHours(
-                          calculateTotalWorkingHours(
-                            row.StartTime,
-                            row.EndTime,
-                            row.BreakTime,
-                          ),
-                          row.LessonHours,
-                        )}
+                      <td className="border text-center text-xs w-[42px]">
+                        <span className="w-full text-xs">
+                          {calculateNonLessonHours(
+                            calculateTotalWorkingHours(
+                              row.StartTime,
+                              row.EndTime,
+                              row.BreakTime,
+                            ),
+                            row.LessonHours,
+                          )}
+                        </span>
                       </td>
+
                       <td className="border px-0.5 py-0.5 hidden sm:table-cell">
                         {row.Approval}
                       </td>
