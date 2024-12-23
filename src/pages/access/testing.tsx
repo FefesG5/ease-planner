@@ -120,11 +120,11 @@ function TestingPage() {
 
   return (
     <div className="">
-      <h1 className="text-base font-bold mb-2">Available Schedule List</h1>
+      <h1 className="text-base font-bold">Available Schedule List</h1>
 
       {/* Collapsible Tables */}
       {Object.keys(schoolStates).map((school) => (
-        <div key={school} className="mb-2">
+        <div key={school} className="">
           <button
             onClick={() =>
               setSchoolStates((prev) => ({
@@ -140,7 +140,7 @@ function TestingPage() {
           {schoolStates[school] && (
             <>
               {/* Autofill Controls */}
-              <div className="bg-gray-300 p-4 shadow-sm mt-2">
+              <div className="bg-gray-300 p-4 shadow-sm">
                 <div className="flex flex-wrap items-center justify-end gap-4">
                   <div className="flex items-center gap-2">
                     <label className="text-sm font-medium">Break Time:</label>
