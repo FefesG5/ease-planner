@@ -242,23 +242,23 @@ function TestingPage() {
                     <tr className="bg-gray-100">
                       <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                         <span className="hidden sm:inline">Date</span>
-                        <div className="sm:hidden mx-auto h-5 w-5 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/date-icon.svg"
                             alt="date Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
                       <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                         <span className="hidden sm:inline">Day</span>
-                        <div className="sm:hidden mx-auto h-5 w-5 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/day-icon.svg"
                             alt="Day Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
@@ -286,12 +286,12 @@ function TestingPage() {
                       </th>
                       <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell w-auto sm:w-auto">
                         <span className="hidden sm:inline">Overtime</span>
-                        <div className="sm:hidden mx-auto h-5 w-5 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/overtime-icon.svg"
                             alt="Overtime Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
@@ -343,12 +343,12 @@ function TestingPage() {
                       </th>
                       <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell w-auto sm:w-auto">
                         <span className="hidden sm:inline">Approval</span>
-                        <div className="sm:hidden mx-auto h-5 w-5 relative">
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
                             src="/approved-icon.svg"
                             alt="Approved Icon"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       </th>
