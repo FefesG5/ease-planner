@@ -5,6 +5,7 @@ export interface FilteredSchedule {
   id: string;
   year: number;
   month: number;
+  teacherName: string;
   schedules: {
     Date: string; // e.g., "2024-12-01"
     Shift: string; // e.g., "09:00-17:00"
