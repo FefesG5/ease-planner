@@ -46,8 +46,11 @@ export const generateSchedulePDF = (
     }
 
     // Add the title with adjusted top margin
-    doc.text(formatMonthYear(monthYear), marginLeft, marginTop); // Call the function correctly
+    doc.text(formatMonthYear(monthYear), marginLeft, marginTop);
     doc.text("出勤簿", 105, marginTop, { align: "center" });
+
+    // Add the additional section below the header
+    addHeaderSection(doc, marginTop + 2);
 
     // Table headers (English and Japanese)
     const tableHeaders = [
@@ -92,7 +95,7 @@ export const generateSchedulePDF = (
     doc.autoTable({
       head: tableHeaders,
       body: tableData,
-      startY: marginTop + 10, // Adjust table start based on top margin
+      startY: marginTop + 30, // Adjust table start based on added section
       styles: {
         fontSize: 7,
         valign: "middle",
@@ -140,4 +143,76 @@ const splitScheduleData = (scheduleData: ScheduleRow[]): ScheduleRow[][] => {
 const formatMonthYear = (monthYear: string): string => {
   const [year, month] = monthYear.split("-");
   return `${year}年${parseInt(month, 10)}月度`;
+};
+
+const addHeaderSection = (doc: jsPDF, startY: number) => {
+  // Define dimensions and positions for each box
+  const box1 = {
+    x: 15, // Starting x-coordinate for "所属"
+    y: startY, // Starting y-coordinate
+    width: 10, // Width of the box for "所属"
+    height: 14, // Height of the box
+    text: {
+      content: "所属",
+    },
+  };
+
+  const box2 = {
+    x: box1.x + box1.width, // Start immediately after box1
+    y: startY,
+    width: 70, // Width of the box for "TryAngle Kids 南草津校"
+    height: 14, // Height of the box
+    text: {
+      content: "TryAngle Kids 南草津校",
+    },
+  };
+
+  // Helper function to center text inside a box
+  const getTextOffsetsCenter = (
+    text: string,
+    boxWidth: number,
+    boxHeight: number,
+    fontSize: number,
+  ) => {
+    const textWidth = doc.getTextWidth(text);
+    const xOffset = (boxWidth - textWidth) / 2; // Center horizontally
+    const yOffset = (boxHeight + fontSize / 2.5) / 2; // Center vertically (approximation)
+    return { xOffset, yOffset };
+  };
+
+  // Helper function to left-align text inside a box
+  const getTextOffsetsLeft = (boxHeight: number, fontSize: number) => {
+    const xOffset = 2; // Fixed left margin for text alignment
+    const yOffset = (boxHeight + fontSize / 2.5) / 2; // Center vertically
+    return { xOffset, yOffset };
+  };
+
+  // Set font size for the text
+  const fontSize = 10;
+  doc.setFontSize(fontSize);
+
+  // Calculate offsets for "所属" box (centered)
+  const box1Offsets = getTextOffsetsCenter(
+    box1.text.content,
+    box1.width,
+    box1.height,
+    fontSize,
+  );
+  // Draw the box for "所属"
+  doc.rect(box1.x, box1.y, box1.width, box1.height); // Draw the rectangle for "所属"
+  doc.text(
+    box1.text.content,
+    box1.x + box1Offsets.xOffset,
+    box1.y + box1Offsets.yOffset,
+  ); // Add centered text
+
+  // Calculate offsets for "TryAngle Kids 南草津校" box (left-aligned)
+  const box2Offsets = getTextOffsetsLeft(box2.height, fontSize);
+  // Draw the box for "TryAngle Kids 南草津校"
+  doc.rect(box2.x, box2.y, box2.width, box2.height); // Draw the rectangle for "TryAngle Kids 南草津校"
+  doc.text(
+    box2.text.content,
+    box2.x + box2Offsets.xOffset,
+    box2.y + box2Offsets.yOffset,
+  ); // Add left-aligned text
 };
