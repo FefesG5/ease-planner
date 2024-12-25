@@ -167,6 +167,15 @@ const addHeaderSection = (doc: jsPDF, startY: number) => {
     },
   };
 
+  const stackedBox = {
+    x: box2.x + box2.width, // Start immediately to the right of box2
+    y: startY, // Same starting y-coordinate as box2
+    width: 15, // Width of the stacked boxes
+    height: 14, // Total height of the stacked boxes
+    box1Text: "Name", // Text for the first stacked box
+    box2Text: "氏名", // Text for the second stacked box
+  };
+
   // Helper function to center text inside a box
   const getTextOffsetsCenter = (
     text: string,
@@ -215,4 +224,39 @@ const addHeaderSection = (doc: jsPDF, startY: number) => {
     box2.x + box2Offsets.xOffset,
     box2.y + box2Offsets.yOffset,
   ); // Add left-aligned text
+
+  // Draw stacked boxes
+  const stackedBoxHeight = stackedBox.height / 2; // Split height into two
+  // Draw first stacked box ("Name")
+  doc.rect(stackedBox.x, stackedBox.y, stackedBox.width, stackedBoxHeight);
+  const stackedBox1Offsets = getTextOffsetsCenter(
+    stackedBox.box1Text,
+    stackedBox.width,
+    stackedBoxHeight,
+    fontSize,
+  );
+  doc.text(
+    stackedBox.box1Text,
+    stackedBox.x + stackedBox1Offsets.xOffset,
+    stackedBox.y + stackedBox1Offsets.yOffset,
+  );
+
+  // Draw second stacked box ("氏名")
+  doc.rect(
+    stackedBox.x,
+    stackedBox.y + stackedBoxHeight, // Start below the first box
+    stackedBox.width,
+    stackedBoxHeight,
+  );
+  const stackedBox2Offsets = getTextOffsetsCenter(
+    stackedBox.box2Text,
+    stackedBox.width,
+    stackedBoxHeight,
+    fontSize,
+  );
+  doc.text(
+    stackedBox.box2Text,
+    stackedBox.x + stackedBox2Offsets.xOffset,
+    stackedBox.y + stackedBoxHeight + stackedBox2Offsets.yOffset,
+  );
 };
