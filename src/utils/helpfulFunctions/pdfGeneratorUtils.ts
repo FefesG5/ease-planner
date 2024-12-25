@@ -31,7 +31,6 @@ export const generateSchedulePDF = (
 
   // Set default font to NotoSansJP
   doc.setFont("NotoSansJP", "normal");
-  doc.setFontSize(10);
 
   // Adjust margins
   const marginLeft = 28; // 2.8 cm
@@ -45,9 +44,12 @@ export const generateSchedulePDF = (
       doc.addPage(); // Add a new page for each group after the first
     }
 
-    // Add the title with adjusted top margin
-    doc.setFontSize(16); // Increase font size for the title
+    // Add the date with separate font size
+    doc.setFontSize(18); // Set font size for the date
     doc.text(formatMonthYear(monthYear), marginLeft, marginTop);
+
+    // Add the title with separate font size
+    doc.setFontSize(24); // Set font size for the title
     doc.text("出勤簿", 105, marginTop, { align: "center" });
 
     // Add the header box section closer to the title
