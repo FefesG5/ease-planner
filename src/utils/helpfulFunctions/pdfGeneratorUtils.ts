@@ -35,7 +35,7 @@ export const generateSchedulePDF = (
 
   // Adjust margins
   const marginLeft = 28; // 2.8 cm
-  const marginTop = 40; // 4 cm
+  const marginTop = 20; // Adjusted to reduce gap between title and header section
 
   // Split schedule data into separate groups (e.g., one group per table)
   const groupedData = splitScheduleData(scheduleData);
@@ -46,11 +46,12 @@ export const generateSchedulePDF = (
     }
 
     // Add the title with adjusted top margin
+    doc.setFontSize(16); // Increase font size for the title
     doc.text(formatMonthYear(monthYear), marginLeft, marginTop);
     doc.text("出勤簿", 105, marginTop, { align: "center" });
 
-    // Add the additional section below the header
-    addHeaderSection(doc, marginTop + 2);
+    // Add the header box section closer to the title
+    addHeaderSection(doc, marginTop + 3); // Reduced gap between title and header section
 
     // Table headers (English and Japanese)
     const tableHeaders = [
@@ -95,23 +96,29 @@ export const generateSchedulePDF = (
     doc.autoTable({
       head: tableHeaders,
       body: tableData,
-      startY: marginTop + 30, // Adjust table start based on added section
+      startY: marginTop + 22, // Adjusted to maintain a reduced gap
       styles: {
         fontSize: 7,
         valign: "middle",
         halign: "center",
         font: "NotoSansJP", // Apply the default font
-        lineWidth: 0.2, // Border line width
+        lineWidth: 0.2, // Default border thickness
+        textColor: 0, // Black text
+        lineColor: 0, // Black border color
       },
       headStyles: {
         fontSize: 8,
-        fontStyle: "bold",
         font: "NotoSansJP",
-        fillColor: [255, 255, 255], // Remove background color (white)
+        fillColor: [255, 255, 255], // White background for headers
         textColor: 0, // Black text
-        lineWidth: 0.2, // Border line width
+        lineWidth: 0.2, // Default header border thickness
+        lineColor: 0, // Black border color
       },
-      theme: "grid", // Plain grid without additional colors
+      alternateRowStyles: {
+        fillColor: [255, 255, 255], // White background for rows
+        textColor: 0, // Black text
+      },
+      theme: "grid", // Plain grid
     });
   });
 
