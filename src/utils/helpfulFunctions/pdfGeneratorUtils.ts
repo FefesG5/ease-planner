@@ -145,7 +145,11 @@ const formatMonthYear = (monthYear: string): string => {
   return `${year}年${parseInt(month, 10)}月度`;
 };
 
-const addHeaderSection = (doc: jsPDF, startY: number) => {
+const addHeaderSection = (
+  doc: jsPDF,
+  startY: number,
+  teacherName: string = "",
+) => {
   // Define dimensions and positions for each box
   const box1 = {
     x: 15, // Starting x-coordinate for "所属"
@@ -174,6 +178,14 @@ const addHeaderSection = (doc: jsPDF, startY: number) => {
     height: 14, // Total height of the stacked boxes
     box1Text: "Name", // Text for the first stacked box
     box2Text: "氏名", // Text for the second stacked box
+  };
+
+  const nameArea = {
+    x: stackedBox.x + stackedBox.width, // Start immediately to the right of stackedBox
+    y: startY, // Same starting y-coordinate
+    width: 50, // Width of the name area
+    height: 14, // Height of the name area
+    text: teacherName, // Teacher's name or blank
   };
 
   // Helper function to center text inside a box
@@ -259,4 +271,21 @@ const addHeaderSection = (doc: jsPDF, startY: number) => {
     stackedBox.x + stackedBox2Offsets.xOffset,
     stackedBox.y + stackedBoxHeight + stackedBox2Offsets.yOffset,
   );
+
+  // Draw the Name area
+  doc.rect(nameArea.x, nameArea.y, nameArea.width, nameArea.height); // Draw the rectangle for the Name area
+  if (nameArea.text) {
+    // Only add text if a name is provided
+    const nameAreaOffsets = getTextOffsetsCenter(
+      nameArea.text,
+      nameArea.width,
+      nameArea.height,
+      fontSize,
+    );
+    doc.text(
+      nameArea.text,
+      nameArea.x + nameAreaOffsets.xOffset,
+      nameArea.y + nameAreaOffsets.yOffset,
+    );
+  }
 };
