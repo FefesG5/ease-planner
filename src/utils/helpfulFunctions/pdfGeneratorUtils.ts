@@ -188,6 +188,15 @@ const addHeaderSection = (
     text: teacherName, // Teacher's name or blank
   };
 
+  const signatureArea = {
+    x: nameArea.x + nameArea.width + 5, // Add extra space before the signature box
+    y: startY, // Same starting y-coordinate
+    width: 25, // Width of the signature area
+    height: 14, // Total height of the signature area
+    stackHeight: 7, // Height for each stack in the signature area
+    box1Text: "Signature", // Text for the top box
+  };
+
   // Helper function to center text inside a box
   const getTextOffsetsCenter = (
     text: string,
@@ -212,34 +221,31 @@ const addHeaderSection = (
   const fontSize = 10;
   doc.setFontSize(fontSize);
 
-  // Calculate offsets for "所属" box (centered)
+  // Draw "所属" box
   const box1Offsets = getTextOffsetsCenter(
     box1.text.content,
     box1.width,
     box1.height,
     fontSize,
   );
-  // Draw the box for "所属"
-  doc.rect(box1.x, box1.y, box1.width, box1.height); // Draw the rectangle for "所属"
+  doc.rect(box1.x, box1.y, box1.width, box1.height);
   doc.text(
     box1.text.content,
     box1.x + box1Offsets.xOffset,
     box1.y + box1Offsets.yOffset,
-  ); // Add centered text
+  );
 
-  // Calculate offsets for "TryAngle Kids 南草津校" box (left-aligned)
+  // Draw "TryAngle Kids 南草津校" box
   const box2Offsets = getTextOffsetsLeft(box2.height, fontSize);
-  // Draw the box for "TryAngle Kids 南草津校"
-  doc.rect(box2.x, box2.y, box2.width, box2.height); // Draw the rectangle for "TryAngle Kids 南草津校"
+  doc.rect(box2.x, box2.y, box2.width, box2.height);
   doc.text(
     box2.text.content,
     box2.x + box2Offsets.xOffset,
     box2.y + box2Offsets.yOffset,
-  ); // Add left-aligned text
+  );
 
-  // Draw stacked boxes
-  const stackedBoxHeight = stackedBox.height / 2; // Split height into two
-  // Draw first stacked box ("Name")
+  // Draw stacked "Name" and "氏名" boxes
+  const stackedBoxHeight = stackedBox.height / 2;
   doc.rect(stackedBox.x, stackedBox.y, stackedBox.width, stackedBoxHeight);
   const stackedBox1Offsets = getTextOffsetsCenter(
     stackedBox.box1Text,
@@ -253,10 +259,9 @@ const addHeaderSection = (
     stackedBox.y + stackedBox1Offsets.yOffset,
   );
 
-  // Draw second stacked box ("氏名")
   doc.rect(
     stackedBox.x,
-    stackedBox.y + stackedBoxHeight, // Start below the first box
+    stackedBox.y + stackedBoxHeight,
     stackedBox.width,
     stackedBoxHeight,
   );
@@ -272,10 +277,9 @@ const addHeaderSection = (
     stackedBox.y + stackedBoxHeight + stackedBox2Offsets.yOffset,
   );
 
-  // Draw the Name area
-  doc.rect(nameArea.x, nameArea.y, nameArea.width, nameArea.height); // Draw the rectangle for the Name area
+  // Draw "Name" area
+  doc.rect(nameArea.x, nameArea.y, nameArea.width, nameArea.height);
   if (nameArea.text) {
-    // Only add text if a name is provided
     const nameAreaOffsets = getTextOffsetsCenter(
       nameArea.text,
       nameArea.width,
@@ -288,4 +292,30 @@ const addHeaderSection = (
       nameArea.y + nameAreaOffsets.yOffset,
     );
   }
+
+  // Draw "Signature" area with extra spacing
+  // Top box for "Signature"
+  doc.rect(
+    signatureArea.x,
+    signatureArea.y,
+    signatureArea.width,
+    signatureArea.stackHeight,
+  );
+  const signatureBoxOffsets = getTextOffsetsLeft(
+    signatureArea.stackHeight,
+    fontSize,
+  ); // Left align
+  doc.text(
+    signatureArea.box1Text,
+    signatureArea.x + signatureBoxOffsets.xOffset,
+    signatureArea.y + signatureBoxOffsets.yOffset,
+  );
+
+  // Bottom empty box
+  doc.rect(
+    signatureArea.x,
+    signatureArea.y + signatureArea.stackHeight,
+    signatureArea.width,
+    signatureArea.stackHeight,
+  );
 };
