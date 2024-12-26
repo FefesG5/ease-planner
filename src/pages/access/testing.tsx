@@ -213,14 +213,6 @@ function TestingPage() {
 
             {schoolStates[school] && (
               <>
-                <div className="text-center">
-                  <button
-                    onClick={handleGeneratePDF}
-                    className="px-6 py-2 bg-green-600 text-white text-sm font-medium hover:bg-green-700 shadow-sm"
-                  >
-                    Download Combined PDF
-                  </button>
-                </div>
                 {/* Autofill Controls */}
                 <div className="bg-gray-300 p-2 shadow-sm">
                   <div className="flex flex-wrap items-center justify-end gap-4">
@@ -537,6 +529,14 @@ function TestingPage() {
           Please select a schedule to view its details.
         </p>
       )}
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
+          onClick={handleGeneratePDF}
+          className="px-6 py-3 bg-green-600 text-white text-sm font-medium hover:bg-green-700 shadow-lg rounded-full"
+        >
+          Download PDF
+        </button>
+      </div>
     </div>
   );
 }
