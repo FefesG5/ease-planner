@@ -129,10 +129,9 @@ function TestingPage() {
 
   return (
     <div className="">
-      <h1 className="text-base font-bold">Available Schedule List</h1>
-
       {/* Schedule Selector */}
       <div className="schedule-selector bg-gray-100 p-2">
+        <h1 className="text-base font-bold">Available Schedule List</h1>
         <label htmlFor="scheduleSelect" className="text-sm font-medium">
           Select Schedule:
         </label>
