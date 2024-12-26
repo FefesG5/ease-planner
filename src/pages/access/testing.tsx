@@ -92,7 +92,27 @@ function TestingPage() {
   ) => {
     setLocalEdits((prev) => {
       const updatedRows = [...(prev[school] || [])];
+
+      // Update the specific field
       updatedRows[rowIndex] = { ...updatedRows[rowIndex], [field]: value };
+
+      // Recalculate derived fields
+      const { StartTime, EndTime, BreakTime, LessonHours } =
+        updatedRows[rowIndex];
+      const newWorkingHours = calculateTotalWorkingHours(
+        StartTime,
+        EndTime,
+        BreakTime,
+      );
+      const newNonLessonHours = calculateNonLessonHours(
+        newWorkingHours,
+        LessonHours,
+      );
+
+      // Save calculations to local state
+      updatedRows[rowIndex].WorkingHours = newWorkingHours;
+      updatedRows[rowIndex].NonLessonHours = newNonLessonHours;
+
       return { ...prev, [school]: updatedRows };
     });
   };
@@ -102,9 +122,8 @@ function TestingPage() {
     field: keyof ScheduleRow,
     defaultValue: string,
   ) => {
-    setLocalEdits((prev) => ({
-      ...prev,
-      [school]: (prev[school] || []).map((row) => {
+    setLocalEdits((prev) => {
+      const updatedRows = (prev[school] || []).map((row) => {
         const isValidTime = (time: string) => {
           const timeParts = time.split(":");
           return (
@@ -118,12 +137,36 @@ function TestingPage() {
           );
         };
 
+        // Ensure StartTime and EndTime are valid before applying autofill
         if (isValidTime(row.StartTime) && isValidTime(row.EndTime)) {
-          return { ...row, [field]: defaultValue };
+          // Apply autofill to the specified field
+          const updatedRow = { ...row, [field]: defaultValue };
+
+          // Recalculate derived fields
+          const { StartTime, EndTime, BreakTime, LessonHours } = updatedRow;
+          const newWorkingHours = calculateTotalWorkingHours(
+            StartTime,
+            EndTime,
+            BreakTime,
+          );
+          const newNonLessonHours = calculateNonLessonHours(
+            newWorkingHours,
+            LessonHours,
+          );
+
+          // Save calculations to the row
+          updatedRow.WorkingHours = newWorkingHours;
+          updatedRow.NonLessonHours = newNonLessonHours;
+
+          return updatedRow;
         }
+
+        // If validation fails, return the row unchanged
         return row;
-      }),
-    }));
+      });
+
+      return { ...prev, [school]: updatedRows };
+    });
   };
 
   const handleGeneratePDF = (): void => {
