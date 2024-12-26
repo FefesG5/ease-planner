@@ -67,8 +67,8 @@ export const generateTableData = (
     return {
       Date: date,
       Day: dayKanji,
-      StartTime: parsedShift.StartTime || "--:--",
-      EndTime: parsedShift.EndTime || "--:--",
+      StartTime: parsedShift.StartTime || "",
+      EndTime: parsedShift.EndTime || "",
       BreakTime: "",
       WorkingHours: "",
       LessonHours: "",
