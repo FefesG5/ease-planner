@@ -13,6 +13,8 @@ import {
   calculateTotalWorkingHours,
   calculateNonLessonHours,
 } from "@/utils/helpfulFunctions/timeCalculations";
+import { generateSchedulePDF } from "@/utils/helpfulFunctions/pdfGeneratorUtils";
+import jsPDF from "jspdf";
 
 function TestingPage() {
   const { user } = useAuthContext();
@@ -124,6 +126,38 @@ function TestingPage() {
     }));
   };
 
+  const handleGeneratePDF = (): void => {
+    if (!selectedSchedule) {
+      alert("Please select a schedule first!");
+      return;
+    }
+
+    const doc = new jsPDF("p", "mm", "a4");
+
+    // Loop through each school and generate a page for it
+    Object.keys(localEdits).forEach((school, index) => {
+      const schoolData = localEdits[school] || [];
+      const schoolName = school; // Use the dynamic school name
+
+      if (index > 0) {
+        doc.addPage(); // Add a new page for each school after the first
+      }
+
+      generateSchedulePDF(
+        schoolName, // Pass the current school name
+        schoolData, // Data for the current school
+        `${selectedSchedule.year}-${selectedSchedule.month}`, // Month-Year for the schedule
+        selectedSchedule.teacherName, // Pass the teacher's name dynamically
+        doc, // Pass the existing jsPDF instance
+      );
+    });
+
+    // Save the combined PDF after adding all school pages
+    doc.save(
+      `All_Schools_${selectedSchedule.year}-${selectedSchedule.month}.pdf`,
+    );
+  };
+
   if (isLoading) return <Spinner />;
   if (isError) return <p className="text-sm text-red-600">{error?.message}</p>;
 
@@ -176,6 +210,14 @@ function TestingPage() {
 
             {schoolStates[school] && (
               <>
+                <div className="text-center">
+                  <button
+                    onClick={handleGeneratePDF}
+                    className="px-6 py-2 bg-green-600 text-white text-sm font-medium hover:bg-green-700 shadow-sm"
+                  >
+                    Download Combined PDF
+                  </button>
+                </div>
                 {/* Autofill Controls */}
                 <div className="bg-gray-300 p-2 shadow-sm">
                   <div className="flex flex-wrap items-center justify-end gap-4">
