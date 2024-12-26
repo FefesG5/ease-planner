@@ -482,7 +482,7 @@ function TestingPage() {
                               )
                             }
                             placeholder="--:--"
-                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
+                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
                           />
                         </td>
                         <td className="border px-0.5 py-0.5">
@@ -498,13 +498,13 @@ function TestingPage() {
                               )
                             }
                             placeholder="--:--"
-                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
+                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
                           />
                         </td>
                         <td className="border px-0.5 py-0.5 hidden sm:table-cell">
                           {row.Overtime}
                         </td>
-                        <td className="border px-0.5 py-0.5 w-[42px]">
+                        <td className="border px-0.5 py-0.5 w-[42px] text-sm">
                           <input
                             type="text"
                             value={row.BreakTime}
@@ -517,17 +517,17 @@ function TestingPage() {
                               )
                             }
                             placeholder=""
-                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
+                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
                           />
                         </td>
-                        <td className="border px-0.5 py-0.5 w-[42px]">
+                        <td className="border px-0.5 py-0.5 w-[42px] text-sm">
                           {calculateTotalWorkingHours(
                             row.StartTime,
                             row.EndTime,
                             row.BreakTime,
                           )}
                         </td>
-                        <td className="border px-0.5 py-0.5 w-[42px]">
+                        <td className="border px-0.5 py-0.5 w-[42px] text-sm">
                           <input
                             type="text"
                             value={row.LessonHours}
@@ -540,11 +540,11 @@ function TestingPage() {
                               )
                             }
                             placeholder=""
-                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
+                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
                           />
                         </td>
-                        <td className="border text-center text-xs w-[42px]">
-                          <span className="w-full text-xs">
+                        <td className="border text-center text-sm w-[42px]">
+                          <span className="w-full text-sm">
                             {calculateNonLessonHours(
                               calculateTotalWorkingHours(
                                 row.StartTime,
