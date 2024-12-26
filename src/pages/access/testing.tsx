@@ -134,28 +134,31 @@ function TestingPage() {
 
     const doc = new jsPDF("p", "mm", "a4");
 
-    // Loop through each school and generate a page for it
+    // Generate the combined PDF for all schools
     Object.keys(localEdits).forEach((school, index) => {
       const schoolData = localEdits[school] || [];
-      const schoolName = school; // Use the dynamic school name
+      const schoolNameMap: Record<string, string> = {
+        M: "TryAngle Kids 南草津校",
+        T: "TryAngle Kids 高槻校",
+        Future: "KZ校",
+      };
+      const schoolName = schoolNameMap[school] || school;
 
       if (index > 0) {
-        doc.addPage(); // Add a new page for each school after the first
+        doc.addPage();
       }
 
       generateSchedulePDF(
-        schoolName, // Pass the current school name
-        schoolData, // Data for the current school
-        `${selectedSchedule.year}-${selectedSchedule.month}`, // Month-Year for the schedule
-        selectedSchedule.teacherName, // Pass the teacher's name dynamically
-        doc, // Pass the existing jsPDF instance
+        schoolName, // Pass the correct school name
+        schoolData, // Use localEdits data for the table
+        `${selectedSchedule.year}-${selectedSchedule.month}`, // Month-Year
+        selectedSchedule.teacherName, // Teacher name
+        doc, // PDF instance
       );
     });
 
-    // Save the combined PDF after adding all school pages
-    doc.save(
-      `All_Schools_${selectedSchedule.year}-${selectedSchedule.month}.pdf`,
-    );
+    // Save the combined PDF
+    doc.save(`Schedule_${selectedSchedule.year}-${selectedSchedule.month}.pdf`);
   };
 
   if (isLoading) return <Spinner />;
