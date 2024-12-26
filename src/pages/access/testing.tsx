@@ -23,7 +23,7 @@ function TestingPage() {
 
   const [schoolStates, setSchoolStates] = useState<Record<string, boolean>>({
     M: true,
-    T: false,
+    T: true,
     Future: false,
   }); // Track collapsed state for each school
   const [localEdits, setLocalEdits] = useState<Record<string, ScheduleRow[]>>(
