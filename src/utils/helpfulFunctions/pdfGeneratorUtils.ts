@@ -33,7 +33,7 @@ export const generateSchedulePDF = (
   const schoolNameMap: Record<string, string> = {
     M: "TryAngle Kids 南草津校",
     T: "TryAngle Kids 高槻校",
-    Future: "KZ校",
+    Future: "TryAngle Kids KZ校",
   };
   const schoolName = schoolNameMap[school] || school;
 
