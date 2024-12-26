@@ -23,12 +23,20 @@ jsPDF.API.events.push([
  * Generate PDF for school schedules.
  */
 export const generateSchedulePDF = (
-  schoolName: string,
+  school: string,
   scheduleData: ScheduleRow[],
   monthYear: string,
   teacherName: string,
   doc: jsPDF,
 ) => {
+  // Determine the correct school name
+  const schoolNameMap: Record<string, string> = {
+    M: "TryAngle Kids 南草津校",
+    T: "TryAngle Kids 高槻校",
+    Future: "KZ校",
+  };
+  const schoolName = schoolNameMap[school] || school;
+
   // Set default font to NotoSansJP
   doc.setFont("NotoSansJP", "normal");
 
@@ -52,8 +60,8 @@ export const generateSchedulePDF = (
     doc.setFontSize(24); // Set font size for the title
     doc.text("出勤簿", 105, marginTop, { align: "center" });
 
-    // Add the header box section closer to the title
-    addHeaderSection(doc, marginTop + 3, schoolName);
+    // Add the header box section with the correct school and teacher names
+    addHeaderSection(doc, marginTop + 3, schoolName, teacherName);
 
     // Table headers (English and Japanese)
     const tableHeaders = [
@@ -154,7 +162,8 @@ const formatMonthYear = (monthYear: string): string => {
 const addHeaderSection = (
   doc: jsPDF,
   startY: number,
-  teacherName: string = "",
+  schoolName: string,
+  teacherName: string,
 ) => {
   // Define dimensions and positions for each box
   const box1 = {
@@ -173,7 +182,7 @@ const addHeaderSection = (
     width: 70, // Width of the box for "TryAngle Kids 南草津校"
     height: 14, // Height of the box
     text: {
-      content: "TryAngle Kids 南草津校",
+      content: schoolName,
     },
   };
 
