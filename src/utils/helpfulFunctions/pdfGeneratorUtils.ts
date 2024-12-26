@@ -26,9 +26,9 @@ export const generateSchedulePDF = (
   schoolName: string,
   scheduleData: ScheduleRow[],
   monthYear: string,
+  teacherName: string,
+  doc: jsPDF,
 ) => {
-  const doc = new jsPDF("p", "mm", "a4");
-
   // Set default font to NotoSansJP
   doc.setFont("NotoSansJP", "normal");
 
@@ -53,7 +53,7 @@ export const generateSchedulePDF = (
     doc.text("出勤簿", 105, marginTop, { align: "center" });
 
     // Add the header box section closer to the title
-    addHeaderSection(doc, marginTop + 3); // Reduced gap between title and header section
+    addHeaderSection(doc, marginTop + 3, schoolName);
 
     // Table headers (English and Japanese)
     const tableHeaders = [
@@ -123,9 +123,6 @@ export const generateSchedulePDF = (
       theme: "grid", // Plain grid
     });
   });
-
-  // Save the PDF
-  doc.save(`${schoolName}_${monthYear}.pdf`);
 };
 
 /**
