@@ -249,7 +249,7 @@ function TestingPage() {
                   [school]: !prev[school],
                 }))
               }
-              className="w-full text-left bg-gray-300 px-2 py-1 font-medium border-b text-sm"
+              className="w-full text-left bg-gray-300 px-2 py-1 font-medium border-b text-lg"
             >
               {schoolStates[school] ? "▼" : "►"} School {school}
             </button>
@@ -315,7 +315,7 @@ function TestingPage() {
                         colSpan={10}
                         className="border px-1 py-1 text-center text-sm font-normal"
                       >
-                        Schedule Table (出勤簿) - School {school}
+                        Schedule Table (出勤簿)
                       </th>
                     </tr>
                     <tr className="bg-gray-100">
