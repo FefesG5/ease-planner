@@ -108,21 +108,23 @@ export const generateSchedulePDF = (
       body: tableData,
       startY: marginTop + 22, // Adjusted to maintain a reduced gap
       styles: {
-        fontSize: 7,
+        fontSize: 8.5,
         valign: "middle",
         halign: "center",
         font: "NotoSansJP", // Apply the default font
         lineWidth: 0.2, // Default border thickness
         textColor: 0, // Black text
         lineColor: 0, // Black border color
+        cellPadding: 1.5,
       },
       headStyles: {
-        fontSize: 8,
+        fontSize: 7,
         font: "NotoSansJP",
         fillColor: [255, 255, 255], // White background for headers
         textColor: 0, // Black text
         lineWidth: 0.2, // Default header border thickness
         lineColor: 0, // Black border color
+        cellPadding: 1.5,
       },
       alternateRowStyles: {
         fillColor: [255, 255, 255], // White background for rows
