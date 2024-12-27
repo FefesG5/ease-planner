@@ -23,7 +23,7 @@ function TestingPage() {
 
   const [schoolStates, setSchoolStates] = useState<Record<string, boolean>>({
     M: true,
-    T: true,
+    T: false,
     Future: false,
   }); // Track collapsed state for each school
   const [localEdits, setLocalEdits] = useState<Record<string, ScheduleRow[]>>(
@@ -72,17 +72,21 @@ function TestingPage() {
       );
       if (scheduleData) {
         const initialEdits: Record<string, ScheduleRow[]> = {};
+
+        // Even though we use schoolStates below...
         Object.keys(schoolStates).forEach((school) => {
           initialEdits[school] = generateTableData(
             school,
-            [scheduleData], // Pass the selected schedule
+            [scheduleData],
             fullKanjiDayMap,
           );
         });
+
         setLocalEdits(initialEdits);
       }
     }
-  }, [selectedSchedule, filteredSchedules, schoolStates]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSchedule, filteredSchedules]);
 
   const handleInputChange = (
     school: string,
