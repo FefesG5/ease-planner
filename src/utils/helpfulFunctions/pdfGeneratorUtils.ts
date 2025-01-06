@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable"; // side-effect import
 import { NotoSansJP } from "./NotoSansJP";
+import { NotoSansJPBold } from "./NotoSansJPBold";
 import { ScheduleRow } from "./tableDataUtils";
 
 // Extend TypeScript definition for jsPDF to include the autoTable method
@@ -16,6 +17,8 @@ jsPDF.API.events.push([
   function (this: jsPDF) {
     this.addFileToVFS("NotoSansJP-Regular.ttf", NotoSansJP);
     this.addFont("NotoSansJP-Regular.ttf", "NotoSansJP", "normal");
+    this.addFileToVFS("NotoSansJP-Bold.ttf", NotoSansJPBold);
+    this.addFont("NotoSansJP-Bold.ttf", "NotoSansJP", "bold");
   },
 ]);
 
@@ -53,12 +56,16 @@ export const generateSchedulePDF = (
     }
 
     // Add the date with separate font size
+    doc.setFont("NotoSansJP", "bold");
     doc.setFontSize(18); // Set font size for the date
     doc.text(formatMonthYear(monthYear), marginLeft, marginTop);
 
     // Add the title with separate font size
+    doc.setFont("NotoSansJP", "bold");
     doc.setFontSize(24); // Set font size for the title
     doc.text("出勤簿", 105, marginTop, { align: "center" });
+
+    doc.setFont("NotoSansJP", "normal");
 
     // Add the header box section with the correct school and teacher names
     addHeaderSection(doc, marginTop + 3, schoolName, teacherName);
