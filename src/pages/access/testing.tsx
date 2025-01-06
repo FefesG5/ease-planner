@@ -31,6 +31,7 @@ function TestingPage() {
   );
   const [breakTimeValue, setBreakTimeValue] = useState<string>("0.0");
   const [lessonHoursValue, setLessonHoursValue] = useState<string>("0.0");
+  const [teacherName, setTeacherName] = useState<string>("");
 
   const {
     data: filteredSchedules = [],
@@ -199,7 +200,7 @@ function TestingPage() {
         schoolName, // Pass the correct school name
         schoolData, // Use localEdits data for the table
         `${selectedSchedule.year}-${selectedSchedule.month}`, // Month-Year
-        selectedSchedule.teacherName, // Teacher name
+        teacherName.trim() || selectedSchedule.teacherName, // Prioritize edited name
         doc, // PDF instance
       );
     });
@@ -240,6 +241,18 @@ function TestingPage() {
             </option>
           ))}
         </select>
+        <div className="bg-gray-100">
+          <label htmlFor="teacherNameInput" className="text-sm font-medium">
+            Edit Teacher Name:
+          </label>
+          <input
+            id="teacherNameInput"
+            type="text"
+            value={teacherName || selectedSchedule?.teacherName || ""}
+            onChange={(e) => setTeacherName(e.target.value)}
+            className="border px-2 py-1 text-sm w-60"
+          />
+        </div>
       </div>
 
       {/* Collapsible Tables */}
