@@ -1,37 +1,44 @@
-import { useMemo, useState, useEffect } from "react";
-import withDashboardLayout from "@/hoc/withDashboardLayout";
-import {
-  useReactTable,
-  getCoreRowModel,
-  ColumnDef,
-} from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
-import { useAuthContext } from "@/contexts/AuthContext";
+import Image from "next/image";
 import Spinner from "@/components/Spinner/Spinner";
-import RenderTable from "@/components/RenderTable/RenderTable";
-import ScheduleOverview from "@/components/ScheduleOverview/ScheduleOverview";
-import AutoFillControls from "@/components/AutoFillControls/AutoFillControls";
-import { ScheduleData } from "@/interfaces/schedulesInterface";
-import { TeachersShift, FilteredSchedule } from "@/interfaces/teachersShift";
-import { generateFullMonthData } from "@/utils/generateFullMonthData";
-import { autofillBreakTime, autofillLessonHours } from "@/utils/tableUtils";
-import { updateRowCalculations } from "@/utils/tableRowUtils";
-
-import html2canvas from "html2canvas";
+import withDashboardLayout from "@/hoc/withDashboardLayout";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
+import {
+  FilteredSchedule,
+  ScheduleRow,
+} from "@/utils/helpfulFunctions/tableDataUtils";
+import { generateTableData } from "@/utils/helpfulFunctions/tableDataUtils";
+import {
+  calculateTotalWorkingHours,
+  calculateNonLessonHours,
+} from "@/utils/helpfulFunctions/timeCalculations";
+import { generateSchedulePDF } from "@/utils/helpfulFunctions/pdfGeneratorUtils";
 import jsPDF from "jspdf";
-import { finalizeTableForExport } from "@/utils/finalizeTableForExportPDF";
 
 function Edit() {
   const { user } = useAuthContext();
-  const [selectedSchedule, setSelectedSchedule] = useState<string | null>(null);
-  const [lessonHours, setLessonHours] = useState<string>("0");
-  const [breakTimeDefault, setBreakTimeDefault] = useState<string>("1.0");
-  const [tableDataM, setTableDataM] = useState<ScheduleData[]>([]);
-  const [tableDataT, setTableDataT] = useState<ScheduleData[]>([]);
+  const [selectedSchedule, setSelectedSchedule] =
+    useState<FilteredSchedule | null>(null);
 
-  const { data: filteredSchedules = [], isLoading } = useQuery<
-    FilteredSchedule[]
-  >({
+  const [schoolStates, setSchoolStates] = useState<Record<string, boolean>>({
+    M: true,
+    T: false,
+    Future: false,
+  }); // Track collapsed state for each school
+  const [localEdits, setLocalEdits] = useState<Record<string, ScheduleRow[]>>(
+    {},
+  );
+  const [breakTimeValue, setBreakTimeValue] = useState<string>("0.0");
+  const [lessonHoursValue, setLessonHoursValue] = useState<string>("0.0");
+  const [teacherName, setTeacherName] = useState<string>("");
+
+  const {
+    data: filteredSchedules = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery<FilteredSchedule[]>({
     queryKey: ["filteredSchedules"],
     queryFn: async () => {
       if (!user) throw new Error("User not authenticated");
@@ -43,383 +50,552 @@ function Edit() {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      if (!response.ok) throw new Error("Failed to fetch filtered schedules");
+      if (!response.ok) throw new Error("Failed to fetch schedules");
       return response.json();
     },
     staleTime: 10 * 60 * 1000,
   });
 
-  // Get the selected schedule's data
-  const firebaseData = useMemo<TeachersShift[]>(() => {
-    const schedule = filteredSchedules.find(
-      (schedule) => schedule.id === selectedSchedule,
-    );
-    return schedule?.schedules || []; // Adjusted to fetch `schedules` field
-  }, [selectedSchedule, filteredSchedules]);
-
-  const teacherName = useMemo(() => {
-    const schedule = filteredSchedules.find(
-      (schedule) => schedule.id === selectedSchedule,
-    );
-    return schedule?.teacherName || "N/A";
-  }, [selectedSchedule, filteredSchedules]);
-
-  const selectedScheduleData = useMemo(() => {
-    return (
-      filteredSchedules.find((schedule) => schedule.id === selectedSchedule) ||
-      null
-    );
-  }, [selectedSchedule, filteredSchedules]);
-
-  const year = selectedScheduleData?.year || new Date().getFullYear();
-  const month = selectedScheduleData?.month || new Date().getMonth() + 1;
-
-  // Memoized filtering of school data
-  const schoolMData = useMemo(
-    () => firebaseData.filter((entry) => entry.School === "M"),
-    [firebaseData],
-  );
-  const schoolTData = useMemo(
-    () => firebaseData.filter((entry) => entry.School === "T"),
-    [firebaseData],
-  );
-
-  const fullMonthDataM = useMemo(
-    () => generateFullMonthData(schoolMData, year, month),
-    [schoolMData, year, month],
-  );
-  const fullMonthDataT = useMemo(
-    () => generateFullMonthData(schoolTData, year, month),
-    [schoolTData, year, month],
-  );
-
-  // Update tableDataM and tableDataT when fullMonthDataM and fullMonthDataT change
   useEffect(() => {
-    setTableDataM((prevData) =>
-      JSON.stringify(prevData) !== JSON.stringify(fullMonthDataM)
-        ? fullMonthDataM
-        : prevData,
-    );
-  }, [fullMonthDataM]);
+    const fullKanjiDayMap = [
+      "日曜日",
+      "月曜日",
+      "火曜日",
+      "水曜日",
+      "木曜日",
+      "金曜日",
+      "土曜日",
+    ];
 
-  useEffect(() => {
-    setTableDataT((prevData) =>
-      JSON.stringify(prevData) !== JSON.stringify(fullMonthDataT)
-        ? fullMonthDataT
-        : prevData,
-    );
-  }, [fullMonthDataT]);
+    if (selectedSchedule) {
+      const scheduleData = filteredSchedules.find(
+        (schedule) => schedule.id === selectedSchedule.id,
+      );
+      if (scheduleData) {
+        const initialEdits: Record<string, ScheduleRow[]> = {};
 
-  // Function to generate columns with editable LessonHours
-  const getColumns = (
-    setTableData: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
-  ): ColumnDef<ScheduleData, string | number>[] => [
-    {
-      accessorKey: "Date",
-      header: "日付",
-      cell: (info) => info.getValue(), // Date is string
-    },
-    {
-      accessorKey: "Day",
-      header: "曜日",
-      cell: (info) => info.getValue(), // Day is string
-    },
-    {
-      accessorKey: "StartTime",
-      header: "出社時間",
-      cell: ({ getValue, row }) => {
-        const value = getValue();
-        const rowIndex = row.index;
+        // Even though we use schoolStates below...
+        Object.keys(schoolStates).forEach((school) => {
+          initialEdits[school] = generateTableData(
+            school,
+            [scheduleData],
+            fullKanjiDayMap,
+          );
+        });
 
-        return (
-          <input
-            type="text"
-            placeholder="--:--"
-            value={value || ""}
-            onChange={(e) => {
-              const newStartTime = e.target.value;
-              setTableData((prevData) => {
-                const newData = [...prevData];
-                newData[rowIndex] = updateRowCalculations(
-                  newData[rowIndex],
-                  newStartTime,
-                );
-                return newData;
-              });
-            }}
-            className="text-center w-[50px] text-[10px] leading-none"
-          />
-        );
-      },
-    },
-    {
-      accessorKey: "EndTime",
-      header: "退社時間",
-      cell: ({ getValue, row }) => {
-        const value = getValue();
-        const rowIndex = row.index;
+        setLocalEdits(initialEdits);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSchedule, filteredSchedules]);
 
-        return (
-          <input
-            type="text"
-            placeholder="--:--"
-            value={value || ""}
-            onChange={(e) => {
-              const newEndTime = e.target.value;
-              setTableData((prevData) => {
-                const newData = [...prevData];
-                newData[rowIndex] = updateRowCalculations(
-                  newData[rowIndex],
-                  undefined,
-                  newEndTime,
-                );
-                return newData;
-              });
-            }}
-            className="text-center w-[50px] text-[10px] leading-none"
-          />
-        );
-      },
-    },
-    {
-      accessorKey: "Overtime",
-      header: "通常残業時間",
-      cell: (info) => info.getValue(), // Overtime is string
-    },
-    {
-      accessorKey: "BreakTime",
-      header: "休憩時間",
-      cell: ({ getValue, row }) => {
-        const value = getValue(); // BreakTime is string
-        const rowIndex = row.index;
-        return (
-          <input
-            type="number"
-            value={value || ""}
-            onChange={(e) => {
-              const inputValue = e.target.value;
-              setTableData((prevData) => {
-                const newData = [...prevData];
-                const row = { ...newData[rowIndex] };
-                row.BreakTime = inputValue;
-                newData[rowIndex] = row;
-                return newData;
-              });
-            }}
-            onBlur={() => {
-              setTableData((prevData) => {
-                const newData = [...prevData];
-                const row = { ...newData[rowIndex] };
-                const breakTimeNumber = parseFloat(row.BreakTime);
-                row.BreakTime = !isNaN(breakTimeNumber)
-                  ? breakTimeNumber.toFixed(1)
-                  : "";
-                newData[rowIndex] = row;
-                return newData;
-              });
-            }}
-            className="text-center w-[50px] text-[10px] leading-none"
-          />
-        );
-      },
-    },
-    {
-      accessorKey: "WorkingHours",
-      header: "労働時間",
-      cell: (info) => (
-        <span className="text-[10px] leading-none">{info.getValue()}</span>
-      ),
-    },
-    {
-      accessorKey: "LessonHours",
-      header: "レッスン時間",
-      cell: ({ getValue, row }) => {
-        const value = getValue(); // LessonHours is number
-        const rowIndex = row.index;
-        return (
-          <input
-            type="number"
-            value={value || ""}
-            onChange={(e) => {
-              const inputValue = e.target.value;
-              setTableData((prevData) => {
-                const newData = [...prevData];
-                const row = { ...newData[rowIndex] };
-                row.LessonHours = inputValue;
+  const handleInputChange = (
+    school: string,
+    rowIndex: number,
+    field: keyof ScheduleRow,
+    value: string,
+  ) => {
+    setLocalEdits((prev) => {
+      const updatedRows = [...(prev[school] || [])];
 
-                // Recalculate NonLessonHours
-                const lessonHoursNumber = parseFloat(inputValue || "0");
-                const workingHours = parseFloat(row.WorkingHours || "0");
-                row.NonLessonHours =
-                  workingHours > 0
-                    ? (workingHours - lessonHoursNumber).toFixed(2)
-                    : "";
+      // Update the specific field
+      updatedRows[rowIndex] = { ...updatedRows[rowIndex], [field]: value };
 
-                newData[rowIndex] = row;
-                return newData;
-              });
-            }}
-            className="text-center w-[50px] text-[10px] leading-none"
-          />
-        );
-      },
-    },
-    {
-      accessorKey: "NonLessonHours",
-      header: "レッスン外",
-      cell: (info) => (
-        <span className="text-[10px] leading-none">{info.getValue()}</span>
-      ),
-    },
-    {
-      accessorKey: "Approval",
-      header: "承認",
-      cell: (info) => info.getValue(), // Approval is string
-    },
-  ];
+      // Recalculate derived fields
+      const { StartTime, EndTime, BreakTime, LessonHours } =
+        updatedRows[rowIndex];
+      const newWorkingHours = calculateTotalWorkingHours(
+        StartTime,
+        EndTime,
+        BreakTime,
+      );
+      const newNonLessonHours = calculateNonLessonHours(
+        newWorkingHours,
+        LessonHours,
+      );
 
-  const columnsM = useMemo(() => getColumns(setTableDataM), [setTableDataM]);
-  const columnsT = useMemo(() => getColumns(setTableDataT), [setTableDataT]);
+      // Save calculations to local state
+      updatedRows[rowIndex].WorkingHours = newWorkingHours;
+      updatedRows[rowIndex].NonLessonHours = newNonLessonHours;
 
-  // Create React Tables
-  const tableM = useReactTable({
-    data: tableDataM,
-    columns: columnsM,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  const tableT = useReactTable({
-    data: tableDataT,
-    columns: columnsT,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  // Handle Auto-Fill Teaching Hours
-  const handleAutoFill = () => {
-    setTableDataM((prevData) => autofillLessonHours(prevData, lessonHours));
-    setTableDataT((prevData) => autofillLessonHours(prevData, lessonHours));
+      return { ...prev, [school]: updatedRows };
+    });
   };
 
-  // Handle Auto-Fill Break Time
-  const handleAutoFillBreakTime = () => {
-    setTableDataM((prevData) => autofillBreakTime(prevData, breakTimeDefault));
-    setTableDataT((prevData) => autofillBreakTime(prevData, breakTimeDefault));
+  const autofillColumn = (
+    school: string,
+    field: keyof ScheduleRow,
+    defaultValue: string,
+  ) => {
+    setLocalEdits((prev) => {
+      const updatedRows = (prev[school] || []).map((row) => {
+        const isValidTime = (time: string) => {
+          const timeParts = time.split(":");
+          return (
+            timeParts.length === 2 &&
+            !isNaN(Number(timeParts[0])) &&
+            !isNaN(Number(timeParts[1])) &&
+            Number(timeParts[0]) >= 0 &&
+            Number(timeParts[0]) < 24 &&
+            Number(timeParts[1]) >= 0 &&
+            Number(timeParts[1]) < 60
+          );
+        };
+
+        // Ensure StartTime and EndTime are valid before applying autofill
+        if (isValidTime(row.StartTime) && isValidTime(row.EndTime)) {
+          // Apply autofill to the specified field
+          const updatedRow = { ...row, [field]: defaultValue };
+
+          // Recalculate derived fields
+          const { StartTime, EndTime, BreakTime, LessonHours } = updatedRow;
+          const newWorkingHours = calculateTotalWorkingHours(
+            StartTime,
+            EndTime,
+            BreakTime,
+          );
+          const newNonLessonHours = calculateNonLessonHours(
+            newWorkingHours,
+            LessonHours,
+          );
+
+          // Save calculations to the row
+          updatedRow.WorkingHours = newWorkingHours;
+          updatedRow.NonLessonHours = newNonLessonHours;
+
+          return updatedRow;
+        }
+
+        // If validation fails, return the row unchanged
+        return row;
+      });
+
+      return { ...prev, [school]: updatedRows };
+    });
   };
 
-  // Export to PDF function
-  const exportToPDF = async (): Promise<void> => {
-    const a4Elements = document.querySelectorAll(".a4-page");
-
-    if (!a4Elements.length) {
-      console.warn("No elements found with the class .a4-page");
+  const handleGeneratePDF = (): void => {
+    if (!selectedSchedule) {
+      alert("Please select a schedule first!");
       return;
     }
 
-    // Add the .a4-export class to each .a4-page element
-    a4Elements.forEach((el) => el.classList.add("a4-export"));
+    const doc = new jsPDF("p", "mm", "a4");
 
-    // Finalize inputs for all .a4-page elements
-    a4Elements.forEach((page) => {
-      if (page instanceof HTMLElement) {
-        finalizeTableForExport(page);
+    // Generate the combined PDF for all schools
+    Object.keys(localEdits).forEach((school, index) => {
+      const schoolData = localEdits[school] || [];
+      const schoolNameMap: Record<string, string> = {
+        M: "TryAngle Kids 南草津校",
+        T: "TryAngle Kids 高槻校",
+        Future: "KZ校",
+      };
+      const schoolName = schoolNameMap[school] || school;
+
+      if (index > 0) {
+        doc.addPage();
       }
+
+      generateSchedulePDF(
+        schoolName, // Pass the correct school name
+        schoolData, // Use localEdits data for the table
+        `${selectedSchedule.year}-${selectedSchedule.month}`, // Month-Year
+        teacherName.trim() || selectedSchedule.teacherName, // Prioritize edited name
+        doc, // PDF instance
+      );
     });
 
-    // Small delay to allow styles to apply
-    await new Promise<void>((resolve) => setTimeout(resolve, 100));
-
-    const pdf = new jsPDF("p", "mm", "a4");
-
-    for (const page of a4Elements) {
-      if (page instanceof HTMLElement) {
-        try {
-          // Render the page as a canvas at a high scale
-          const canvas = await html2canvas(page, { scale: 2.5 });
-
-          // Convert the canvas directly to JPEG for jsPDF
-          const jpegData = canvas.toDataURL("image/jpeg", 0.9); // JPEG quality
-
-          if (a4Elements[0] !== page) pdf.addPage();
-          pdf.addImage(jpegData, "JPEG", 0, 0, 210, 297); // Add to PDF
-        } catch (error) {
-          console.error("Error generating canvas for page:", page, error);
-        }
-      }
-    }
-
-    // Build the dynamic file name
-    const formattedMonth = month < 10 ? `0${month}` : month; // Ensure two-digit month
-    const teacherOrScheduleName = teacherName || "Schedule"; // Fallback to 'Schedule' if teacherName is unavailable
-    const fileName = `${year}-${formattedMonth}_${teacherOrScheduleName}_出勤簿_Attendance_Record.pdf`;
-
-    // Save the PDF with the new file name
-    pdf.save(fileName);
-
-    // Remove the .a4-export class after export
-    a4Elements.forEach((el) => el.classList.remove("a4-export"));
+    // Save the combined PDF
+    doc.save(`Schedule_${selectedSchedule.year}-${selectedSchedule.month}.pdf`);
   };
 
+  if (isLoading) return <Spinner />;
+  if (isError) return <p className="text-sm text-red-600">{error?.message}</p>;
+
   return (
-    <div className="relative flex xl:flex-row flex-col xl:flex-1 min-w-0">
-      {/* Left Section */}
-      <div className="xl:w-[20%] w-full bg-white border-gray-300">
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <ScheduleOverview
-            availableSchedules={filteredSchedules}
-            selectedScheduleId={selectedSchedule}
-            onSelectSchedule={(scheduleId) => setSelectedSchedule(scheduleId)}
+    <div className="">
+      {/* Schedule Selector */}
+      <div className="schedule-selector bg-gray-100 p-2">
+        <h1 className="text-base font-bold">Available Schedule List</h1>
+        <label htmlFor="scheduleSelect" className="text-sm font-medium">
+          Select Schedule:
+        </label>
+        <select
+          id="scheduleSelect"
+          value={selectedSchedule?.id || ""}
+          onChange={(e) =>
+            setSelectedSchedule(
+              filteredSchedules.find(
+                (schedule) => schedule.id === e.target.value,
+              ) || null,
+            )
+          }
+          className="border px-2 py-1 text-sm"
+        >
+          <option value="" disabled>
+            -- Select a Schedule --
+          </option>
+          {filteredSchedules.map((schedule) => (
+            <option key={schedule.id} value={schedule.id}>
+              {`${schedule.teacherName} - Schedule ${schedule.year}-${schedule.month}`}
+            </option>
+          ))}
+        </select>
+        <div className="bg-gray-100">
+          <label htmlFor="teacherNameInput" className="text-sm font-medium">
+            Edit Teacher Name:
+          </label>
+          <input
+            id="teacherNameInput"
+            type="text"
+            value={teacherName || selectedSchedule?.teacherName || ""}
+            onChange={(e) => setTeacherName(e.target.value)}
+            className="border px-2 py-1 text-sm w-60"
           />
-        )}
+        </div>
       </div>
-      {/* Export Button */}
-      <button
-        onClick={exportToPDF}
-        className="fixed bottom-5 right-5 bg-blue-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-600 shadow-lg text-sm md:text-base xl:text-lg"
-      >
-        Export to PDF
-      </button>
 
-      {/* Right Section */}
-      <div className="xl:w-[80%] w-full">
-        {selectedSchedule ? (
-          <>
-            <div className="p-0">
-              <AutoFillControls
-                lessonHours={lessonHours}
-                breakTimeDefault={breakTimeDefault}
-                onLessonHoursChange={setLessonHours}
-                onBreakTimeDefaultChange={setBreakTimeDefault}
-                handleAutoFillLessonHours={handleAutoFill}
-                handleAutoFillBreakTime={handleAutoFillBreakTime}
-              />
-            </div>
+      {/* Collapsible Tables */}
+      {selectedSchedule ? (
+        Object.keys(schoolStates).map((school) => (
+          <div key={school} className="">
+            <button
+              onClick={() =>
+                setSchoolStates((prev) => ({
+                  ...prev,
+                  [school]: !prev[school],
+                }))
+              }
+              className="w-full text-left bg-gray-300 px-2 py-1 font-medium border-b text-lg"
+            >
+              {schoolStates[school] ? "▼" : "►"} School {school}
+            </button>
 
-            {/* School M table */}
-            <div className="a4-page">
-              <RenderTable
-                table={tableM}
-                schoolName="南草津校"
-                teacherName={teacherName}
-                year={year}
-                month={typeof month === "string" ? parseInt(month, 10) : month}
-              />
-            </div>
-            {/* School T table */}
-            <div className="a4-page">
-              <RenderTable
-                table={tableT}
-                schoolName="高槻校"
-                teacherName={teacherName}
-                year={year}
-                month={typeof month === "string" ? parseInt(month, 10) : month}
-              />
-            </div>
-          </>
-        ) : (
-          <p className="text-center mt-10">Select a schedule to display.</p>
-        )}
+            {schoolStates[school] && (
+              <>
+                {/* Autofill Controls */}
+                <div className="bg-gray-300 p-2 shadow-sm">
+                  <div className="flex flex-wrap items-center justify-end gap-4">
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm font-medium">Break Time:</label>
+                      <input
+                        type="text"
+                        value={breakTimeValue}
+                        onChange={(e) => setBreakTimeValue(e.target.value)}
+                        className="border px-2 py-1 text-sm w-20"
+                      />
+                      <button
+                        onClick={() =>
+                          autofillColumn(school, "BreakTime", breakTimeValue)
+                        }
+                        className="px-4 py-1 bg-blue-500 text-white text-sm hover:bg-blue-600 shadow-sm"
+                      >
+                        Autofill
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm font-medium">
+                        Lesson Hours:
+                      </label>
+                      <input
+                        type="text"
+                        value={lessonHoursValue}
+                        onChange={(e) => setLessonHoursValue(e.target.value)}
+                        className="border px-2 py-1 text-sm w-20"
+                      />
+                      <button
+                        onClick={() =>
+                          autofillColumn(
+                            school,
+                            "LessonHours",
+                            lessonHoursValue,
+                          )
+                        }
+                        className="px-4 py-1 bg-green-500 text-white text-sm hover:bg-green-600 shadow-sm"
+                      >
+                        Autofill
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {/* Table */}
+                <table
+                  className="w-full border-collapse border text-xs bg-white"
+                  style={{
+                    fontFamily:
+                      '"Noto Sans JP", "Hiragino Kaku Gothic Pro", "Meiryo", sans-serif',
+                  }}
+                >
+                  <thead>
+                    <tr className="bg-gray-200">
+                      <th
+                        colSpan={10}
+                        className="border px-1 py-1 text-center text-sm font-normal"
+                      >
+                        Schedule Table (出勤簿)
+                      </th>
+                    </tr>
+                    <tr className="bg-gray-100">
+                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
+                        <span className="hidden sm:inline">Date</span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/date-icon.svg"
+                            alt="date Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
+                        <span className="hidden sm:inline">Day</span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/day-icon.svg"
+                            alt="Day Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
+                        <span className="hidden sm:inline">Start Time</span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/starting-time-icon.svg"
+                            alt="Starting Time Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
+                        <span className="hidden sm:inline">End Time</span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/finishing-time-icon.svg"
+                            alt="Finishing Time Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell w-auto sm:w-auto">
+                        <span className="hidden sm:inline">Overtime</span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/overtime-icon.svg"
+                            alt="Overtime Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
+                        <span className="hidden sm:inline">Break Time</span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/break-time-icon.svg"
+                            alt="Breaktime Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
+                        <span className="hidden sm:inline">Working Hours</span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/working-hours-icon.svg"
+                            alt="Working Hours Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
+                        <span className="hidden sm:inline">Lesson Hours</span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/lesson-hours-icon.svg"
+                            alt="Lesson Hours Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
+                        <span className="hidden sm:inline">
+                          Non-Lesson Hours
+                        </span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/non-lesson-hours-icon.svg"
+                            alt="Non Lesson Hours Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell w-auto sm:w-auto">
+                        <span className="hidden sm:inline">Approval</span>
+                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                          <Image
+                            src="/approved-icon.svg"
+                            alt="Approved Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </th>
+                    </tr>
+                    <tr className="bg-gray-50 sm:table-row hidden">
+                      <th className="border px-0.5 py-0.5 font-normal">日付</th>
+                      <th className="border px-0.5 py-0.5 font-normal">曜日</th>
+                      <th className="border px-0.5 py-0.5 font-normal">
+                        出社時間
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal">
+                        退社時間
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
+                        残業時間
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal">
+                        休憩時間
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal">
+                        労働時間
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal">
+                        レッスン時間
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal">
+                        レッスン外時間
+                      </th>
+                      <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
+                        承認
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(localEdits[school] || []).map((row, index) => (
+                      <tr key={index} className="text-center">
+                        <td className="border px-0.5 py-0.5">{row.Date}</td>
+                        <td className="border px-0.5 py-0.5">
+                          <span className="hidden sm:inline">{row.Day}</span>
+                          <span className="sm:hidden">{row.Day.charAt(0)}</span>
+                        </td>
+                        <td className="border px-0.5 py-0.5">
+                          <input
+                            type="text"
+                            value={row.StartTime}
+                            onChange={(e) =>
+                              handleInputChange(
+                                school,
+                                index,
+                                "StartTime",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="--:--"
+                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
+                          />
+                        </td>
+                        <td className="border px-0.5 py-0.5">
+                          <input
+                            type="text"
+                            value={row.EndTime}
+                            onChange={(e) =>
+                              handleInputChange(
+                                school,
+                                index,
+                                "EndTime",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="--:--"
+                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
+                          />
+                        </td>
+                        <td className="border px-0.5 py-0.5 hidden sm:table-cell">
+                          {row.Overtime}
+                        </td>
+                        <td className="border px-0.5 py-0.5 w-[42px] text-sm">
+                          <input
+                            type="text"
+                            value={row.BreakTime}
+                            onChange={(e) =>
+                              handleInputChange(
+                                school,
+                                index,
+                                "BreakTime",
+                                e.target.value,
+                              )
+                            }
+                            placeholder=""
+                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
+                          />
+                        </td>
+                        <td className="border px-0.5 py-0.5 w-[42px] text-sm">
+                          {calculateTotalWorkingHours(
+                            row.StartTime,
+                            row.EndTime,
+                            row.BreakTime,
+                          )}
+                        </td>
+                        <td className="border px-0.5 py-0.5 w-[42px] text-sm">
+                          <input
+                            type="text"
+                            value={row.LessonHours}
+                            onChange={(e) =>
+                              handleInputChange(
+                                school,
+                                index,
+                                "LessonHours",
+                                e.target.value,
+                              )
+                            }
+                            placeholder=""
+                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
+                          />
+                        </td>
+                        <td className="border text-center text-sm w-[42px]">
+                          <span className="w-full text-sm">
+                            {calculateNonLessonHours(
+                              calculateTotalWorkingHours(
+                                row.StartTime,
+                                row.EndTime,
+                                row.BreakTime,
+                              ),
+                              row.LessonHours,
+                            )}
+                          </span>
+                        </td>
+
+                        <td className="border px-0.5 py-0.5 hidden sm:table-cell">
+                          {row.Approval}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            )}
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-gray-500 mt-4">
+          Please select a schedule to view its details.
+        </p>
+      )}
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
+          onClick={handleGeneratePDF}
+          className="px-6 py-3 bg-green-600 text-white text-sm font-medium hover:bg-green-700 shadow-lg rounded-full"
+        >
+          Download PDF
+        </button>
       </div>
     </div>
   );
