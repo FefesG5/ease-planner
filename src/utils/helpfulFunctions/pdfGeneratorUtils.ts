@@ -2,6 +2,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable"; // side-effect import
 import { NotoSansJP } from "./NotoSansJP";
 import { NotoSansJPBold } from "./NotoSansJPBold";
+import { NotoSansJPSemiBold } from "./NotoSansJPSemiBold";
 import { ScheduleRow } from "./tableDataUtils";
 
 // Extend TypeScript definition for jsPDF to include the autoTable method
@@ -19,6 +20,8 @@ jsPDF.API.events.push([
     this.addFont("NotoSansJP-Regular.ttf", "NotoSansJP", "normal");
     this.addFileToVFS("NotoSansJP-Bold.ttf", NotoSansJPBold);
     this.addFont("NotoSansJP-Bold.ttf", "NotoSansJP", "bold");
+    this.addFileToVFS("NotoSansJP-SemiBold.ttf", NotoSansJPSemiBold);
+    this.addFont("NotoSansJP-SemiBold.ttf", "NotoSansJP", "semibold");
   },
 ]);
 
@@ -127,6 +130,7 @@ export const generateSchedulePDF = (
       headStyles: {
         fontSize: 7,
         font: "NotoSansJP",
+        fontStyle: "normal",
         fillColor: [255, 255, 255], // White background for headers
         textColor: 0, // Black text
         lineWidth: 0.2, // Default header border thickness
