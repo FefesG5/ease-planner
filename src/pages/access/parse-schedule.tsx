@@ -45,32 +45,35 @@ function ParseSchedule() {
         const schoolT = nextRow[2]?.trim() === "T" ? "T" : "";
 
         // Step 4: Extract shifts for the current teacher
+        const timePattern = /(\d{1,2}:\d{2})\s*[-~]?\s*(\d{1,2}:\d{2})?/;
+
         for (let j = 3; j < currentRow.length; j++) {
-          if (
-            currentRow[j] &&
-            currentRow[j].includes(":") &&
-            (currentRow[j].includes("-") || currentRow[j].includes("~"))
-          ) {
-            schedules.push({
-              Employee: teacherName,
-              Date: dates[j] || "",
-              Day: days[j] || "",
-              School: schoolM,
-              Shift: currentRow[j].trim(),
-            });
+          if (currentRow[j]) {
+            const matches = currentRow[j].match(timePattern);
+            if (matches) {
+              const [_, startTime, endTime] = matches;
+              schedules.push({
+                Employee: teacherName,
+                Date: dates[j] || "",
+                Day: days[j] || "",
+                School: schoolM,
+                Shift: endTime ? `${startTime}-${endTime}` : `${startTime}`, // No space around the dash
+              });
+            }
           }
-          if (
-            nextRow[j] &&
-            nextRow[j].includes(":") &&
-            (nextRow[j].includes("-") || nextRow[j].includes("~"))
-          ) {
-            schedules.push({
-              Employee: teacherName,
-              Date: dates[j] || "",
-              Day: days[j] || "",
-              School: schoolT,
-              Shift: nextRow[j].trim(),
-            });
+
+          if (nextRow[j]) {
+            const matches = nextRow[j].match(timePattern);
+            if (matches) {
+              const [_, startTime, endTime] = matches;
+              schedules.push({
+                Employee: teacherName,
+                Date: dates[j] || "",
+                Day: days[j] || "",
+                School: schoolT,
+                Shift: endTime ? `${startTime}-${endTime}` : `${startTime}`, // No space around the dash
+              });
+            }
           }
         }
       }
