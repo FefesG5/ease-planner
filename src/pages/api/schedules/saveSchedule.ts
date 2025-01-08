@@ -39,18 +39,23 @@ export default async function handler(
 
       const firstDate = schedule[0].Date;
       const [year, month] = firstDate.split("/").map(Number);
+
+      // Validate year and month before proceeding
       if (!year || !month) {
         return res
           .status(400)
           .json({ error: "Invalid date format in schedule." });
       }
 
+      // Format month to ensure a leading zero when needed
+      const formattedMonth = month < 10 ? `0${month}` : `${month}`;
+
       // Reference to the correct monthly document
       const docRef = firestore
         .collection("monthlySchedules")
-        .doc(`${year}-${month}`);
+        .doc(`${year}-${formattedMonth}`);
 
-      // Update or create the document
+      // Update or create the document using Firestore transaction
       await firestore.runTransaction(async (transaction) => {
         const doc = await transaction.get(docRef);
         if (doc.exists) {
