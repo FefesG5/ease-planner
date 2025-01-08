@@ -46,7 +46,11 @@ function ParseSchedule() {
 
         // Step 4: Extract shifts for the current teacher
         for (let j = 3; j < currentRow.length; j++) {
-          if (currentRow[j] && currentRow[j].includes(":")) {
+          if (
+            currentRow[j] &&
+            currentRow[j].includes(":") &&
+            (currentRow[j].includes("-") || currentRow[j].includes("~"))
+          ) {
             schedules.push({
               Employee: teacherName,
               Date: dates[j] || "",
@@ -55,7 +59,11 @@ function ParseSchedule() {
               Shift: currentRow[j].trim(),
             });
           }
-          if (nextRow[j] && nextRow[j].includes(":")) {
+          if (
+            nextRow[j] &&
+            nextRow[j].includes(":") &&
+            (nextRow[j].includes("-") || nextRow[j].includes("~"))
+          ) {
             schedules.push({
               Employee: teacherName,
               Date: dates[j] || "",
