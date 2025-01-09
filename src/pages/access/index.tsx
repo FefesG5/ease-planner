@@ -1,47 +1,138 @@
+import { useState, useRef } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Spinner from "@/components/Spinner/Spinner";
-import SignIn from "@/components/SignIn/SignIn";
-import { useAuthContext } from "@/contexts/AuthContext";
+import FloatingNotification from "@/components/FloatingNotification/FloatingNotification";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { FilteredSchedule } from "@/interfaces/teachersShift";
 
-function AccessContent() {
+// Define NotificationType to specify success, error, or info
+type NotificationType = "success" | "error" | "info" | null;
+
+function Schedule() {
+  const { user } = useAuthContext();
+  const queryClient = useQueryClient();
+  const [deletingScheduleId, setDeletingScheduleId] = useState<string | null>(
+    null,
+  ); // Track the deleting schedule
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: NotificationType;
+  } | null>(null);
+  const notificationTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // ✅ Fetch schedules using react-query
+  const {
+    data: schedules = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["filteredSchedules", user?.uid],
+    queryFn: async (): Promise<FilteredSchedule[]> => {
+      if (!user) throw new Error("User not authenticated");
+      const token = await user.getIdToken();
+      const response = await fetch(
+        `/api/schedules/getFilteredSchedulesByUser?userId=${user.uid}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      if (!response.ok) throw new Error("Failed to fetch schedules");
+      return response.json();
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+
+  // ✅ Show Notification Helper Function
+  const showNotification = (message: string, type: NotificationType) => {
+    setNotification({ message, type });
+
+    // Clear existing timeout before setting a new one
+    if (notificationTimeout.current) {
+      clearTimeout(notificationTimeout.current);
+    }
+
+    // Auto-dismiss the notification after 5 seconds
+    notificationTimeout.current = setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
+
+  // ✅ Delete schedule mutation (integrated with notification)
+  const deleteMutation = useMutation({
+    mutationFn: async (scheduleId: string) => {
+      setDeletingScheduleId(scheduleId);
+      const token = await user?.getIdToken();
+      const response = await fetch(`/api/schedules/deleteSchedule`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ scheduleId, userId: user?.uid }),
+      });
+      if (!response.ok) throw new Error("Failed to delete schedule.");
+    },
+    onSuccess: () => {
+      setDeletingScheduleId(null);
+      queryClient.invalidateQueries({ queryKey: ["filteredSchedules"] });
+      showNotification("Schedule deleted successfully!", "success");
+    },
+    onError: () => {
+      setDeletingScheduleId(null);
+      showNotification("Failed to delete schedule.", "error");
+    },
+  });
+
+  // ✅ Loading and error handling
+  if (isLoading) return <Spinner />;
+  if (error) {
+    showNotification(error.message, "error");
+    return <p className="text-red-500">{error.message}</p>;
+  }
+
   return (
-    <div>
-      <h1>Dashboard Home</h1>
-      <p>Welcome to the dashboard! You can manage everything from here.</p>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold mb-6 text-center">Your Schedules</h1>
+
+      {notification && notification.type && (
+        <FloatingNotification
+          message={notification.message}
+          type={notification.type}
+        />
+      )}
+
+      <ul className="space-y-4">
+        {schedules.map((schedule: FilteredSchedule) => (
+          <li
+            key={schedule.id}
+            className="border p-4 flex justify-between items-center rounded-lg bg-white shadow"
+          >
+            {/* Left: Displaying the first available employee name since teacherName is missing */}
+            <div>
+              <p className="text-lg font-semibold">
+                {schedule.schedules.length > 0
+                  ? schedule.schedules[0].Employee
+                  : "Unknown Teacher"}
+              </p>
+              <p className="text-sm text-gray-500">
+                📆 {schedule.month} - {schedule.year}
+              </p>
+            </div>
+
+            {/* Right: Delete Button */}
+            <button
+              onClick={() => deleteMutation.mutate(schedule.id)}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50"
+              disabled={deletingScheduleId === schedule.id}
+            >
+              {deletingScheduleId === schedule.id ? "Deleting..." : "Delete"}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-const WrappedAccessContent = withDashboardLayout(AccessContent);
-
-function AccessIndex() {
-  const { user, loading, isAuthorized } = useAuthContext();
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (!user) {
-    // Show the SignIn component if the user is not logged in
-    return <SignIn />;
-  }
-
-  if (!isAuthorized) {
-    // If user is logged in but not authorized, display access denied and allow the user to re-sign in
-    return (
-      <div className="flex flex-col items-center justify-start min-h-screen text-center px-4 py-4">
-        <h2 className="text-2xl font-bold mb-2 text-red-600">Access Denied</h2>
-        <p className="mb-4 text-lg text-[var(--body-text-color)]">
-          You are not authorized to access this application. Please contact the
-          administrator for access.
-        </p>
-        <SignIn /> {/* Provide the sign-in option */}
-      </div>
-    );
-  }
-
-  // If user is logged in and authorized, render the dashboard with the layout
-  return <WrappedAccessContent />;
-}
-
-export default AccessIndex;
+export default withDashboardLayout(Schedule);
