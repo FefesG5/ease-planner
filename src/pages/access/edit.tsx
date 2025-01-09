@@ -241,18 +241,20 @@ function Edit() {
             </option>
           ))}
         </select>
-        <div className="bg-gray-100">
-          <label htmlFor="teacherNameInput" className="text-sm font-medium">
-            Edit Teacher Name:
-          </label>
-          <input
-            id="teacherNameInput"
-            type="text"
-            value={teacherName || selectedSchedule?.teacherName || ""}
-            onChange={(e) => setTeacherName(e.target.value)}
-            className="border px-2 py-1 text-sm w-60"
-          />
-        </div>
+        {selectedSchedule && (
+          <div className="bg-gray-100">
+            <label htmlFor="teacherNameInput" className="text-sm font-medium">
+              Edit Teacher Name:
+            </label>
+            <input
+              id="teacherNameInput"
+              type="text"
+              value={teacherName || selectedSchedule.teacherName || ""}
+              onChange={(e) => setTeacherName(e.target.value)}
+              className="border px-2 py-1 text-sm w-60"
+            />
+          </div>
+        )}
       </div>
 
       {/* Collapsible Tables */}
