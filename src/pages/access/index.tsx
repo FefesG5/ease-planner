@@ -93,7 +93,7 @@ function Schedule() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6 text-center">Your Schedules</h1>
+      <h1 className="text-base font-bold mb-6 text-center">Your Schedules</h1>
 
       {notification && notification.type && (
         <FloatingNotification
