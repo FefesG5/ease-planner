@@ -108,7 +108,7 @@ function Schedule() {
         {schedules.map((schedule: FilteredSchedule) => (
           <li
             key={schedule.id}
-            className="border p-4 flex justify-between items-center rounded-lg bg-white shadow"
+            className="border p-2 flex justify-between items-center bg-white shadow"
           >
             {/* Left: Displaying the first available employee name since teacherName is missing */}
             <div>
