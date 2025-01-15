@@ -108,7 +108,7 @@ function Schedule() {
         {schedules.map((schedule: FilteredSchedule) => (
           <li
             key={schedule.id}
-            className="border p-2 flex justify-between items-center bg-white shadow"
+            className="border p-2 flex justify-between items-center shadow"
           >
             {/* Left: Displaying the first available employee name since teacherName is missing */}
             <div>
@@ -117,7 +117,7 @@ function Schedule() {
                   ? schedule.schedules[0].Employee
                   : "Unknown Teacher"}
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm">
                 📆 {schedule.month} - {schedule.year}
               </p>
             </div>
