@@ -215,7 +215,7 @@ function Edit() {
   return (
     <div className="">
       {/* Schedule Selector */}
-      <div className="schedule-selector p-2">
+      <div className="schedule-selector p-2 bg-[var(--user-section-bg-color)]">
         <h1 className="text-base font-bold">Available Schedule List</h1>
         <label htmlFor="scheduleSelect" className="text-sm font-medium">
           Select Schedule:
