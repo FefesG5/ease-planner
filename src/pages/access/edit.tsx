@@ -217,7 +217,7 @@ function Edit() {
       {/* Schedule Selector */}
       <div className="schedule-selector p-2 bg-[var(--user-section-bg-color)]">
         <h1 className="text-base font-bold">Available Schedule List</h1>
-        <label htmlFor="scheduleSelect" className="text-sm font-medium">
+        <label htmlFor="scheduleSelect" className="text-sm font-medium ">
           Select Schedule:
         </label>
         <select
@@ -230,7 +230,7 @@ function Edit() {
               ) || null,
             )
           }
-          className="border px-2 py-1 text-sm"
+          className="border px-2 py-1 text-sm bg-[var(--signin-input-bg-color)]"
         >
           <option value="" disabled>
             -- Select a Schedule --
@@ -251,7 +251,7 @@ function Edit() {
               type="text"
               value={teacherName || selectedSchedule.teacherName || ""}
               onChange={(e) => setTeacherName(e.target.value)}
-              className="border px-2 py-1 text-sm w-60"
+              className="border px-2 py-1 text-sm w-60 bg-[var(--signin-input-bg-color)]"
             />
           </div>
         )}
