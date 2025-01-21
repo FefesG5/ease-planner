@@ -322,14 +322,14 @@ function Edit() {
                 </div>
                 {/* Table */}
                 <table
-                  className="w-full border-collapse border text-xs bg-white"
+                  className="w-full border-collapse border text-xs text-var[(--body-text-color)]"
                   style={{
                     fontFamily:
                       '"Noto Sans JP", "Hiragino Kaku Gothic Pro", "Meiryo", sans-serif',
                   }}
                 >
                   <thead>
-                    <tr className="bg-gray-200">
+                    <tr className="bg-[var(--signin-input-bg-color)]">
                       <th
                         colSpan={10}
                         className="border px-1 py-1 text-center text-sm font-normal"
