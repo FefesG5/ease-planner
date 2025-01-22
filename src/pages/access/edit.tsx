@@ -268,7 +268,7 @@ function Edit() {
                   [school]: !prev[school],
                 }))
               }
-              className="w-full text-left px-2 py-1 font-medium border-b text-lg"
+              className="w-full text-left px-2 py-1 font-medium border-b text-lg bg-[var(--signin-input-bg-color)]"
             >
               {schoolStates[school] ? "▼" : "►"} School {school}
             </button>
@@ -284,7 +284,7 @@ function Edit() {
                         type="text"
                         value={breakTimeValue}
                         onChange={(e) => setBreakTimeValue(e.target.value)}
-                        className="border px-2 py-1 text-sm w-20"
+                        className="border px-2 py-1 text-sm w-20 bg-[var(--signin-input-bg-color)]"
                       />
                       <button
                         onClick={() =>
@@ -303,7 +303,7 @@ function Edit() {
                         type="text"
                         value={lessonHoursValue}
                         onChange={(e) => setLessonHoursValue(e.target.value)}
-                        className="border px-2 py-1 text-sm w-20"
+                        className="border px-2 py-1 text-sm w-20 bg-[var(--signin-input-bg-color)]"
                       />
                       <button
                         onClick={() =>
@@ -337,7 +337,7 @@ function Edit() {
                         Schedule Table (出勤簿)
                       </th>
                     </tr>
-                    <tr className="bg-gray-100">
+                    <tr className="">
                       <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                         <span className="hidden sm:inline">Date</span>
                         <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
