@@ -276,7 +276,7 @@ function Edit() {
             {schoolStates[school] && (
               <>
                 {/* Autofill Controls */}
-                <div className=" p-2 shadow-sm">
+                <div className=" p-2 shadow-sm bg-[var(--signin-container-bg-color)]">
                   <div className="flex flex-wrap items-center justify-end gap-4">
                     <div className="flex items-center gap-2">
                       <label className="text-sm font-medium">Break Time:</label>
