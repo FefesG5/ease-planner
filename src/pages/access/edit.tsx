@@ -329,7 +329,7 @@ function Edit() {
                   }}
                 >
                   <thead>
-                    <tr className="bg-[var(--signin-input-bg-color)]">
+                    <tr className="">
                       <th
                         colSpan={10}
                         className="border px-1 py-1 text-center text-sm font-normal"
@@ -451,7 +451,7 @@ function Edit() {
                         </div>
                       </th>
                     </tr>
-                    <tr className="bg-gray-50 sm:table-row hidden">
+                    <tr className="sm:table-row hidden">
                       <th className="border px-0.5 py-0.5 font-normal">日付</th>
                       <th className="border px-0.5 py-0.5 font-normal">曜日</th>
                       <th className="border px-0.5 py-0.5 font-normal">
