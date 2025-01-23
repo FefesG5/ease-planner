@@ -322,7 +322,7 @@ function Edit() {
                 </div>
                 {/* Table */}
                 <table
-                  className="w-full border-collapse border text-xs text-var[(--body-text-color)]"
+                  className="w-full border-collapse border text-xs text-var[(--body-text-color)] bg-[var(--signin-input-bg-color)]"
                   style={{
                     fontFamily:
                       '"Noto Sans JP", "Hiragino Kaku Gothic Pro", "Meiryo", sans-serif',
