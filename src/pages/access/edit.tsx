@@ -230,7 +230,7 @@ function Edit() {
               ) || null,
             )
           }
-          className="border px-2 py-1 text-sm bg-[var(--signin-input-bg-color)]"
+          className="border px-2 py-1 text-sm bg-[var(--signin-input-bg-color)] ml-1"
         >
           <option value="" disabled>
             -- Select a Schedule --
@@ -251,7 +251,7 @@ function Edit() {
               type="text"
               value={teacherName || selectedSchedule.teacherName || ""}
               onChange={(e) => setTeacherName(e.target.value)}
-              className="border px-2 py-1 text-sm w-60 bg-[var(--signin-input-bg-color)]"
+              className="border px-2 py-1 text-sm w-60 bg-[var(--signin-input-bg-color)] ml-1"
             />
           </div>
         )}
