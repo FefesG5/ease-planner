@@ -587,7 +587,7 @@ function Edit() {
           </div>
         ))
       ) : (
-        <p className="text-center text-gray-500 mt-4">
+        <p className="text-center mt-4">
           Please select a schedule to view its details.
         </p>
       )}
