@@ -241,8 +241,9 @@ function Edit() {
             </option>
           ))}
         </select>
+        {/* Teacher Name Input & Download Button (only appears when a schedule is selected) */}
         {selectedSchedule && (
-          <div className="">
+          <div className="mt-2">
             <label htmlFor="teacherNameInput" className="text-sm font-medium">
               Edit Teacher Name:
             </label>
@@ -253,6 +254,14 @@ function Edit() {
               onChange={(e) => setTeacherName(e.target.value)}
               className="border px-2 py-1 text-sm w-60 bg-[var(--signin-input-bg-color)] ml-1"
             />
+
+            {/* Download PDF Button */}
+            <button
+              onClick={handleGeneratePDF}
+              className="mt-3 px-6 py-2 bg-green-600 text-white text-sm font-medium rounded-full shadow-md hover:bg-green-700 transition ml-1"
+            >
+              Download PDF
+            </button>
           </div>
         )}
       </div>
@@ -591,14 +600,14 @@ function Edit() {
           Please select a schedule to view its details.
         </p>
       )}
-      <div className="fixed bottom-4 right-4 z-50">
+      {/* <div className="fixed bottom-4 right-4 z-50">
         <button
           onClick={handleGeneratePDF}
           className="px-6 py-3 bg-green-600 text-white text-sm font-medium hover:bg-green-700 shadow-lg rounded-full"
         >
           Download PDF
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
