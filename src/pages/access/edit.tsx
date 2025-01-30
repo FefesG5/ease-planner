@@ -600,14 +600,6 @@ function Edit() {
           Please select a schedule to view its details.
         </p>
       )}
-      {/* <div className="fixed bottom-4 right-4 z-50">
-        <button
-          onClick={handleGeneratePDF}
-          className="px-6 py-3 bg-green-600 text-white text-sm font-medium hover:bg-green-700 shadow-lg rounded-full"
-        >
-          Download PDF
-        </button>
-      </div> */}
     </div>
   );
 }
