@@ -39,9 +39,9 @@ function Edit() {
     isError,
     error,
   } = useQuery<FilteredSchedule[]>({
-    queryKey: ["filteredSchedules"],
+    queryKey: ["filteredSchedules", user?.uid],
     queryFn: async () => {
-      if (!user) throw new Error("User not authenticated");
+      if (!user) return [];
       const token = await user.getIdToken();
       const response = await fetch(
         `/api/schedules/getFilteredSchedulesByUser?userId=${user.uid}`,
@@ -53,7 +53,8 @@ function Edit() {
       if (!response.ok) throw new Error("Failed to fetch schedules");
       return response.json();
     },
-    staleTime: 10 * 60 * 1000,
+    enabled: !!user, // 🚀 Prevents fetch until user is ready
+    staleTime: 10 * 60 * 1000, // 🚀 Cache schedules for 10 minutes
   });
 
   useEffect(() => {
