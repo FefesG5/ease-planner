@@ -213,7 +213,7 @@ function Edit() {
   if (isError) return <p className="text-sm text-red-600">{error?.message}</p>;
 
   return (
-    <div className="mt-0 sm:mt-1">
+    <div className="mt-0">
       {/* Schedule Selector */}
       <div className="schedule-selector p-2 bg-[var(--user-section-bg-color)]">
         <h1 className="text-base font-bold">Available Schedule List</h1>
