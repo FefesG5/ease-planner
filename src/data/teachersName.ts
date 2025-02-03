@@ -18,5 +18,7 @@ export const teacherNames = [
   "Haruto",
   "Mamiko (F)",
   "Naoto",
+  "Tomomi",
+  "Naho",
   "Test",
 ];
