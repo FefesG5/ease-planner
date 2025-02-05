@@ -1,8 +1,19 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { useAuthContext } from "@/contexts/AuthContext";
 import Spinner from "@/components/Spinner/Spinner";
 
 const AuthHandler: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading, isAuthorized } = useAuthContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    // If loading is done, user is null, and they are not on /signin,
+    // redirect them to /signin
+    if (!loading && !user && router.pathname !== "/signin") {
+      router.replace("/signin");
+    }
+  }, [loading, user, router]);
 
   if (loading) {
     return <Spinner />;

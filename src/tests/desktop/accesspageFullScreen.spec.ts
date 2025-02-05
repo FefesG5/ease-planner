@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 // Access Page Tests focusing on Sign In
 test.describe("Access Page Tests - (Fullscreen Mode)", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000/access");
+    await page.goto("http://localhost:3000/signin");
     await page.setViewportSize({ width: 1920, height: 1080 });
   });
 

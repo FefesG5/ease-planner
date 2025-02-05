@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { app } from "../../../firebase.config";
 import { playfairDisplay } from "@/app/ui/fonts";
 
 const SignIn = () => {
   const [message, setMessage] = useState("");
+  const router = useRouter();
   const auth = getAuth(app);
 
   const signInWithGoogle = () => {
@@ -13,6 +15,7 @@ const SignIn = () => {
     signInWithPopup(auth, provider)
       .then(() => {
         setMessage("");
+        router.replace("/dashboard");
       })
       .catch((error) => {
         console.error("Error during Google sign-in:", error);

@@ -9,8 +9,8 @@ export const navigationLinks: NavItem[] = [
     label: "About",
   },
   {
-    href: "/access",
-    label: "Access",
+    href: "/signin",
+    label: "Sign In",
   },
   {
     href: "/contact",

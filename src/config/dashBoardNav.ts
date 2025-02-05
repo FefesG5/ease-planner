@@ -6,37 +6,37 @@ export type NavItem = {
 
 export const dashboardNav: NavItem[] = [
   {
-    href: "/access/",
+    href: "/dashboard/",
     label: "Home",
     icon: "/dashboard-icon.svg",
   },
   {
-    href: "/access/schedule",
+    href: "/dashboard/schedule",
     label: "Generate Schedule",
     icon: "/create-schedule-icon.svg",
   },
   {
-    href: "/access/edit",
+    href: "/dashboard/edit",
     label: "Review & Edit",
     icon: "/edit-schedule-icon.svg",
   },
   {
-    href: "/access/parse-schedule",
+    href: "/dashboard/parse-schedule",
     label: "Parse Schedule",
     icon: "/parse-schedule-icon.svg",
   },
   {
-    href: "/access/upload",
+    href: "/dashboard/upload",
     label: "Upload File",
     icon: "/upload-file-icon.svg",
   },
   {
-    href: "/access/help",
+    href: "/dashboard/help",
     label: "Help",
     icon: "/help-icon.svg",
   },
   {
-    href: "/access/testing",
+    href: "/dashboard/testing",
     label: "Testing",
     icon: "/testing-icon.svg",
   },

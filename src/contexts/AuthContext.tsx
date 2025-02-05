@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const signOutUser = async (): Promise<void> => {
     await auth.signOut();
     setUser(null);
-    Router.push("/access");
+    Router.push("/signin");
   };
 
   return (

@@ -14,7 +14,7 @@ const withDashboardLayout = <P extends object>(
     }
 
     if (!user) {
-      Router.push("/access"); // Redirect to login page if not logged in
+      Router.push("/signin"); // Redirect to login page if not logged in
       return null; // Return nothing temporarily while redirecting
     }
 
