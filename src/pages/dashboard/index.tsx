@@ -93,9 +93,7 @@ function Schedule() {
 
   return (
     <div className="p-4 bg-[var(--user-section-bg-color)] min-h-screen">
-      <h1 className="text-base font-bold text-center p-2">
-        Generated Schedules
-      </h1>
+      <h1 className="text-base font-bold text-center">GENERATED SCHEDULES</h1>
 
       {notification && notification.type && (
         <FloatingNotification
