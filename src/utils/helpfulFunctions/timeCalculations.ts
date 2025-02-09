@@ -57,3 +57,25 @@ export const calculateNonLessonHours = (
   // Convert minutes back to a decimal hours string
   return (nonLessonMinutes / 60).toFixed(2);
 };
+
+export const calculateOvertime = (
+  startTime: string,
+  endTime: string,
+  breakTime: string,
+): string => {
+  // Calculate total working hours (as a decimal string) after subtracting break time.
+  const totalWorkingStr = calculateTotalWorkingHours(
+    startTime,
+    endTime,
+    breakTime,
+  );
+  const totalWorking = Number(totalWorkingStr);
+
+  // If the total working time is invalid, return an empty string.
+  if (isNaN(totalWorking)) return "";
+
+  // Calculate overtime: any working time over 8 hours is overtime.
+  const overtime = totalWorking > 8 ? totalWorking - 8 : 0;
+
+  return overtime.toFixed(2);
+};
