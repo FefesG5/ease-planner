@@ -12,6 +12,7 @@ import { generateTableData } from "@/utils/helpfulFunctions/tableDataUtils";
 import {
   calculateTotalWorkingHours,
   calculateNonLessonHours,
+  calculateOvertime,
 } from "@/utils/helpfulFunctions/timeCalculations";
 import { generateSchedulePDF } from "@/utils/helpfulFunctions/pdfGeneratorUtils";
 import jsPDF from "jspdf";
@@ -114,10 +115,12 @@ function Edit() {
         newWorkingHours,
         LessonHours,
       );
+      const newOvertime = calculateOvertime(StartTime, EndTime, BreakTime);
 
       // Save calculations to local state
       updatedRows[rowIndex].WorkingHours = newWorkingHours;
       updatedRows[rowIndex].NonLessonHours = newNonLessonHours;
+      updatedRows[rowIndex].Overtime = newOvertime;
 
       return { ...prev, [school]: updatedRows };
     });
