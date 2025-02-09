@@ -15,58 +15,45 @@ export const calculateTotalWorkingHours = (
   const [startH, startM] = startTime.split(":").map(Number);
   const [endH, endM] = endTime.split(":").map(Number);
 
-  const [breakH, breakM] =
-    breakTime && breakTime.includes(":")
-      ? breakTime.split(":").map(Number)
-      : [0, 0]; // Default to 0 if break time is empty
+  // Parse break time: support both "HH:MM" and decimal hour formats (e.g., "1.0")
+  let breakMinutes = 0;
+  if (breakTime) {
+    if (breakTime.includes(":")) {
+      const [breakH, breakM] = breakTime.split(":").map(Number);
+      breakMinutes = breakH * 60 + breakM;
+    } else {
+      breakMinutes = Number(breakTime) * 60;
+    }
+  }
 
-  let workingMinutes =
-    endH * 60 + endM - (startH * 60 + startM) - (breakH * 60 + breakM);
+  let workingMinutes = endH * 60 + endM - (startH * 60 + startM) - breakMinutes;
 
   if (workingMinutes <= 0 || isNaN(workingMinutes)) {
     return ""; // Invalid or negative time returns empty
   }
 
-  const maxWorkingMinutes = 8 * 60; // 8 hours max
-  workingMinutes = Math.min(workingMinutes, maxWorkingMinutes);
-
-  const hours = Math.floor(workingMinutes / 60);
-  const minutes = workingMinutes % 60;
-  return `${hours}.${minutes.toString().padStart(2, "0")}`;
+  // Return working hours as a decimal string (e.g., "8.17" for 8 hours 10 minutes)
+  return (workingMinutes / 60).toFixed(2);
 };
 
 export const calculateNonLessonHours = (
   workingHours: string,
   lessonHours: string,
 ): string => {
-  if (
-    !workingHours ||
-    !lessonHours ||
-    !workingHours.includes(".") ||
-    !lessonHours.includes(".")
-  ) {
+  if (!workingHours || !lessonHours) {
     return ""; // Placeholder if values are missing
   }
 
-  // Parse working hours and lesson hours into hours and minutes
-  const [workH, workM] = workingHours.split(".").map(Number);
-  const [lessonH, lessonM] = lessonHours.split(".").map(Number);
+  // Convert the decimal hour strings back to minutes
+  const totalWorkingMinutes = Number(workingHours) * 60;
+  const totalLessonMinutes = Number(lessonHours) * 60;
 
-  // Convert both working and lesson hours into total minutes
-  const totalWorkingMinutes = workH * 60 + workM * 6; // Decimal minutes converted to base 60
-  const totalLessonMinutes = lessonH * 60 + lessonM * 6;
-
-  // Calculate the difference in minutes
   let nonLessonMinutes = totalWorkingMinutes - totalLessonMinutes;
 
   if (nonLessonMinutes < 0 || isNaN(nonLessonMinutes)) {
     return ""; // Handle invalid or negative values
   }
 
-  // Convert minutes back to decimal hours
-  const hours = Math.floor(nonLessonMinutes / 60);
-  const minutes = nonLessonMinutes % 60;
-
-  // Return the result in decimal hours format
-  return `${(hours + minutes / 60).toFixed(2)}`;
+  // Convert minutes back to a decimal hours string
+  return (nonLessonMinutes / 60).toFixed(2);
 };
