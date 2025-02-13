@@ -162,10 +162,12 @@ function Edit() {
             newWorkingHours,
             LessonHours,
           );
+          const newOvertime = calculateOvertime(StartTime, EndTime, BreakTime);
 
           // Save calculations to the row
           updatedRow.WorkingHours = newWorkingHours;
           updatedRow.NonLessonHours = newNonLessonHours;
+          updatedRow.Overtime = newOvertime; // Added overtime recalculation
 
           return updatedRow;
         }
@@ -397,7 +399,7 @@ function Edit() {
                           />
                         </div>
                       </th>
-                      <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell w-auto sm:w-auto">
+                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
                         <span className="hidden sm:inline">Overtime</span>
                         <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
                           <Image
@@ -535,9 +537,7 @@ function Edit() {
                             className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
                           />
                         </td>
-                        <td className="border px-0.5 py-0.5 hidden sm:table-cell">
-                          {row.Overtime}
-                        </td>
+                        <td className="border px-0.5 py-0.5">{row.Overtime}</td>
                         <td className="border px-0.5 py-0.5 w-[42px] text-sm">
                           <input
                             type="text"
