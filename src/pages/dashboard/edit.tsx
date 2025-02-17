@@ -320,7 +320,7 @@ function Edit() {
                         type="text"
                         value={lessonHoursValue}
                         onChange={(e) => setLessonHoursValue(e.target.value)}
-                        className="border px-2 py-1 text-sm w-20 bg-[var(--signin-input-bg-color)]"
+                        className="border px-2 py-1 text-xs w-20 bg-[var(--signin-input-bg-color)]"
                       />
                       <button
                         onClick={() =>
@@ -518,7 +518,7 @@ function Edit() {
                               )
                             }
                             placeholder="--:--"
-                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
+                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                           />
                         </td>
                         <td className="border px-0.5 py-0.5">
@@ -534,13 +534,13 @@ function Edit() {
                               )
                             }
                             placeholder="--:--"
-                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
+                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                           />
                         </td>
-                        <td className="border px-0.5 py-0.5 w-[38px] text-sm">
+                        <td className="border px-0.5 py-0.5 w-[34px] text-xs">
                           {row.Overtime}
                         </td>
-                        <td className="border px-0.5 py-0.5 w-[42px] text-sm">
+                        <td className="border px-0.5 py-0.5 w-[34px] text-xs">
                           <input
                             type="text"
                             value={row.BreakTime}
@@ -553,17 +553,17 @@ function Edit() {
                               )
                             }
                             placeholder=""
-                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
+                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                           />
                         </td>
-                        <td className="border px-0.5 py-0.5 w-[42px] text-sm">
+                        <td className="border px-0.5 py-0.5 w-[34px] text-xs">
                           {calculateTotalWorkingHours(
                             row.StartTime,
                             row.EndTime,
                             row.BreakTime,
                           )}
                         </td>
-                        <td className="border px-0.5 py-0.5 w-[42px] text-sm">
+                        <td className="border px-0.5 py-0.5 w-[34px] text-xs">
                           <input
                             type="text"
                             value={row.LessonHours}
@@ -576,11 +576,11 @@ function Edit() {
                               )
                             }
                             placeholder=""
-                            className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
+                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
                           />
                         </td>
-                        <td className="border text-center text-sm w-[42px]">
-                          <span className="w-full text-sm">
+                        <td className="border text-center text-xs w-[34px]">
+                          <span className="w-full text-xs">
                             {calculateNonLessonHours(
                               calculateTotalWorkingHours(
                                 row.StartTime,
