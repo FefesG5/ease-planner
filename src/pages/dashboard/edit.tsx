@@ -537,7 +537,9 @@ function Edit() {
                             className="w-full h-full text-center text-sm bg-transparent border-none outline-none"
                           />
                         </td>
-                        <td className="border px-0.5 py-0.5">{row.Overtime}</td>
+                        <td className="border px-0.5 py-0.5 w-[38px] text-sm">
+                          {row.Overtime}
+                        </td>
                         <td className="border px-0.5 py-0.5 w-[42px] text-sm">
                           <input
                             type="text"
