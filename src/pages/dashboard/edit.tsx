@@ -222,36 +222,40 @@ function Edit() {
     <div className="mt-0">
       {/* Schedule Selector */}
       <div className="schedule-selector p-4 bg-[var(--user-section-bg-color)]">
-        <h1 className="text-base font-bold text-center">
+        <h1 className="text-base font-bold text-center mb-4">
           AVAILABLE SCHEDULE LIST
         </h1>
-        <label htmlFor="scheduleSelect" className="text-sm font-medium ">
-          Select Schedule:
-        </label>
-        <select
-          id="scheduleSelect"
-          value={selectedSchedule?.id || ""}
-          onChange={(e) =>
-            setSelectedSchedule(
-              filteredSchedules.find(
-                (schedule) => schedule.id === e.target.value,
-              ) || null,
-            )
-          }
-          className="border px-2 py-1 text-sm bg-[var(--signin-input-bg-color)] ml-1"
-        >
-          <option value="" disabled>
-            -- Select a Schedule --
-          </option>
-          {filteredSchedules.map((schedule) => (
-            <option key={schedule.id} value={schedule.id}>
-              {`${schedule.teacherName} - Schedule ${schedule.year}-${schedule.month}`}
+        {/* Schedule Selector */}
+        <div className="flex flex-col sm:flex-row sm:items-center mb-4">
+          <label htmlFor="scheduleSelect" className="text-sm font-medium">
+            Select Schedule:
+          </label>
+          <select
+            id="scheduleSelect"
+            value={selectedSchedule?.id || ""}
+            onChange={(e) =>
+              setSelectedSchedule(
+                filteredSchedules.find(
+                  (schedule) => schedule.id === e.target.value,
+                ) || null,
+              )
+            }
+            className="border px-2 py-1 text-sm bg-[var(--signin-input-bg-color)] mt-2 sm:mt-0 sm:ml-2 w-full sm:w-auto"
+          >
+            <option value="" disabled>
+              -- Select a Schedule --
             </option>
-          ))}
-        </select>
-        {/* Teacher Name Input & Download Button (only appears when a schedule is selected) */}
+            {filteredSchedules.map((schedule) => (
+              <option key={schedule.id} value={schedule.id}>
+                {`${schedule.teacherName} - Schedule ${schedule.year}-${schedule.month}`}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Teacher Name Input & Download Button */}
         {selectedSchedule && (
-          <div className="mt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center">
             <label htmlFor="teacherNameInput" className="text-sm font-medium">
               Edit Teacher Name:
             </label>
@@ -260,13 +264,11 @@ function Edit() {
               type="text"
               value={teacherName || selectedSchedule.teacherName || ""}
               onChange={(e) => setTeacherName(e.target.value)}
-              className="border px-2 py-1 text-sm w-60 bg-[var(--signin-input-bg-color)] ml-1"
+              className="border px-2 py-1 text-sm mt-2 sm:mt-0 sm:ml-2 w-full sm:w-60 bg-[var(--signin-input-bg-color)]"
             />
-
-            {/* Download PDF Button */}
             <button
               onClick={handleGeneratePDF}
-              className="mt-3 px-6 py-2 bg-green-600 text-white text-sm font-medium rounded-full shadow-md hover:bg-green-700 transition ml-1"
+              className="mt-3 sm:mt-0 sm:ml-4 px-6 py-2 bg-green-600 text-white text-sm font-medium rounded-full shadow-md hover:bg-green-700 transition"
             >
               Download PDF
             </button>
