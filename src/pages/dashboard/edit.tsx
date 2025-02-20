@@ -279,7 +279,7 @@ function Edit() {
       {/* Collapsible Tables */}
       {selectedSchedule ? (
         Object.keys(schoolStates).map((school) => (
-          <div key={school} className="">
+          <div key={school}>
             <button
               onClick={() =>
                 setSchoolStates((prev) => ({
@@ -295,7 +295,7 @@ function Edit() {
             {schoolStates[school] && (
               <>
                 {/* Autofill Controls */}
-                <div className=" p-2 shadow-sm bg-[var(--signin-container-bg-color)]">
+                <div className="p-2 shadow-sm bg-[var(--signin-container-bg-color)]">
                   <div className="flex flex-wrap items-center justify-end gap-4">
                     <div className="flex items-center gap-2">
                       <label className="text-sm font-medium">Break Time:</label>
@@ -339,268 +339,206 @@ function Edit() {
                     </div>
                   </div>
                 </div>
-                {/* Table */}
-                <table
-                  className="w-full border-collapse border text-xs text-var[(--body-text-color)] bg-[var(--signin-input-bg-color)]"
-                  style={{
-                    fontFamily:
-                      '"Noto Sans JP", "Hiragino Kaku Gothic Pro", "Meiryo", sans-serif',
-                  }}
-                >
-                  <thead>
-                    <tr className="">
-                      <th
-                        colSpan={10}
-                        className="border px-1 py-1 text-center text-sm font-normal"
-                      >
-                        Schedule Table (出勤簿)
-                      </th>
-                    </tr>
-                    <tr className="">
-                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
-                        <span className="hidden sm:inline">Date</span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/date-icon.svg"
-                            alt="date Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
-                        <span className="hidden sm:inline">Day</span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/day-icon.svg"
-                            alt="Day Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
-                        <span className="hidden sm:inline">Start Time</span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/starting-time-icon.svg"
-                            alt="Starting Time Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
-                        <span className="hidden sm:inline">End Time</span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/finishing-time-icon.svg"
-                            alt="Finishing Time Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
-                        <span className="hidden sm:inline">Overtime</span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/overtime-icon.svg"
-                            alt="Overtime Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
-                        <span className="hidden sm:inline">Break Time</span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/break-time-icon.svg"
-                            alt="Breaktime Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
-                        <span className="hidden sm:inline">Working Hours</span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/working-hours-icon.svg"
-                            alt="Working Hours Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
-                        <span className="hidden sm:inline">Lesson Hours</span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/lesson-hours-icon.svg"
-                            alt="Lesson Hours Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal w-auto sm:w-auto">
-                        <span className="hidden sm:inline">
-                          Non-Lesson Hours
-                        </span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/non-lesson-hours-icon.svg"
-                            alt="Non Lesson Hours Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell w-auto sm:w-auto">
-                        <span className="hidden sm:inline">Approval</span>
-                        <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                          <Image
-                            src="/approved-icon.svg"
-                            alt="Approved Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </th>
-                    </tr>
-                    <tr className="sm:table-row hidden">
-                      <th className="border px-0.5 py-0.5 font-normal">日付</th>
-                      <th className="border px-0.5 py-0.5 font-normal">曜日</th>
-                      <th className="border px-0.5 py-0.5 font-normal">
-                        出社時間
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal">
-                        退社時間
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
-                        残業時間
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal">
-                        休憩時間
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal">
-                        労働時間
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal">
-                        レッスン時間
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal">
-                        レッスン外時間
-                      </th>
-                      <th className="border px-0.5 py-0.5 font-normal hidden sm:table-cell">
-                        承認
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(localEdits[school] || []).map((row, index) => (
-                      <tr key={index} className="text-center">
-                        <td className="border px-0.5 py-0.5">{row.Date}</td>
-                        <td className="border px-0.5 py-0.5">
-                          <span className="hidden sm:inline">{row.Day}</span>
-                          <span className="sm:hidden">{row.Day.charAt(0)}</span>
-                        </td>
-                        <td className="border px-0.5 py-0.5">
-                          <input
-                            type="text"
-                            value={row.StartTime}
-                            onChange={(e) =>
-                              handleInputChange(
-                                school,
-                                index,
-                                "StartTime",
-                                e.target.value,
-                              )
-                            }
-                            placeholder="--:--"
-                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
-                          />
-                        </td>
-                        <td className="border px-0.5 py-0.5">
-                          <input
-                            type="text"
-                            value={row.EndTime}
-                            onChange={(e) =>
-                              handleInputChange(
-                                school,
-                                index,
-                                "EndTime",
-                                e.target.value,
-                              )
-                            }
-                            placeholder="--:--"
-                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
-                          />
-                        </td>
-                        <td className="border px-0.5 py-0.5 w-[34px] text-xs">
-                          {row.Overtime}
-                        </td>
-                        <td className="border px-0.5 py-0.5 w-[34px] text-xs">
-                          <input
-                            type="text"
-                            value={row.BreakTime}
-                            onChange={(e) =>
-                              handleInputChange(
-                                school,
-                                index,
-                                "BreakTime",
-                                e.target.value,
-                              )
-                            }
-                            placeholder=""
-                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
-                          />
-                        </td>
-                        <td className="border px-0.5 py-0.5 w-[34px] text-xs">
-                          {calculateTotalWorkingHours(
-                            row.StartTime,
-                            row.EndTime,
-                            row.BreakTime,
-                          )}
-                        </td>
-                        <td className="border px-0.5 py-0.5 w-[34px] text-xs">
-                          <input
-                            type="text"
-                            value={row.LessonHours}
-                            onChange={(e) =>
-                              handleInputChange(
-                                school,
-                                index,
-                                "LessonHours",
-                                e.target.value,
-                              )
-                            }
-                            placeholder=""
-                            className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
-                          />
-                        </td>
-                        <td className="border text-center text-xs w-[34px]">
-                          <span className="w-full text-xs">
-                            {calculateNonLessonHours(
-                              calculateTotalWorkingHours(
-                                row.StartTime,
-                                row.EndTime,
-                                row.BreakTime,
-                              ),
-                              row.LessonHours,
-                            )}
-                          </span>
-                        </td>
-
-                        <td className="border px-0.5 py-0.5 hidden sm:table-cell">
-                          {row.Approval}
-                        </td>
+                {/* Table Wrapper for overflow */}
+                <div className="overflow-x-auto">
+                  <table
+                    className="w-full border-collapse border text-xs text-[var(--body-text-color)] bg-[var(--signin-input-bg-color)]"
+                    style={{
+                      fontFamily:
+                        '"Noto Sans JP", "Hiragino Kaku Gothic Pro", "Meiryo", sans-serif',
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        <th
+                          colSpan={10}
+                          className="border px-1 py-1 text-center text-sm font-normal"
+                        >
+                          Schedule Table (出勤簿)
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                      {/* Consolidated Header Row */}
+                      <tr>
+                        {[
+                          { label: "Date", icon: "/date-icon.svg" },
+                          { label: "Day", icon: "/day-icon.svg" },
+                          {
+                            label: "Start Time",
+                            icon: "/starting-time-icon.svg",
+                          },
+                          {
+                            label: "End Time",
+                            icon: "/finishing-time-icon.svg",
+                          },
+                          { label: "Overtime", icon: "/overtime-icon.svg" },
+                          { label: "Break Time", icon: "/break-time-icon.svg" },
+                          {
+                            label: "Working Hours",
+                            icon: "/working-hours-icon.svg",
+                          },
+                          {
+                            label: "Lesson Hours",
+                            icon: "/lesson-hours-icon.svg",
+                          },
+                          {
+                            label: "Non-Lesson Hours",
+                            icon: "/non-lesson-hours-icon.svg",
+                          },
+                          {
+                            label: "Approval",
+                            icon: "/approved-icon.svg",
+                            hideOnMobile: true,
+                          },
+                        ].map((header, idx) => (
+                          <th
+                            key={idx}
+                            className={`border px-0.5 py-0.5 font-normal ${
+                              header.hideOnMobile
+                                ? "hidden sm:table-cell"
+                                : "w-auto"
+                            }`}
+                          >
+                            <span className="hidden sm:inline">
+                              {header.label}
+                            </span>
+                            <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
+                              <Image
+                                src={header.icon}
+                                alt={`${header.label} Icon`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                          </th>
+                        ))}
+                      </tr>
+                      {/* Japanese Header Row for Desktop */}
+                      <tr className="hidden sm:table-row">
+                        {[
+                          "日付",
+                          "曜日",
+                          "出社時間",
+                          "退社時間",
+                          "残業時間",
+                          "休憩時間",
+                          "労働時間",
+                          "レッスン時間",
+                          "レッスン外時間",
+                          "承認",
+                        ].map((jp, idx) => (
+                          <th
+                            key={idx}
+                            className="border px-0.5 py-0.5 font-normal"
+                          >
+                            {jp}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(localEdits[school] || []).map((row, index) => (
+                        <tr key={index} className="text-center">
+                          <td className="border px-0.5 py-0.5">{row.Date}</td>
+                          <td className="border px-0.5 py-0.5">
+                            <span className="hidden sm:inline">{row.Day}</span>
+                            <span className="sm:hidden">
+                              {row.Day.charAt(0)}
+                            </span>
+                          </td>
+                          <td className="border px-0.5 py-0.5">
+                            <input
+                              type="text"
+                              value={row.StartTime}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  school,
+                                  index,
+                                  "StartTime",
+                                  e.target.value,
+                                )
+                              }
+                              placeholder="--:--"
+                              className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
+                            />
+                          </td>
+                          <td className="border px-0.5 py-0.5">
+                            <input
+                              type="text"
+                              value={row.EndTime}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  school,
+                                  index,
+                                  "EndTime",
+                                  e.target.value,
+                                )
+                              }
+                              placeholder="--:--"
+                              className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
+                            />
+                          </td>
+                          <td className="border px-0.5 py-0.5 w-[34px] text-xs">
+                            {row.Overtime}
+                          </td>
+                          <td className="border px-0.5 py-0.5 w-[34px] text-xs">
+                            <input
+                              type="text"
+                              value={row.BreakTime}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  school,
+                                  index,
+                                  "BreakTime",
+                                  e.target.value,
+                                )
+                              }
+                              placeholder=""
+                              className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
+                            />
+                          </td>
+                          <td className="border px-0.5 py-0.5 w-[34px] text-xs">
+                            {calculateTotalWorkingHours(
+                              row.StartTime,
+                              row.EndTime,
+                              row.BreakTime,
+                            )}
+                          </td>
+                          <td className="border px-0.5 py-0.5 w-[34px] text-xs">
+                            <input
+                              type="text"
+                              value={row.LessonHours}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  school,
+                                  index,
+                                  "LessonHours",
+                                  e.target.value,
+                                )
+                              }
+                              placeholder=""
+                              className="w-full h-full text-center text-xs bg-transparent border-none outline-none"
+                            />
+                          </td>
+                          <td className="border text-center text-xs w-[34px]">
+                            <span className="w-full text-xs">
+                              {calculateNonLessonHours(
+                                calculateTotalWorkingHours(
+                                  row.StartTime,
+                                  row.EndTime,
+                                  row.BreakTime,
+                                ),
+                                row.LessonHours,
+                              )}
+                            </span>
+                          </td>
+                          <td className="border px-0.5 py-0.5 hidden sm:table-cell">
+                            {row.Approval}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </>
             )}
           </div>
