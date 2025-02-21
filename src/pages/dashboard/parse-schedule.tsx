@@ -184,8 +184,8 @@ function ParseSchedule() {
 
   return (
     <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md mt-0 bg-[var(--user-section-bg-color)]">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[color:var(--body-text-color)]">
-        Parse Weekly Schedule for Teachers
+      <h1 className="text-base font-bold text-center mb-4 text-center text-[color:var(--body-text-color)]">
+        PARSE WEEKLY SCHEDULE
       </h1>
       <textarea
         value={weeklyData}
