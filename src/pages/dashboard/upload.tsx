@@ -107,8 +107,8 @@ function Upload() {
 
   return (
     <div className="max-w-lg mx-auto p-4 sm:p-6 shadow-md mt-0 bg-[var(--user-section-bg-color)]">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[color:var(--body-text-color)]">
-        Upload Files
+      <h1 className="text-base font-bold mb-4 text-center text-[color:var(--body-text-color)]">
+        UPLOAD FILE
       </h1>
       <div className="flex flex-col gap-4 w-full">
         <div
