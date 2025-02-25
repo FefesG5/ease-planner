@@ -222,7 +222,7 @@ function Edit() {
     <div className="mt-0">
       {/* Schedule Selector */}
       <div className="schedule-selector p-4 bg-[var(--user-section-bg-color)]">
-        <h1 className="text-base font-bold text-center mb-4">
+        <h1 className="text-base font-bold text-center mb-1">
           AVAILABLE SCHEDULE LIST
         </h1>
         {/* Schedule Selector */}
