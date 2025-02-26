@@ -287,7 +287,7 @@ function Edit() {
                   [school]: !prev[school],
                 }))
               }
-              className="w-full text-left px-2 py-1 font-medium border-b text-lg bg-[var(--signin-input-bg-color)]"
+              className="w-full text-left px-2 py-1 font-medium text-lg bg-[var(--schedule-list-bg-color)] border border-gray-100"
             >
               {schoolStates[school] ? "▼" : "►"} School {school}
             </button>
