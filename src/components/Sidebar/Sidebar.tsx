@@ -1,6 +1,6 @@
 import { useContext, useRef, useEffect } from "react";
 import { ThemeContext } from "@/contexts/ThemeContext";
-import { navigationLinks } from "@/config/navigationLinks";
+import { navigationLinks } from "@/constants/navigationLinks";
 import NavItem from "../NavItem/NavItem";
 import Image from "next/image";
 

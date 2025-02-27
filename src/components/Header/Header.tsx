@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Sidebar from "../Sidebar/Sidebar";
 import NavItem from "../NavItem/NavItem";
-import { navigationLinks } from "../../config/navigationLinks";
+import { navigationLinks } from "../../constants/navigationLinks";
 import { ThemeContext } from "@/contexts/ThemeContext";
 import { poppins } from "@/app/ui/fonts";
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import UserSection from "../UserSection/UserSection";
 import { User } from "firebase/auth";
-import { dashboardNav } from "@/config/dashBoardNav";
+import { dashboardNav } from "@/constants/dashBoardNav";
 
 type DashboardLayoutProps = {
   signOutUser: () => Promise<void>;

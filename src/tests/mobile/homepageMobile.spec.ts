@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { navigationLinks } from "@/config/navigationLinks";
+import { navigationLinks } from "@/constants/navigationLinks";
 
 test.describe("Home Page Tests - (Mobile View)", () => {
   // Before each test, navigate to the home page and set the viewport to mobile size
