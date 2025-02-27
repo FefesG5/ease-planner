@@ -228,7 +228,7 @@ function Edit() {
         {/* Schedule Selector */}
         <div className="flex flex-col sm:flex-row sm:items-center mb-4">
           <label htmlFor="scheduleSelect" className="text-sm font-medium">
-            Select Schedule:
+            Select Schedule
           </label>
           <select
             id="scheduleSelect"
@@ -257,7 +257,7 @@ function Edit() {
         {selectedSchedule && (
           <div className="flex flex-col sm:flex-row sm:items-center">
             <label htmlFor="teacherNameInput" className="text-sm font-medium">
-              Edit Teacher Name:
+              Edit Teacher Name
             </label>
             <input
               id="teacherNameInput"
