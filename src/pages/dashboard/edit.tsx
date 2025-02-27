@@ -298,7 +298,7 @@ function Edit() {
                 <div className="p-2 shadow-sm bg-[var(--signin-container-bg-color)]">
                   <div className="flex flex-wrap items-center justify-end gap-4">
                     <div className="flex items-center gap-2">
-                      <label className="text-sm font-medium">Break Time:</label>
+                      <label className="text-sm font-medium">Break Time</label>
                       <input
                         type="text"
                         value={breakTimeValue}
@@ -316,7 +316,7 @@ function Edit() {
                     </div>
                     <div className="flex items-center gap-2">
                       <label className="text-sm font-medium">
-                        Lesson Hours:
+                        Lesson Hours
                       </label>
                       <input
                         type="text"
