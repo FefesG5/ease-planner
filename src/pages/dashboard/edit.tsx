@@ -322,7 +322,7 @@ function Edit() {
                         type="text"
                         value={lessonHoursValue}
                         onChange={(e) => setLessonHoursValue(e.target.value)}
-                        className="border px-2 py-1 text-xs w-20 bg-[var(--signin-input-bg-color)]"
+                        className="border px-2 py-1 text-sm w-20 bg-[var(--signin-input-bg-color)]"
                       />
                       <button
                         onClick={() =>
