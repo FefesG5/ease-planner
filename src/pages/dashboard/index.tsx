@@ -5,6 +5,7 @@ import FloatingNotification from "@/components/FloatingNotification/FloatingNoti
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { FilteredSchedule } from "@/interfaces/teachersShift";
+import Image from "next/image";
 
 // Define NotificationType to specify success, error, or info
 type NotificationType = "success" | "error" | "info" | null;
@@ -108,7 +109,7 @@ function Schedule() {
         {schedules.map((schedule: FilteredSchedule) => (
           <li
             key={schedule.id}
-            className="border p-2 flex justify-between items-center shadow"
+            className="border p-2 flex justify-between items-center shadow bg-[var(--schedule-list-bg-color)]"
           >
             {/* Left: Displaying the first available employee name since teacherName is missing */}
             <div>
@@ -117,9 +118,17 @@ function Schedule() {
                   ? schedule.schedules[0].Employee
                   : "Unknown Teacher"}
               </p>
-              <p className="text-sm">
-                📆 {schedule.month} - {schedule.year}
-              </p>
+              <div className="flex items-center text-sm">
+                <Image
+                  src="/calendar-icon.svg"
+                  alt="Calendar Icon"
+                  width={20}
+                  height={20}
+                />
+                <span className="ml-2">
+                  {schedule.month} - {schedule.year}
+                </span>
+              </div>
             </div>
 
             {/* Right: Delete Button */}
