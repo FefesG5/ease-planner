@@ -7,6 +7,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { teacherNames } from "@/data/teachersName";
 import { getMonthNumber } from "@/utils/month";
 import { SchedulePDF } from "@/interfaces/schedulesInterface";
+import Image from "next/image";
 
 // Define NotificationType to specify success, error, or info
 type NotificationType = "success" | "error" | "info" | null;
@@ -241,9 +242,13 @@ function Schedule() {
                   className="flex items-center space-x-2"
                   onClick={() => handleScheduleSelect(schedule)}
                 >
-                  <span className="text-lg text-[color:var(--body-text-color)]">
-                    📄
-                  </span>
+                  <Image
+                    src="/file-icon.svg"
+                    alt="File Icon"
+                    width={24}
+                    height={24}
+                    className="transition-all duration-200 ease-in-out"
+                  />
                   <div className="text-xs">
                     <p className="font-semibold text-[color:var(--body-text-color)]">
                       {schedule.month} {schedule.year}
