@@ -321,7 +321,7 @@ function Schedule() {
       {isMobilePreviewOpen && selectedSchedule && (
         <div className="xl:hidden fixed inset-0 bg-[var(--user-section-bg-color)] z-50 p-4 overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-[color:var(--body-text-color)]">
+            <h2 className="text-base font-semibold text-[color:var(--body-text-color)]">
               Preview: {selectedSchedule.month} {selectedSchedule.year}
             </h2>
             <button
