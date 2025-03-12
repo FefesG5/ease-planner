@@ -327,8 +327,14 @@ function Schedule() {
             <button
               onClick={closeMobilePreview}
               className="text-red-600 font-bold"
+              aria-label="Close"
             >
-              Close
+              <Image
+                src="/close-icon.svg"
+                alt="Close Icon"
+                width={25}
+                height={25}
+              />
             </button>
           </div>
           <div className="mt-2">
