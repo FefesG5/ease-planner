@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import Spinner from "@/components/Spinner/Spinner";
@@ -8,6 +8,7 @@ import { teacherNames } from "@/data/teachersName";
 import { getMonthNumber } from "@/utils/month";
 import { SchedulePDF } from "@/interfaces/schedulesInterface";
 import Image from "next/image";
+import { ThemeContext } from "@/contexts/ThemeContext";
 
 // Define NotificationType to specify success, error, or info
 type NotificationType = "success" | "error" | "info" | null;
@@ -34,6 +35,9 @@ function Schedule() {
   const notificationTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { user } = useAuthContext(); // Get the authenticated user from context
+
+  const { theme } = useContext(ThemeContext);
+  const iconSrc = theme === "dark" ? "/file-icon-white.svg" : "/file-icon.svg";
 
   // Using React Query to fetch schedules
   const {
@@ -243,7 +247,7 @@ function Schedule() {
                   onClick={() => handleScheduleSelect(schedule)}
                 >
                   <Image
-                    src="/file-icon.svg"
+                    src={iconSrc}
                     alt="File Icon"
                     width={24}
                     height={24}
