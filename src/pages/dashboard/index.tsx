@@ -1,10 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Spinner from "@/components/Spinner/Spinner";
 import FloatingNotification from "@/components/FloatingNotification/FloatingNotification";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { FilteredSchedule } from "@/interfaces/teachersShift";
+import { ThemeContext } from "@/contexts/ThemeContext";
 import Image from "next/image";
 
 // Define NotificationType to specify success, error, or info
@@ -21,6 +22,10 @@ function Schedule() {
     type: NotificationType;
   } | null>(null);
   const notificationTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const { theme } = useContext(ThemeContext);
+  const iconSrc =
+    theme === "dark" ? "/calendar-icon-white.svg" : "/calendar-icon.svg";
 
   // ✅ Fetch schedules using react-query
   const {
@@ -120,7 +125,7 @@ function Schedule() {
               </p>
               <div className="flex items-center text-sm">
                 <Image
-                  src="/calendar-icon.svg"
+                  src={iconSrc}
                   alt="Calendar Icon"
                   width={20}
                   height={20}
