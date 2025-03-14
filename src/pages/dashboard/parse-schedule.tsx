@@ -16,7 +16,11 @@ function ParseSchedule() {
   const [year, setYear] = useState<number | null>(null);
 
   // Function to extract all schedules from the parsed data
-  const extractSchedules = (data: string[][]): TeachersShift[] => {
+  const extractSchedules = (
+    data: string[][],
+    year: number,
+    month: number,
+  ): TeachersShift[] => {
     const schedules: TeachersShift[] = [];
     let dates: string[] = [];
     let days: string[] = [];
@@ -25,53 +29,66 @@ function ParseSchedule() {
     for (let i = 0; i < data.length; i++) {
       const row = data[i];
       if (i === 0) {
-        // Assuming first row contains dates
+        // First row: dates
         dates = row;
       } else if (i === 1) {
-        // Assuming second row contains days
+        // Second row: days
         days = row;
       }
     }
 
-    // Step 2: Iterate through rows starting from the 6th row to find teachers and extract schedules
+    // Step 2: Iterate through rows starting from the 6th row to find teacher schedule data
     for (let i = 5; i < data.length - 1; i++) {
       const currentRow = data[i];
       const nextRow = data[i + 1];
 
-      // Step 3: Identify teacher names in the second column
+      // Identify teacher names in the second column
       if (teacherNames.some((name) => currentRow[1]?.trim().includes(name))) {
         const teacherName = currentRow[1]?.trim();
         const schoolM = currentRow[2]?.trim() === "M" ? "M" : "";
         const schoolT = nextRow[2]?.trim() === "T" ? "T" : "";
 
-        // Step 4: Extract shifts for the current teacher
+        // Define the time pattern for shift extraction
         const timePattern = /(\d{1,2}:\d{2})\s*[-~]?\s*(\d{1,2}:\d{2})?/;
 
+        // Process each cell containing schedule data
         for (let j = 3; j < currentRow.length; j++) {
+          const dateStr = dates[j] || "";
+          const parts = dateStr.split("/");
+          if (parts.length < 3) continue; // Skip if date format is invalid
+
+          const dateYear = parseInt(parts[0], 10);
+          const dateMonth = parseInt(parts[1], 10);
+
+          // Dynamic filtering: only process if the date matches the selected year and month
+          if (dateYear !== year || dateMonth !== month) continue;
+
+          // Process the current row's schedule if available
           if (currentRow[j]) {
             const matches = currentRow[j].match(timePattern);
             if (matches) {
               const [_, startTime, endTime] = matches;
               schedules.push({
                 Employee: teacherName,
-                Date: dates[j] || "",
+                Date: dateStr,
                 Day: days[j] || "",
                 School: schoolM,
-                Shift: endTime ? `${startTime}-${endTime}` : `${startTime}`, // No space around the dash
+                Shift: endTime ? `${startTime}-${endTime}` : `${startTime}`,
               });
             }
           }
 
+          // Process the next row's schedule if available
           if (nextRow[j]) {
             const matches = nextRow[j].match(timePattern);
             if (matches) {
               const [_, startTime, endTime] = matches;
               schedules.push({
                 Employee: teacherName,
-                Date: dates[j] || "",
+                Date: dateStr,
                 Day: days[j] || "",
                 School: schoolT,
-                Shift: endTime ? `${startTime}-${endTime}` : `${startTime}`, // No space around the dash
+                Shift: endTime ? `${startTime}-${endTime}` : `${startTime}`,
               });
             }
           }
@@ -97,7 +114,6 @@ function ParseSchedule() {
     }
 
     try {
-      // Use PapaParse to parse the CSV data
       Papa.parse(weeklyData, {
         header: false, // CSV provided does not have standard headers
         skipEmptyLines: true,
@@ -109,8 +125,16 @@ function ParseSchedule() {
             console.error(result.errors);
           } else {
             const data: string[][] = result.data;
-            console.log("Parsed Data:", data);
-            const extractedSchedule = extractSchedules(data);
+
+            // Ensure that 'year' and 'month' are selected before parsing.
+            if (year === null || month === null) {
+              setMessage("Please select a month and year.");
+              return;
+            }
+
+            // Call extractSchedules with the proper three arguments: data, year, and month
+            const extractedSchedule = extractSchedules(data, year, month);
+
             if (extractedSchedule.length > 0) {
               setWeeksData((prevWeeks) => [...prevWeeks, extractedSchedule]);
               setWeeklyData(""); // Clear weekly data after saving
