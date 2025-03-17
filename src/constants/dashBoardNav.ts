@@ -1,43 +1,67 @@
 export type NavItem = {
   href: string;
   label: string;
-  icon: string;
+  icon: {
+    light: string;
+    dark: string;
+  };
 };
 
 export const dashboardNav: NavItem[] = [
   {
     href: "/dashboard/",
     label: "Home",
-    icon: "/dashboard-icon.svg",
+    icon: {
+      light: "/dashboard-icon.svg",
+      dark: "/dashboard-icon-white.svg",
+    },
   },
   {
     href: "/dashboard/schedule",
     label: "Generate Schedule",
-    icon: "/create-schedule-icon.svg",
+    icon: {
+      light: "/create-schedule-icon.svg",
+      dark: "/create-schedule-icon.svg",
+    },
   },
   {
     href: "/dashboard/edit",
     label: "Review & Edit",
-    icon: "/edit-schedule-icon.svg",
+    icon: {
+      light: "/edit-schedule-icon.svg",
+      dark: "/edit-schedule-icon.svg",
+    },
   },
   {
     href: "/dashboard/parse-schedule",
     label: "Parse Schedule",
-    icon: "/parse-schedule-icon.svg",
+    icon: {
+      light: "/parse-schedule-icon.svg",
+      dark: "/parse-schedule-icon.svg",
+    },
   },
   {
     href: "/dashboard/upload",
     label: "Upload File",
-    icon: "/upload-file-icon.svg",
+    icon: {
+      light: "/upload-file-icon.svg",
+      dark: "/upload-file-icon.svg",
+    },
   },
   {
     href: "/dashboard/help",
     label: "Help",
-    icon: "/help-icon.svg",
+    icon: {
+      light: "/help-icon.svg",
+      dark: "/help-icon.svg",
+    },
   },
   {
     href: "/dashboard/testing",
     label: "Testing",
-    icon: "/testing-icon.svg",
+    icon: {
+      light: "/testing-icon.svg",
+      dark: "/testing-icon.svg",
+    },
   },
 ];

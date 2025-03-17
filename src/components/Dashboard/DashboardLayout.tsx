@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { ThemeContext } from "@/contexts/ThemeContext";
 import Link from "next/link";
 import Image from "next/image";
 import UserSection from "../UserSection/UserSection";
@@ -15,6 +17,8 @@ const DashboardLayout = ({
   user,
   children,
 }: DashboardLayoutProps) => {
+  const { theme } = useContext(ThemeContext);
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="w-full bg-white shadow-md">
@@ -33,7 +37,7 @@ const DashboardLayout = ({
                 >
                   {item.icon && (
                     <Image
-                      src={item.icon}
+                      src={theme === "dark" ? item.icon.dark : item.icon.light}
                       alt={`${item.label} icon`}
                       width={24}
                       height={24}
