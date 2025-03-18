@@ -29,7 +29,7 @@ export const dashboardNav: NavItem[] = [
     label: "Review & Edit",
     icon: {
       light: "/edit-schedule-icon.svg",
-      dark: "/edit-schedule-icon.svg",
+      dark: "/edit-schedule-icon-white.svg",
     },
   },
   {
