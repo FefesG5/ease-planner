@@ -21,7 +21,7 @@ export const dashboardNav: NavItem[] = [
     label: "Generate Schedule",
     icon: {
       light: "/create-schedule-icon.svg",
-      dark: "/create-schedule-icon.svg",
+      dark: "/create-schedule-icon-white.svg",
     },
   },
   {
