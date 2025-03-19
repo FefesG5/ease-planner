@@ -45,7 +45,7 @@ export const dashboardNav: NavItem[] = [
     label: "Upload File",
     icon: {
       light: "/upload-file-icon.svg",
-      dark: "/upload-file-icon.svg",
+      dark: "/upload-file-icon-white.svg",
     },
   },
   {
