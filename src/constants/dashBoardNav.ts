@@ -61,7 +61,7 @@ export const dashboardNav: NavItem[] = [
     label: "Testing",
     icon: {
       light: "/testing-icon.svg",
-      dark: "/testing-icon.svg",
+      dark: "/testing-icon-white.svg",
     },
   },
 ];
