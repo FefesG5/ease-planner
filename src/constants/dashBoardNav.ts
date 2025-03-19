@@ -37,7 +37,7 @@ export const dashboardNav: NavItem[] = [
     label: "Parse Schedule",
     icon: {
       light: "/parse-schedule-icon.svg",
-      dark: "/parse-schedule-icon.svg",
+      dark: "/parse-schedule-icon-white.svg",
     },
   },
   {
