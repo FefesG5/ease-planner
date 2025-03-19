@@ -53,7 +53,7 @@ export const dashboardNav: NavItem[] = [
     label: "Help",
     icon: {
       light: "/help-icon.svg",
-      dark: "/help-icon.svg",
+      dark: "/help-icon-white.svg",
     },
   },
   {
