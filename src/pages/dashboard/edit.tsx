@@ -3,7 +3,8 @@ import Image from "next/image";
 import Spinner from "@/components/Spinner/Spinner";
 import withDashboardLayout from "@/hoc/withDashboardLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { ThemeContext } from "@/contexts/ThemeContext";
 import {
   FilteredSchedule,
   ScheduleRow,
@@ -16,6 +17,7 @@ import {
 } from "@/utils/helpfulFunctions/timeCalculations";
 import { generateSchedulePDF } from "@/utils/helpfulFunctions/pdfGeneratorUtils";
 import jsPDF from "jspdf";
+import { scheduleTableHeadings } from "@/constants/scheduleTableHeader";
 
 function Edit() {
   const { user } = useAuthContext();
@@ -33,6 +35,8 @@ function Edit() {
   const [breakTimeValue, setBreakTimeValue] = useState<string>("0.0");
   const [lessonHoursValue, setLessonHoursValue] = useState<string>("0.0");
   const [teacherName, setTeacherName] = useState<string>("");
+
+  const { theme } = useContext(ThemeContext);
 
   const {
     data: filteredSchedules = [],
@@ -359,55 +363,34 @@ function Edit() {
                       </tr>
                       {/* Consolidated Header Row */}
                       <tr>
-                        {[
-                          { label: "Date", icon: "/date-icon.svg" },
-                          { label: "Day", icon: "/day-icon.svg" },
-                          {
-                            label: "Start Time",
-                            icon: "/starting-time-icon.svg",
-                          },
-                          {
-                            label: "End Time",
-                            icon: "/finishing-time-icon.svg",
-                          },
-                          { label: "Overtime", icon: "/overtime-icon.svg" },
-                          { label: "Break Time", icon: "/break-time-icon.svg" },
-                          {
-                            label: "Working Hours",
-                            icon: "/working-hours-icon.svg",
-                          },
-                          {
-                            label: "Lesson Hours",
-                            icon: "/lesson-hours-icon.svg",
-                          },
-                          {
-                            label: "Non-Lesson Hours",
-                            icon: "/non-lesson-hours-icon.svg",
-                          },
-                          {
-                            label: "Approval",
-                            icon: "/approved-icon.svg",
-                            hideOnMobile: true,
-                          },
-                        ].map((header, idx) => (
+                        {scheduleTableHeadings.map((heading, idx) => (
                           <th
                             key={idx}
                             className={`border px-0.5 py-0.5 font-normal ${
-                              header.hideOnMobile
+                              heading.hideOnMobile
                                 ? "hidden sm:table-cell"
                                 : "w-auto"
                             }`}
                           >
+                            {/* Desktop view: show label */}
                             <span className="hidden sm:inline">
-                              {header.label}
+                              {heading.label}
                             </span>
+                            {/* Mobile view: show icon */}
                             <div className="sm:hidden flex items-center justify-center h-5 w-5 relative mx-auto">
-                              <Image
-                                src={header.icon}
-                                alt={`${header.label} Icon`}
-                                fill
-                                className="object-contain"
-                              />
+                              {heading.icon && (
+                                <Image
+                                  src={
+                                    theme === "dark"
+                                      ? heading.icon.dark
+                                      : heading.icon.light
+                                  }
+                                  alt={`${heading.label} icon`}
+                                  width={24}
+                                  height={24}
+                                  className="object-contain"
+                                />
+                              )}
                             </div>
                           </th>
                         ))}
