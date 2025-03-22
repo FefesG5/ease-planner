@@ -19,7 +19,7 @@ export const scheduleTableHeadings: ScheduleTableHeading[] = [
     label: "Day",
     icon: {
       light: "/day-icon.svg",
-      dark: "/day-icon.svg",
+      dark: "/day-icon-white.svg",
     },
   },
   {
