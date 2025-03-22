@@ -26,7 +26,7 @@ export const scheduleTableHeadings: ScheduleTableHeading[] = [
     label: "Start Time",
     icon: {
       light: "/starting-time-icon.svg",
-      dark: "/starting-time-icon.svg",
+      dark: "/starting-time-icon-white.svg",
     },
   },
   {
