@@ -33,7 +33,7 @@ export const scheduleTableHeadings: ScheduleTableHeading[] = [
     label: "End Time",
     icon: {
       light: "/finishing-time-icon.svg",
-      dark: "/finishing-time-icon.svg",
+      dark: "/finishing-time-icon-white.svg",
     },
   },
   {
