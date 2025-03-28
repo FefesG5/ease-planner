@@ -40,7 +40,7 @@ export const scheduleTableHeadings: ScheduleTableHeading[] = [
     label: "Overtime",
     icon: {
       light: "/overtime-icon.svg",
-      dark: "/overtime-icon.svg",
+      dark: "/overtime-icon-white.svg",
     },
   },
   {
