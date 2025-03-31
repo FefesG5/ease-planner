@@ -47,7 +47,7 @@ export const scheduleTableHeadings: ScheduleTableHeading[] = [
     label: "Break Time",
     icon: {
       light: "/break-time-icon.svg",
-      dark: "/break-time-icon.svg",
+      dark: "/break-time-icon-white.svg",
     },
   },
   {
