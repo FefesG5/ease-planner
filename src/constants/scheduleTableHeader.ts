@@ -54,7 +54,7 @@ export const scheduleTableHeadings: ScheduleTableHeading[] = [
     label: "Working Hours",
     icon: {
       light: "/working-hours-icon.svg",
-      dark: "/working-hours-icon.svg",
+      dark: "/working-hours-icon-white.svg",
     },
   },
   {
