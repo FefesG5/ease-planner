@@ -68,7 +68,7 @@ export const scheduleTableHeadings: ScheduleTableHeading[] = [
     label: "Non-Lesson Hours",
     icon: {
       light: "/non-lesson-hours-icon.svg",
-      dark: "/non-lesson-hours-icon.svg",
+      dark: "/non-lesson-hours-icon-white.svg",
     },
   },
   {
