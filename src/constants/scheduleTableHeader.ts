@@ -61,7 +61,7 @@ export const scheduleTableHeadings: ScheduleTableHeading[] = [
     label: "Lesson Hours",
     icon: {
       light: "/lesson-hours-icon.svg",
-      dark: "/lesson-hours-icon.svg",
+      dark: "/lesson-hours-icon-white.svg",
     },
   },
   {
