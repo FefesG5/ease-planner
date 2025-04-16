@@ -118,7 +118,7 @@ function Schedule() {
           >
             {/* Left: Displaying the first available employee name since teacherName is missing */}
             <div>
-              <p className="text-lg font-semibold">
+              <p className="text-sm font-semibold">
                 {schedule.schedules.length > 0
                   ? schedule.schedules[0].Employee
                   : "Unknown Teacher"}
