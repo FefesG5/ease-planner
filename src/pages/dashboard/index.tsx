@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useRef, useContext } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Spinner from "@/components/Spinner/Spinner";
 import FloatingNotification from "@/components/FloatingNotification/FloatingNotification";
@@ -8,97 +8,80 @@ import { FilteredSchedule } from "@/interfaces/teachersShift";
 import { ThemeContext } from "@/contexts/ThemeContext";
 import Image from "next/image";
 
-// Define NotificationType
+// Define NotificationType to specify success, error, or info
 type NotificationType = "success" | "error" | "info" | null;
 
 function Schedule() {
   const { user } = useAuthContext();
   const queryClient = useQueryClient();
-
-  // Immediately bail if no user
-  const userId = user!.uid;
-
-  // Track which schedule is being deleted
   const [deletingScheduleId, setDeletingScheduleId] = useState<string | null>(
     null,
-  );
-
-  // Notification state & timeout
+  ); // Track the deleting schedule
   const [notification, setNotification] = useState<{
     message: string;
     type: NotificationType;
   } | null>(null);
   const notificationTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Theme for icon
   const { theme } = useContext(ThemeContext);
   const iconSrc =
     theme === "dark" ? "/calendar-icon-white.svg" : "/calendar-icon.svg";
 
-  // ===== authFetch helper =====
-  async function authFetch(
-    path: string,
-    opts: RequestInit = {},
-  ): Promise<Response> {
-    if (!user) throw new Error("User not authenticated");
-    const token = await user.getIdToken();
-    return fetch(path, {
-      ...opts,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        ...(opts.headers || {}),
-      },
-    });
-  }
-
-  // ===== showNotification helper =====
-  const showNotification = (message: string, type: NotificationType) => {
-    setNotification({ message, type });
-    if (notificationTimeout.current) clearTimeout(notificationTimeout.current);
-    notificationTimeout.current = setTimeout(() => setNotification(null), 5000);
-  };
-
-  // ===== Fetch schedules =====
+  // ✅ Fetch schedules using react-query
   const {
     data: schedules = [],
     isLoading,
     error,
-  } = useQuery<FilteredSchedule[], Error>({
-    queryKey: ["filteredSchedules", userId],
-    enabled: !!user,
-    queryFn: async () => {
-      const res = await authFetch(
-        `/api/schedules/getFilteredSchedulesByUser?userId=${userId}`,
+  } = useQuery({
+    queryKey: ["filteredSchedules", user?.uid],
+    queryFn: async (): Promise<FilteredSchedule[]> => {
+      if (!user) throw new Error("User not authenticated");
+      const token = await user.getIdToken();
+      const response = await fetch(
+        `/api/schedules/getFilteredSchedulesByUser?userId=${user.uid}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
       );
-      if (!res.ok) throw new Error("Failed to fetch schedules");
-      return res.json();
+      if (!response.ok) throw new Error("Failed to fetch schedules");
+      return response.json();
     },
     staleTime: 10 * 60 * 1000,
   });
 
-  // Fire an error notification if fetch fails
-  useEffect(() => {
-    if (error instanceof Error) {
-      showNotification(error.message, "error");
-    }
-  }, [error]);
+  // ✅ Show Notification Helper Function
+  const showNotification = (message: string, type: NotificationType) => {
+    setNotification({ message, type });
 
-  // ===== Delete mutation =====
+    // Clear existing timeout before setting a new one
+    if (notificationTimeout.current) {
+      clearTimeout(notificationTimeout.current);
+    }
+
+    // Auto-dismiss the notification after 5 seconds
+    notificationTimeout.current = setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
+
+  // ✅ Delete schedule mutation (integrated with notification)
   const deleteMutation = useMutation({
     mutationFn: async (scheduleId: string) => {
       setDeletingScheduleId(scheduleId);
-      const res = await authFetch("/api/schedules/deleteSchedule", {
+      const token = await user?.getIdToken();
+      const response = await fetch(`/api/schedules/deleteSchedule`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scheduleId, userId }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ scheduleId, userId: user?.uid }),
       });
-      if (!res.ok) throw new Error("Failed to delete schedule.");
+      if (!response.ok) throw new Error("Failed to delete schedule.");
     },
     onSuccess: () => {
       setDeletingScheduleId(null);
-      queryClient.invalidateQueries({
-        queryKey: ["filteredSchedules", userId],
-      });
+      queryClient.invalidateQueries({ queryKey: ["filteredSchedules"] });
       showNotification("Schedule deleted successfully!", "success");
     },
     onError: () => {
@@ -107,35 +90,38 @@ function Schedule() {
     },
   });
 
-  // ===== Loading & error states =====
+  // ✅ Loading and error handling
   if (isLoading) return <Spinner />;
-  if (error) return <p className="text-center text-red-500">{error.message}</p>;
+  if (error) {
+    showNotification(error.message, "error");
+    return <p className="text-red-500">{error.message}</p>;
+  }
 
-  // ===== Render =====
   return (
     <div className="p-4 bg-[var(--user-section-bg-color)] min-h-screen">
       <h1 className="text-base font-bold text-center mb-1">
         GENERATED SCHEDULES
       </h1>
 
-      {/* Floating notification */}
-      {notification && (
+      {notification && notification.type && (
         <FloatingNotification
           message={notification.message}
-          type={notification.type!}
+          type={notification.type}
         />
       )}
 
       <ul className="space-y-4">
-        {schedules.map((schedule) => (
+        {schedules.map((schedule: FilteredSchedule) => (
           <li
             key={schedule.id}
             className="border p-2 flex justify-between items-center shadow bg-[var(--schedule-list-bg-color)]"
           >
-            {/* Left: Teacher name + date */}
+            {/* Left: Displaying the first available employee name since teacherName is missing */}
             <div>
               <p className="text-sm font-semibold">
-                {schedule.schedules[0]?.Employee ?? "Unknown Teacher"}
+                {schedule.schedules.length > 0
+                  ? schedule.schedules[0].Employee
+                  : "Unknown Teacher"}
               </p>
               <div className="flex items-center text-sm">
                 <Image
@@ -145,16 +131,16 @@ function Schedule() {
                   height={20}
                 />
                 <span className="ml-2">
-                  {schedule.month} – {schedule.year}
+                  {schedule.month} - {schedule.year}
                 </span>
               </div>
             </div>
 
-            {/* Right: Delete button */}
+            {/* Right: Delete Button */}
             <button
               onClick={() => deleteMutation.mutate(schedule.id)}
-              disabled={deletingScheduleId === schedule.id}
               className="px-4 py-2 bg-red-500 text-white hover:bg-red-600 disabled:opacity-50"
+              disabled={deletingScheduleId === schedule.id}
             >
               {deletingScheduleId === schedule.id ? "Deleting..." : "Delete"}
             </button>
