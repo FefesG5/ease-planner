@@ -16,7 +16,7 @@ const MonthYearSelect: React.FC<MonthYearSelectProps> = ({
   disabled = false,
 }) => {
   const selectClasses =
-    "w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base";
+    "w-full p-2 text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base";
 
   return (
     <div className="flex flex-col gap-4">
