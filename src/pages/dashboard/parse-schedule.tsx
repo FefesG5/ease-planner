@@ -216,7 +216,7 @@ function ParseSchedule() {
         onChange={handleTextAreaChange}
         rows={10}
         placeholder="Paste the weekly CSV data here..."
-        className="w-full p-3 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] mb-4"
+        className="w-full p-3 text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] mb-4"
       ></textarea>
       <div className="flex flex-col gap-4 mb-4">
         <MonthYearSelect
@@ -229,7 +229,7 @@ function ParseSchedule() {
 
       <button
         onClick={handleParseWeek}
-        className="w-full py-2 px-4 rounded-md text-white bg-[var(--signin-btn-bg-color)] hover:bg-blue-600 mb-4"
+        className="w-full py-2 px-4 text-white bg-[var(--signin-btn-bg-color)] hover:bg-blue-600 mb-4"
       >
         Add Week
       </button>
@@ -238,12 +238,12 @@ function ParseSchedule() {
         <h2 className="font-bold">Weekly Previews:</h2>
         {weeksData.length > 0 ? (
           weeksData.map((week, index) => (
-            <div key={index} className="bg-gray-100 p-4 rounded-md my-4">
+            <div key={index} className="bg-gray-100 p-4 my-4">
               <h3 className="font-semibold">
                 Week {index + 1} Schedule for Teachers:
               </h3>
               {week.length > 0 ? (
-                <pre className="text-xs overflow-auto max-h-40 p-2 bg-gray-200 rounded-md">
+                <pre className="text-xs overflow-auto max-h-40 p-2 bg-gray-200">
                   {JSON.stringify(week, null, 2)}
                 </pre>
               ) : (
@@ -259,7 +259,7 @@ function ParseSchedule() {
       {weeksData.length > 0 && (
         <button
           onClick={handleGenerateFullSchedule}
-          className="w-full py-2 px-4 rounded-md text-white bg-green-600 hover:bg-green-700 mt-4"
+          className="w-full py-2 px-4 text-white bg-green-600 hover:bg-green-700 mt-4"
         >
           Generate Full Schedule
         </button>
@@ -268,7 +268,7 @@ function ParseSchedule() {
       <div className="mt-6">
         <h2>Teachers&apos; Full Schedule:</h2>
         {fullSchedule.length > 0 ? (
-          <pre className="bg-gray-100 p-4 rounded-md my-4 text-xs overflow-auto max-h-40">
+          <pre className="bg-gray-100 p-4 my-4 text-xs overflow-auto max-h-40">
             {JSON.stringify(fullSchedule, null, 2)}
           </pre>
         ) : (
@@ -280,7 +280,7 @@ function ParseSchedule() {
 
       {fullSchedule.length > 0 && (
         <button
-          className="w-full py-2 px-4 rounded-md text-white bg-blue-500 hover:bg-blue-600 mt-4"
+          className="w-full py-2 px-4 text-white bg-blue-500 hover:bg-blue-600 mt-4"
           onClick={handleSendScheduleToBackend}
         >
           Send Schedule to Backend
