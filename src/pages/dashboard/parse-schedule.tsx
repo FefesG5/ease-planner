@@ -238,7 +238,12 @@ function ParseSchedule() {
         <h2 className="font-bold">Weekly Previews:</h2>
         {weeksData.length > 0 ? (
           weeksData.map((week, index) => (
-            <div key={index} className="bg-gray-100 p-4 my-4">
+            <div
+              key={index}
+              className="bg-[var(--schedule-list-bg-color)]
+              text-[var(--body-text-color)]
+              p-4 my-4"
+            >
               <h3 className="font-semibold">
                 Week {index + 1} Schedule for Teachers:
               </h3>
