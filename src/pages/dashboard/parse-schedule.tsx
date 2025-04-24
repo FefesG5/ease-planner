@@ -248,7 +248,7 @@ function ParseSchedule() {
                 Week {index + 1} Schedule for Teachers:
               </h3>
               {week.length > 0 ? (
-                <pre className="text-xs overflow-auto max-h-40 p-2 bg-gray-200">
+                <pre className="text-xs overflow-auto max-h-40 p-2 text-[var(--body-text-color)]">
                   {JSON.stringify(week, null, 2)}
                 </pre>
               ) : (
