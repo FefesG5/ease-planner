@@ -244,7 +244,7 @@ function ParseSchedule() {
               text-[var(--body-text-color)]
               p-4 my-4"
             >
-              <h3 className="font-semibold">
+              <h3 className="text-xs font-semibold">
                 Week {index + 1} Schedule for Teachers:
               </h3>
               {week.length > 0 ? (
