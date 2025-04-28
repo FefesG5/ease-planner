@@ -155,7 +155,7 @@ function Upload() {
       <button
         onClick={handleUpload}
         disabled={uploading}
-        className={`w-full mt-4 py-2 px-4 rounded-md text-white transition-all duration-200 ${
+        className={`w-full mt-4 py-2 px-4 text-white transition-all duration-200 ${
           uploading
             ? "bg-[var(--sidebar-border-color)] cursor-not-allowed"
             : "bg-[var(--signin-btn-bg-color)] hover:bg-blue-600"
