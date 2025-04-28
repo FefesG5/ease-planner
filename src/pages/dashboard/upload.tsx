@@ -112,7 +112,7 @@ function Upload() {
       </h1>
       <div className="flex flex-col gap-4 w-full">
         <div
-          className={`w-full text-sm py-2 px-4 font-semibold text-center rounded-md cursor-pointer ${
+          className={`w-full text-sm py-2 px-4 font-semibold text-center cursor-pointer ${
             uploading
               ? "bg-[var(--sidebar-border-color)] text-gray-400 cursor-not-allowed"
               : "bg-blue-600 text-white hover:bg-blue-700"
