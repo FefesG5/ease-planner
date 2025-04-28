@@ -133,7 +133,7 @@ function Upload() {
         <select
           value={fileType}
           onChange={(e) => setFileType(e.target.value)}
-          className="w-full p-2 rounded-md text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base"
+          className="w-full p-2 text-[color:var(--body-text-color)] bg-[var(--signin-input-bg-color)] border-[var(--signin-input-border-color)] cursor-pointer text-sm sm:text-base"
           disabled={uploading}
         >
           <option value="" disabled>
