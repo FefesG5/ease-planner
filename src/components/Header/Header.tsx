@@ -44,15 +44,7 @@ const Header: React.FC = () => {
     >
       {/* Logo Container */}
       <div>
-        <Link href="/">
-          <Image
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={128}
-            height={64}
-            priority={true}
-          />
-        </Link>
+        <Link href="/">EASE PLANNER</Link>
       </div>
 
       {/* Hamburger Icon for Smaller Screens */}
