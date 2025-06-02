@@ -5,7 +5,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import NavItem from "../NavItem/NavItem";
 import { navigationLinks } from "../../constants/navigationLinks";
 import { ThemeContext } from "@/contexts/ThemeContext";
-import { poppins } from "@/app/ui/fonts";
+import { poppins, playfairDisplay } from "@/app/ui/fonts";
 
 const Header: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -44,7 +44,12 @@ const Header: React.FC = () => {
     >
       {/* Logo Container */}
       <div>
-        <Link href="/">EASE PLANNER</Link>
+        <Link
+          href="/"
+          className={`text-xl font-bold ${playfairDisplay.className}`}
+        >
+          EASE PLANNER
+        </Link>
       </div>
 
       {/* Hamburger Icon for Smaller Screens */}
