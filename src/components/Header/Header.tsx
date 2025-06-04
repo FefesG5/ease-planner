@@ -57,7 +57,12 @@ const Header: React.FC = () => {
         onClick={toggleSidebar}
         className="lg:hidden flex items-center justify-center p-2 rounded-md focus:outline-none focus:ring-[var(--body-text-color)]"
       >
-        <Image src="/menu-icon.svg" alt="Menu Icon" width={24} height={24} />
+        <Image
+          src={theme === "dark" ? "/menu-icon-white.svg" : "/menu-icon.svg"}
+          alt="Menu Icon"
+          width={24}
+          height={24}
+        />
       </button>
 
       {/* Sidebar rendering */}
